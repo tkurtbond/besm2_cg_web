@@ -916,9 +916,48 @@ Chromium and Firefox. Planted, each failed: Cancel restoring nothing
 (on happy-dom and in both browsers), a loaded campaign not shown, and
 File > New not taking the campaign.
 
-## Phase 12 The Preview tab
+## Phase 12 The Preview tab [done]
 
 The four formats with the default options, Copy, Save....
+
+Done 2026-11-15. `src/ui/preview.ts` ports Besm2Preview: the file's
+entities saved in memory (`Save.saveAll`), loaded again and printed by
+the formatters with the default options (`resetConfig`), as
+besm2_calc_po prints a file, in the format chosen: reST grid tables,
+terse reST, groff tbl in raw ms, or an h-m-m outline. As in the
+Oberon's ShowPreview, it is made only while its tab is shown: when the
+tab is shown, and after each change (`showTitle`), and an entity that
+won't load again shows "(no preview: ...)". Decided:
+
+- **Save... asks for a name and downloads**, as Save As... does:
+  `previewName` gives the file's name (or the entity's, with no file)
+  with `.rst`, or `.hmm` for the outline, and adds the extension to a
+  name typed without it; a blank name is told "The file needs a
+  name.". There is no file that can't be written, so the Oberon's
+  "can't write" check becomes the blank name, and a cancel that does
+  nothing.
+- **Copy goes through `Window.copyText`**, which a test replaces;
+  the page's is `copyToClipboard`, copied from ova_cg_web's
+  markdowntab.ts (writeText, then a selected `<textarea>` and
+  `execCommand("copy")`, then "The browser won't let the page copy:
+  select the preview and copy it.").
+- **The text is labelled "Preview text"** (`aria-label`), not
+  "Preview", which is its tab panel's name.
+
+`test/ui/preview.test.ts` ports TestWindow's Preview with its labels,
+and checks every fixture of testdata/{fmt,cg} that besm2_calc_po
+formats without error: its preview in each format is that fixture's
+`test/golden/` output byte for byte. It saves `obj/preview/preview.yaml`
+and the preview of it in each format, and `test/preview.sh`, ported
+from besm2_cg_po's and run by `make test` after files.sh, compares
+those with besm2_calc_po's and pobesm2_fmt2's output for the file.
+`test/browser/preview.spec.ts` shows window.yaml in each format as the
+goldens, saves the outline, and copies by writeText and by its
+fallback, in headless Chromium and Firefox. Planted, each failed: every
+format printed as grid tables (22 fixtures, and 6 of preview.sh's
+checks), the preview not following a change, the preview made while
+hidden, Copy changing the text, and the copy fallback failing (in both
+browsers).
 
 ## Phase 13 The rulebook
 

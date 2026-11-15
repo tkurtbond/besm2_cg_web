@@ -49,13 +49,15 @@ obj/rules.txt: src/core/rules.ts tools/listrules.ts | obj
 # What needs no browser: the unit tests under Node; besm2_cg_po's
 # tools/check-rules.py on rules' listing (its rules/*.tsv, no PDF); then
 # test/files.sh, the round trip through besm2_calc_po and pobesm2_fmt2
-# (PLAN.md, Phase 3.4). Fail at the end if any failed.
+# (PLAN.md, Phase 3.4); and test/preview.sh, the Preview tab's text
+# against theirs (Phase 12). Fail at the end if any failed.
 test: node_modules obj/rules.txt | obj
 	@status=0; \
 	echo "== node --test"; $(NPM) run -s test || status=1; \
 	echo "== check-rules.py"; $(BESM2_CG_PO)/tools/check-rules.py obj/rules.txt $(BESM2_CG_PO)/rules || status=1; \
 	if [ -x test/files.sh ]; then \
 	  echo "== files.sh"; test/files.sh $(BESM2_CALC_PO) $(POBESM2_FMT2) || status=1; fi; \
+	echo "== preview.sh"; test/preview.sh $(BESM2_CALC_PO) $(POBESM2_FMT2) || status=1; \
 	exit $$status
 
 # The built page in headless Chromium and Firefox (Playwright), from

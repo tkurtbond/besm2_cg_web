@@ -41,6 +41,7 @@ import { AttrPanel, DefectPanel, SkillPanel, type Host } from "./itempanel.ts";
 import { WeaponDialog } from "./weapondialog.ts";
 import { CreationDialog } from "./creation.ts";
 import { MechaPanel } from "./mechapanel.ts";
+import { CantCopy, copyToClipboard, Preview } from "./preview.ts";
 import {
   bold,
   button,
@@ -74,9 +75,10 @@ export const DefectsList = 1;
 export const SkillsList = 2;
 export const MechaList = 3;
 export const NLists = 4;
-/** The Mecha and Background tabs' indexes in tabNames. */
+/** The Mecha, Background and Preview tabs' indexes in tabNames. */
 const MechaTab = 4;
 const BackgroundTab = 5;
+export const PreviewTab = 6;
 /** A list tab's lines, in px; the browser grows with the page (CSS). */
 const ListH = 200;
 
@@ -185,6 +187,9 @@ export class Window {
     then: (text: string, ok: boolean) => void,
   ) => void;
   download: (name: string, text: string) => void;
+  /** copyText puts text on the clipboard, saying so if the browser
+   *  won't (Preview's Copy). */
+  copyText: (text: string) => void;
 
   /**
    * openPage opens the rulebook at a printed page: the ? buttons'. Phase
@@ -220,6 +225,8 @@ export class Window {
   readonly background: Background;
   /** The Mecha tab (Phase 10) */
   readonly mechaPanel: MechaPanel;
+  /** The Preview tab (Phase 12) */
+  readonly preview: Preview;
   /** The Attributes tab's: the Weapon Attack dialog on the line
    *  selected (Phase 9). */
   readonly weaponButton: HTMLButtonElement;
@@ -254,6 +261,8 @@ export class Window {
     this.askText = (p, text, then) => d.askText(p, text, then);
     this.chooseFile = (accept, then) => this.fileDialog(accept, then);
     this.download = (name, text) => this.downloadText(name, text);
+    this.copyText = (text) =>
+      copyToClipboard(doc, text, () => this.tell(CantCopy));
 
     const item = (label: string, key?: Key, action?: () => void) =>
       new MenuItem(doc, label, key, action);
@@ -415,6 +424,14 @@ export class Window {
       this.showTitle();
     };
     this.panels[BackgroundTab]!.append(this.background.element);
+    this.preview = new Preview(doc, {
+      tell: (text) => this.tell(text),
+      askText: (p, text, then) => this.askText(p, text, then),
+      download: (name, text) => this.download(name, text),
+      copyText: (text) => this.copyText(text),
+    });
+    this.panels[PreviewTab]!.classList.add("preview-panel");
+    this.panels[PreviewTab]!.append(this.preview.element);
 
     doc.addEventListener("keydown", (e) => this.key(e));
     doc.addEventListener("dragover", (e) => this.dragOver(e));
@@ -428,7 +445,10 @@ export class Window {
 
   // ---- Title ----
 
+  /** The title shown again, and the preview; every change ends here
+   *  (ShowTitle). */
   showTitle(): void {
+    this.showPreview();
     let t = Title;
     if (this.file !== undefined) t += " - " + this.file;
     if (this.entities.length > 1) {
@@ -860,6 +880,27 @@ export class Window {
       t.tabIndex = i === j ? 0 : -1;
       this.panels[j]!.hidden = i !== j;
     });
+    this.showPreview();
+  }
+
+  /** What Preview's Save... suggests: the file's name without .yaml or
+   *  .yml, or the entity's name for a file not yet saved (undefined:
+   *  none) (PreviewBase). */
+  previewBase(): string | undefined {
+    if (this.file === undefined) {
+      const n = this.entity.name;
+      return n === undefined || trim(n) === "" ? undefined : trim(n);
+    }
+    return this.file.replace(/\.ya?ml$/, "");
+  }
+
+  /** The Preview tab shown again, if it is the tab shown: it is made
+   *  only when it can be seen, as the formatters make it, from the whole
+   *  file (ShowPreview). */
+  showPreview(): void {
+    // The constructor shows the first tab before the Preview is built.
+    if (this.preview === undefined || this.tabShown !== PreviewTab) return;
+    this.preview.show(this.entities, this.previewBase());
   }
 
   /** The tab bar's keys: Left, Right, Home and End choose a tab. */

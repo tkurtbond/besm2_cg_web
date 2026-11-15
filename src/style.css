@@ -651,3 +651,57 @@ textarea.description {
   flex: 1;
   min-width: 0;
 }
+
+/* ---- The Preview tab (Phase 12; besm2_cg_po's Besm2Preview) ----
+   The text fills the tab and scrolls both ways: grid tables mustn't
+   wrap. The copy buffer is copyToClipboard's, off the page (copied from
+   ova_cg_web's). */
+.panel.preview-panel:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-height: 0;
+}
+
+.preview-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.preview-format {
+  width: 200px;
+}
+
+.preview-text {
+  flex: 1;
+  min-height: 10em;
+  margin: 0;
+  padding: 6px 8px;
+  overflow: auto;
+  font-family: monospace;
+  white-space: pre;
+  background: var(--entry);
+  color: var(--black);
+  border: 1px solid;
+  border-color: var(--dark) var(--light) var(--light) var(--dark);
+  box-shadow: inset 1px 1px var(--black);
+  user-select: text;
+}
+
+.preview-text:focus-visible {
+  outline: 1px dotted var(--black);
+}
+
+.copy-buffer {
+  position: fixed;
+  top: 0;
+  left: -10000px;
+  opacity: 0;
+}
