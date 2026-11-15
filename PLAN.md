@@ -142,9 +142,12 @@ The tables (3 Stats; 76 Attributes and 13 Mecha Attributes; 38
 Defects and 10 Mecha-Only Defects; 52 Skills with Table 2-4's genre
 costs; 34 Weapon Abilities and 21 Disabilities with their slots and
 19 exclusions; 18 aliases; the Attributes' options; the Staged Stat
-Cost table) become `as const` arrays of records in the same order.
-`label`, `pageText` and `pdfIndex` are ported exactly, and every name
-the page shows goes through them.
+Cost table) are built, in the same order, by the same short
+procedures as the Oberon's (`A`, `L`, `F`, `D`, `S`, `WA`, ...), call
+for call, so each line can be set beside Besm2Rules.Mod's (decided in
+Phase 1, in place of `as const` arrays). `label`, `pageText` and
+`pdfIndex` are ported exactly, and every name the page shows goes
+through them.
 
 `tools/listrules.ts` prints the tables as besm2_cg_po's
 `test/ListRules.Mod` does; `make golden` copies besm2_cg_po's
@@ -372,10 +375,39 @@ rebuilds another repo. It writes only `testdata/` and `test/golden/`:
 Made from besm2_cg_po 42e58e1 and pobesm2_fmt2 78a0fe6 (2026-11-15):
 1,070 files, 4.6 MB.
 
-## Phase 1 rules
+## Phase 1 rules [done]
 
-`rules.ts` and the port of `TestRules`; `tools/listrules.ts` against
-`test/golden/rules.txt`; `make check-pages`.
+`src/core/rules.ts`, the port of `Besm2Rules` (2026-11-15):
+
+- Oberon's `CONST`s are plain numeric constants under the same names;
+  an Item's `SET` of flags is a number of bits, tested with
+  `hasFlag(it, flag)`; `option[0 .. nOptions-1]` is the array
+  `option`, its length `nOptions`; `NIL` is `undefined`, so `find`,
+  `findKind`, `pdfPage` and `pageText` take or give `undefined`.
+  `count` and `get` keep the Oberon's names; `getAlias(i)` returns
+  `{alias, item}` instead of two `VAR`s; procedures that filled a `VAR
+  s` (`label`, `pageText`, `pagesText`, `pageLabel`, `labelOf`,
+  `genreName`) return the string.
+- `Unlimited` is 2147483647, poc's `MAX(INTEGER)`; the listing prints
+  it as `unlimited`, as before.
+- A programmer error (a page < 0, a Stat outside 1–12 for
+  `stagedStatCost`, an index out of range) throws, as the Oberon's
+  `ASSERT` halts.
+
+`test/core/rules.test.ts` ports `TestRules` check for check, with its
+labels, and adds: `tools/listrules.ts` (the port of `ListRules.Mod`)
+prints `test/golden/rules.txt` byte for byte; `sameName` ignores ASCII
+case only; `stagedStatCost` refuses 0 and 13. `make test` also runs
+besm2_cg_po's `tools/check-rules.py` on this port's listing (`obj/rules.txt`)
+against besm2_cg_po's `rules/`; `make check-pages` runs its
+`tools/check-pages.py` on the listing and the two PDFs: all 247 items
+and 14 rules' pages are headings on their pages. Both tools are read
+from besm2_cg_po, not copied.
+
+Proved to fail: Highly Skilled moved to p. 43 failed the book's order,
+its label and the listing; Melee and Stoppable's exclusion removed
+failed `excludes` and the listing; a listing with p. 43 failed
+`check-pages.py`.
 
 ## Phase 2 calc and warnings
 

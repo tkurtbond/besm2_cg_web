@@ -18,6 +18,10 @@ POBESM2_FMT2_DIR ?= $(HOME)/Repos/RPG/Tools/pobesm2_fmt2
 BESM2_CALC_PO ?= $(BESM2_CG_PO)/besm2_calc_po
 POBESM2_FMT2  ?= $(POBESM2_FMT2_DIR)/pobesm2_fmt2
 
+# The rulebook, for make check-pages only; never copied into this repo.
+RULEBOOK   ?= $(HOME)/Reference/RPG/Dyskami/BESM/2E/BESM2ER.pdf
+BOOKMARKED ?= $(HOME)/Reference/RPG/Dyskami/BESM/2E/BESM2ER_bookmarked.pdf
+
 .PHONY: all build debug test test-browser check check-pages golden clean
 .NOTPARALLEL:
 
@@ -37,11 +41,19 @@ node_modules: package.json package-lock.json
 	$(NPM) ci
 	@touch $@
 
-# What needs no browser: the unit tests under Node; then, once it
-# exists (Phase 3.4), test/files.sh. Fail at the end if any failed.
-test: node_modules | obj
+# rules' tables as besm2_cg_po's test/ListRules prints them (PLAN.md,
+# Phase 1).
+obj/rules.txt: src/core/rules.ts tools/listrules.ts | obj
+	$(NODE) tools/listrules.ts > $@
+
+# What needs no browser: the unit tests under Node; besm2_cg_po's
+# tools/check-rules.py on rules' listing (its rules/*.tsv, no PDF); then,
+# once it exists (Phase 3.4), test/files.sh. Fail at the end if any
+# failed.
+test: node_modules obj/rules.txt | obj
 	@status=0; \
 	echo "== node --test"; $(NPM) run -s test || status=1; \
+	echo "== check-rules.py"; $(BESM2_CG_PO)/tools/check-rules.py obj/rules.txt $(BESM2_CG_PO)/rules || status=1; \
 	if [ -x test/files.sh ]; then \
 	  echo "== files.sh"; test/files.sh $(BESM2_CALC_PO) $(POBESM2_FMT2) || status=1; fi; \
 	exit $$status
@@ -56,6 +68,12 @@ test-browser: build | obj
 
 check: node_modules
 	$(NPM) run -s check
+
+# rules' pages against the rulebook's headings, by their font, with
+# besm2_cg_po's tools/check-pages.py (needs mutool); it reads only the
+# headings, never the rulebook's text (AGENTS.md).
+check-pages: obj/rules.txt
+	@$(BESM2_CG_PO)/tools/check-pages.py $(RULEBOOK) $(BOOKMARKED) $(BESM2_CG_PO)/rules obj/rules.txt
 
 # The golden files (AGENTS.md, PLAN.md Phase 0.3), from besm2_calc_po
 # and pobesm2_fmt2 as they are built; never edit test/golden/ by hand.
