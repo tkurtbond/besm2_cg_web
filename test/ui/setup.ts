@@ -2,7 +2,7 @@
 // document, and fakes in place of what would wait for the user, as
 // besm2_cg_po's TestWindow sets its Tell, Ask, Confirm, ChoosePath and
 // AskText. Adapted from ova_cg_web's test/ui/setup.ts, with the fields
-// Phase 5's Window has. The real dialogs are tested in dialogs.test.ts,
+// the Window has. The real dialogs are tested in dialogs.test.ts,
 // and in the browsers by test/browser/shell.spec.ts.
 
 import assert from "node:assert/strict";
@@ -97,7 +97,7 @@ export function newWindow(): {
 
 /**
  * take shows the fixture name's entities as if opened from a file named
- * as, until Phase 6 gives the page File > Open; each must load.
+ * as, without the notices load would tell; each must load.
  */
 export function take(w: Window, name: string, as = name): void {
   const r = Ch.readStream(readFileSync(DATA_DIR + name, "utf8"), name);
@@ -106,6 +106,16 @@ export function take(w: Window, name: string, as = name): void {
     name + " loads",
   );
   w.take(r.es, as);
+}
+
+/** load opens the fixture name, as File > Open... would. */
+export function load(w: Window, name: string): boolean {
+  return w.load(readFileSync(DATA_DIR + name, "utf8"), name);
+}
+
+/** settled waits until a file's text, being read, has been loaded. */
+export function settled(): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, 20));
 }
 
 /** A key pressed on target (the focused element, by default). */

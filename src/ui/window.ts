@@ -25,7 +25,8 @@
 
 import * as Ch from "../core/character.ts";
 import * as Save from "../core/save.ts";
-import { trim } from "../core/text.ts";
+import { wordWrap } from "../core/layout.ts";
+import { join, trim } from "../core/text.ts";
 import * as dialogs from "./dialogs.ts";
 import { keyMatches, MenuBar, MenuItem, Separator, type Key } from "./menu.ts";
 
@@ -35,6 +36,8 @@ export const { SaveFirst, Discard, Cancel } = dialogs;
 
 /** The entities' <select>'s width, besm2_cg_po's ChoiceW. */
 export const ChoiceW = 250;
+/** Characters on a line of the notices (Besm2Window's NoticeWidth). */
+export const NoticeWidth = 80;
 
 /** The tabs, in order (Besm2Window.Build). */
 export const tabNames = [
@@ -154,11 +157,13 @@ export class Window {
     const item = (label: string, key?: Key, action?: () => void) =>
       new MenuItem(doc, label, key, action);
     // File: Quit has no counterpart (closing the tab is quitting).
-    this.newItem = item("New", keys.new);
+    this.newItem = item("New", keys.new, () => this.newAction());
     this.newFromCampaignItem = item("New from Campaign...");
-    this.openItem = item("Open...", keys.open);
-    this.saveItem = item("Save", keys.save);
-    this.saveAsItem = item("Save As...", keys.saveAs);
+    this.openItem = item("Open...", keys.open, () => this.open());
+    this.saveItem = item("Save", keys.save, () => this.save(() => {}));
+    this.saveAsItem = item("Save As...", keys.saveAs, () =>
+      this.saveAs(() => {}),
+    );
     this.creationItem = item("Creation...");
     this.addCharacterItem = item("Add Character", undefined, () =>
       this.addCharacter(),
@@ -250,6 +255,11 @@ export class Window {
     app.replaceChildren(this.titleLine, bar, tablist, panels);
 
     doc.addEventListener("keydown", (e) => this.key(e));
+    doc.addEventListener("dragover", (e) => this.dragOver(e));
+    doc.addEventListener("drop", (e) => this.drop(e));
+    doc.defaultView?.addEventListener("beforeunload", (e) =>
+      this.beforeUnload(e),
+    );
     this.showTab(0);
     this.take(Ch.one(Ch.newCharacter()), undefined);
   }
@@ -488,6 +498,201 @@ export class Window {
   }
 
   /**
+   * adopt shows es, just loaded by Ch.loadAll from the file named file,
+   * and says what the file gives that the rules compute differently, and
+   * so are kept as overrides, and the rest it found (Ch.notices), each
+   * naming its entity, wrapped at NoticeWidth (Adopt).
+   */
+  adopt(es: Ch.Entity[], file: string): void {
+    const notices = Ch.notices;
+    this.take(es, file);
+    if (notices.length === 0) return;
+    let r =
+      "Numbers the file gives differently from the rules,\n" +
+      "kept as overrides, and what else it has:";
+    for (const n of notices) {
+      r += "\n" + join(wordWrap(n.text, NoticeWidth), "\n  ");
+    }
+    this.tell(r);
+  }
+
+  /**
+   * load opens the entities in text, the file named file's contents;
+   * false, said why, if it can't, and nothing else changes (Load).
+   */
+  load(text: string, file: string): boolean {
+    const r = Ch.loadAll(text, file);
+    if (!r.ok) {
+      this.tell(r.msg);
+      return false;
+    }
+    this.adopt(r.es, file);
+    return true;
+  }
+
+  /** loadFile opens f, as load; false, said why, if it can't be read.
+   *  Copied from ova_cg_web's Window.loadFile. */
+  async loadFile(f: File): Promise<boolean> {
+    let text: string;
+    try {
+      text = await f.text();
+    } catch (e) {
+      this.tell(`${f.name} couldn't be read: ${String(e)}`);
+      return false;
+    }
+    return this.load(text, f.name);
+  }
+
+  /**
+   * saveTo downloads the entities as the file named name, which they are
+   * then saved as; false, said why, if they can't be saved (SaveTo).
+   */
+  saveTo(name: string): boolean {
+    const r = Save.saveAll(this.entities);
+    if (!r.ok) {
+      this.tell(r.msg);
+      return false;
+    }
+    this.download(name, r.text);
+    this.file = name;
+    this.modified = false;
+    this.showTitle();
+    return true;
+  }
+
+  /** The name a save suggests: the file's, else the first entity's. */
+  private suggested(): string {
+    return this.file ?? fileName(this.entities[0]!.name ?? "");
+  }
+
+  /**
+   * saveAs asks for a file name and saves as it; then(saved). It
+   * suggests the file's name, else the first entity's (SaveAs, as
+   * ova_cg_web's).
+   */
+  saveAs(then: (saved: boolean) => void): void {
+    this.askText("Save the characters as:", this.suggested(), (text, ok) => {
+      if (!ok) {
+        then(false);
+        return;
+      }
+      const name = fileName(text);
+      if (name === "") {
+        this.tell("The file needs a name.");
+        then(false);
+        return;
+      }
+      then(this.saveTo(name));
+    });
+  }
+
+  /**
+   * save saves as the file's name; a new file as the first entity's
+   * name, or, with no name, asks for one; then(saved) (Save; besm2_cg_po
+   * asks for a new file's path, a page needs only a name, PLAN.md
+   * "Files in the browser").
+   */
+  save(then: (saved: boolean) => void): void {
+    const name = this.suggested();
+    if (name === "") this.saveAs(then);
+    else then(this.saveTo(name));
+  }
+
+  /**
+   * mayLeave calls then once the entities may be put away: saved, or the
+   * user doesn't want them saved; never if the user cancels. The
+   * question names the file, or the character if it is the only one and
+   * has no file (MayLeave).
+   */
+  mayLeave(then: () => void): void {
+    if (!this.modified) {
+      then();
+      return;
+    }
+    let q = "Save the changes to ";
+    if (this.file !== undefined) q += this.file;
+    else if (this.entities.length > 1) q += "the characters";
+    else if (this.entity.name !== undefined) q += this.entity.name;
+    else q += "the character";
+    q += " first?";
+    this.ask(q, (a) => {
+      switch (a) {
+        case SaveFirst:
+          this.save((ok) => {
+            if (ok) then();
+          });
+          break;
+        case Discard:
+          then();
+          break;
+      }
+    });
+  }
+
+  /** newCharacter is a new character (NewCharacter; the campaign comes
+   *  with Phase 11). */
+  newCharacter(): Ch.Entity {
+    return Ch.newCharacter();
+  }
+
+  /** newAction is File > New (NewAction). */
+  newAction(): void {
+    this.mayLeave(() => this.take(Ch.one(this.newCharacter()), undefined));
+  }
+
+  /** open is File > Open... (OpenAction). */
+  open(): void {
+    this.mayLeave(() =>
+      this.chooseFile(".yaml,.yml", (f) => {
+        void this.loadFile(f);
+      }),
+    );
+  }
+
+  /**
+   * dropped opens files, dropped on the page, as Open... would; one file
+   * only. While a dialog is open a drop does nothing. Copied from
+   * ova_cg_web's Window.dropped.
+   */
+  dropped(files: readonly File[]): void {
+    if (this.dialogs.open) return;
+    if (files.length !== 1) {
+      this.tell("Drop one file on the page to open it.");
+      return;
+    }
+    const f = files[0]!;
+    this.mayLeave(() => {
+      void this.loadFile(f);
+    });
+  }
+
+  /**
+   * A drag bringing files is taken, for drop. Dropped files are always
+   * taken, so the browser never opens one in place of the page.
+   */
+  private dragOver(e: DragEvent): void {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    e.dataTransfer!.dropEffect = this.dialogs.open ? "none" : "copy";
+  }
+
+  private drop(e: DragEvent): void {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    this.dropped([...e.dataTransfer!.files]);
+  }
+
+  /**
+   * Closing or reloading the page with changes: the browser asks, in its
+   * own words. ova_cg_web found preventDefault alone brings up the
+   * question in headless Chromium 158 and Firefox 159 once the page has
+   * had a click; test/browser/files.spec.ts checks it here.
+   */
+  private beforeUnload(e: BeforeUnloadEvent): void {
+    if (this.modified) e.preventDefault();
+  }
+
+  /**
    * fileDialog is chooseFile's: a file input, never put in the page,
    * clicked; then(f) once a file is chosen. A cancelled choice calls
    * nothing. Copied from ova_cg_web's Window.fileDialog, whose finding
@@ -511,9 +716,9 @@ export class Window {
   /**
    * downloadText is download's: a link to a Blob of text, clicked, the
    * Blob let go a minute later. Copied from ova_cg_web's
-   * Window.downloadText, which there downloads the text under the name,
-   * byte for byte, in headless Chromium 158 and Firefox 159; Phase 6
-   * tests it here.
+   * Window.downloadText. It downloads the text under the name, byte for
+   * byte, in headless Chromium and Firefox (test/browser/files.spec.ts,
+   * Playwright's browsers, 2026-11-15).
    */
   private downloadText(name: string, text: string): void {
     const view = this.doc.defaultView;
@@ -530,4 +735,20 @@ export class Window {
     a.remove();
     view.setTimeout(() => view.URL.revokeObjectURL(url), 60_000);
   }
+}
+
+/**
+ * fileName is the file name text gives: trimmed, without a directory (a
+ * "/" or "\\" becomes "_"), ending in .yaml unless it ends in .yaml or
+ * .yml already; "" for no text. Copied from ova_cg_web's fileName.
+ */
+export function fileName(text: string): string {
+  const t = text.trim().replace(/[/\\]/g, "_");
+  if (t === "") return "";
+  return /\.ya?ml$/i.test(t) ? t : t + ".yaml";
+}
+
+/** hasFiles says whether a drag brings files. */
+function hasFiles(e: DragEvent): boolean {
+  return e.dataTransfer?.types.includes("Files") ?? false;
 }

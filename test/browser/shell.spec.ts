@@ -42,7 +42,8 @@ test("the menus, by mouse and by keyboard", async ({ page }) => {
   await expect(fileMenu).toBeHidden();
   await file.click();
   await expect(fileMenu).toBeVisible();
-  await expect(item(page, /^Save As/)).toBeDisabled(); // until Phase 6
+  await expect(item(page, /^Save As/)).toBeEnabled();
+  await expect(item(page, /^New from Campaign/)).toBeDisabled(); // Phase 11
   // Over another menu's name, that menu opens instead.
   await item(page, "Character").hover();
   await expect(charMenu).toBeVisible();

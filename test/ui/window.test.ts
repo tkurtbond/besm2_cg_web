@@ -127,7 +127,7 @@ test("NewCharacter", () => {
     .map((it) => it.label)
     .join("|");
   check(
-    enabled === "Add Character|Add Mecha|Duplicate",
+    enabled === "New|Open...|Save|Save As...|Add Character|Add Mecha|Duplicate",
     "a lone character: the rest greyed until there are more, or their phase: " +
       enabled,
   );

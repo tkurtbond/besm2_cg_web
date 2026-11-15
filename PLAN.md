@@ -688,10 +688,45 @@ Next never greyed, and Add Character from a mecha without its owner's
 creation. (The `<select>`'s filling guard can't fail a test until
 Phase 7 fills fields from the entity.)
 
-## Phase 6 Files on the page
+## Phase 6 Files on the page [done]
 
 Open, drop, Save, Save As, New, the save-first question,
 `beforeunload`, the title's ` *`, notices in a dialog.
+
+Done 2026-11-15. Window ports Besm2Window's Adopt, Load, SaveTo,
+SaveAs, Save, MayLeave, NewCharacter, NewAction and OpenAction, with
+ova_cg_web's loadFile, dropped, the drag and drop listeners,
+beforeunload and fileName copied. Decided:
+
+- **Save of a new file** downloads under the first entity's name with
+  `.yaml` (fileName), without asking; with no name it asks, as Save
+  As... does. besm2_cg_po's Save asks for a new file's path (PLAN.md,
+  "Files in the browser": a page needs only a name). Save As...
+  suggests the file's name, else the first entity's.
+- **The notices' message** is Adopt's, word for word: its two lines,
+  then each notice wrapped at NoticeWidth (80) by `layout.wordWrap`,
+  its next lines indented two spaces.
+- MayLeave's question names the entity when its name is present, even
+  if empty, as the Oberon's `entity.name # NIL`.
+- SaveTo's failure (`Save.saveAll`'s message) is told, and nothing is
+  downloaded or marked saved.
+
+`test/ui/files.test.ts` ports TestWindow's SaveFirst, Files (without
+Quit, which a page hasn't, and the Character tab's lines, Phase 7's),
+Bare and Notices, with their labels; a change is made to the entity
+and marked, as Phase 7's handlers will (with `Ch.useStat` and
+`useDerived`). It adds fileName's cases, a file's mistakes and one that
+can't be read, and drops. Saves of window, bare and differs are
+compared byte for byte with `test/golden/cg/*.fill.yaml`.
+`test/browser/files.spec.ts` is ova_cg_web's adapted: the download's
+bytes and name, Save As... and Ctrl+S, the notices and a broken file in
+a dialog, the file chooser after the save-first question, a drop, and
+beforeunload, in headless Chromium and Firefox from file:// and
+http://. Planted, each failed: the notices unwrapped, Don't save doing
+nothing, a save leaving the file changed, the question without the
+name, a drop under a dialog, Save As... ignoring the file's name,
+beforeunload never asking, a drop not prevented, and a download's
+bytes changed.
 
 ## Phase 7 The Character tab
 

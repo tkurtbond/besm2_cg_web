@@ -37,3 +37,29 @@ export function watch(page: Page): Watch {
   page.on("pageerror", (e) => w.errors.push(String(e)));
   return w;
 }
+
+/** besm2_cg_po's test/data, copied by make golden. */
+export const DATA_DIR = resolve("testdata/cg");
+
+/**
+ * openFile opens a file through File > Open... and the file chooser it
+ * opens, as a user would: the fixture testdata/cg/NAME, or, given
+ * contents, a file named name holding them. Copied from ova_cg_web's.
+ */
+export async function openFile(
+  page: Page,
+  name: string,
+  contents?: string,
+): Promise<void> {
+  const chooser = page.waitForEvent("filechooser");
+  await page.getByRole("menuitem", { name: "File" }).click();
+  await page.getByRole("menuitem", { name: /^Open\.\.\./ }).click();
+  const c = await chooser;
+  if (contents === undefined) await c.setFiles(resolve(DATA_DIR, name));
+  else
+    await c.setFiles({
+      name,
+      mimeType: "application/yaml",
+      buffer: Buffer.from(contents),
+    });
+}
