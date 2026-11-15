@@ -409,12 +409,48 @@ its label and the listing; Melee and Stoppable's exclusion removed
 failed `excludes` and the listing; a listing with p. 43 failed
 `check-pages.py`.
 
-## Phase 2 calc and warnings
+## Phase 2 calc [done]
 
-`calc.ts` and `warnings.ts`; the ports of `TestCalc` and
-`TestWarnings`. Every fixture character's numbers come out of
-`compute` (the fixtures are the oracle), the same differences as
-besm2_calc_po reports.
+`src/core/calc.ts`, the port of `Besm2Calc` (2026-11-15):
+
+- The records are classes whose fields start at their zero values, as
+  `NEW` leaves them for the `Init` procedures, which keep their names
+  (`initEntity`, `initAttr`, `initMod`, `initDefect`, `initSkill`,
+  `initHouseSkill`, `initCreation`) and are called after `new`, as the
+  Oberon calls them after `NEW`: character.ts will extend the classes
+  (`Besm2Character`'s `RECORD (C.AttrDesc)`) and set them up only once
+  it has looked an item up.
+- The lists stay linked by `next`, in the order added, so each loop
+  can be read beside the Oberon's. `AddMod(VAR list, m)` becomes
+  `list = addMod(list, m)`.
+- `Number` is `Num`, so as not to shadow JavaScript's `Number`. A
+  `Num` is an object here, not a record copied on assignment: a port
+  that copies one (`Besm2Character`'s `n: C.Number` locals) must copy
+  its fields.
+- `Rules(e, VAR c)` returns the `Creation` itself instead of a copy;
+  nothing in `calc` changes it.
+- `DIV` is `div`, which floors (the only `DIV`s that can see a negative
+  number are Diminutive's HP; a test checks −10 DIV 20 is −1).
+- `Text` and `ComputedText` return the string; `SetOption` and
+  `MechaPoints` throw where the Oberon's `ASSERT`s halt.
+
+`test/core/calc.test.ts` ports `TestCalc` check for check: its 279
+labels are the Oberon `TestCalc`'s output, line for line (compared
+2026-11-15 with besm2_cg_po's `obj/TestCalc`). It adds HP below 0
+flooring under Diminutive, and `parse` with tabs, seven digits, `+1`
+and `1 2`.
+
+Proved to fail: `div` truncating failed the floor check; no
+`checkExclusions` failed the exclusions; SV rounded down failed three
+checks; two Stats at 12 not warned failed its check.
+
+Decided 2026-11-15: `warnings.ts` and `TestWarnings` move to Phase 3.2,
+since `Besm2Warnings` names its items through `Besm2Character`'s
+records and `Besm2Text`, and besm2_cg_po wrote it in its step 6, after
+`Besm2Character` (step 4). Likewise the check that every fixture's
+numbers come out of `compute` needs the files loaded, so it is Phase
+3.2's too; until then the fixtures built by hand above stand for it,
+as in besm2_cg_po's step 2.
 
 ## Phase 3 Files
 
@@ -423,11 +459,14 @@ besm2_calc_po reports.
 Reading YAML as pobesm2_fmt2 reads it; the libfyaml-versus-`yaml`
 questions above, answered and tested.
 
-### Phase 3.2 character and check
+### Phase 3.2 character, warnings and check
 
 The model, load notices and edits; the port of `TestModel` and
 `Check`; every fixture's notices match its `NAME.fill.err` and
-`NAME.check.err`.
+`NAME.check.err`. `warnings.ts` and the port of `TestWarnings` (moved
+from Phase 2). Every fixture character's numbers come out of
+`compute` (the fixtures are the oracle), the same differences as
+besm2_calc_po reports.
 
 ### Phase 3.3 save
 
