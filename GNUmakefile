@@ -22,7 +22,7 @@ POBESM2_FMT2  ?= $(POBESM2_FMT2_DIR)/pobesm2_fmt2
 RULEBOOK   ?= $(HOME)/Reference/RPG/Dyskami/BESM/2E/BESM2ER.pdf
 BOOKMARKED ?= $(HOME)/Reference/RPG/Dyskami/BESM/2E/BESM2ER_bookmarked.pdf
 
-.PHONY: all build debug test test-browser check check-pages check-guide golden clean
+.PHONY: all build debug test test-browser check check-pages check-guide golden version release clean
 .NOTPARALLEL:
 
 all: build
@@ -90,6 +90,53 @@ check-guide:
 # and pobesm2_fmt2 as they are built; never edit test/golden/ by hand.
 golden:
 	tools/golden.sh $(BESM2_CALC_PO) $(POBESM2_FMT2) $(BESM2_CG_PO) $(POBESM2_FMT2_DIR)
+
+# The version, for the next release: make version V=X.Y.Z sets it in
+# package.json and package-lock.json. It neither commits nor tags.
+# Copied from ova_cg_web's GNUmakefile.
+version:
+	@[[ "$(V)" =~ ^[0-9]+\.[0-9]+\.[0-9]+$$ ]] || \
+	  { echo "version: give V=X.Y.Z (now $(VERSION))"; exit 1; }
+	$(NPM) version --no-git-tag-version $(V)
+
+# A release (PLAN.md, Phase 15): the page built from a committed,
+# pushed tree, its SHA256SUMS signed with gpg, a signed tag vVERSION
+# (package.json's version) pushed, and a GitHub release of that tag
+# with the three files, which gh creates. Refuses a tree with
+# uncommitted changes, a version already tagged here or on origin, and
+# a commit not on origin/main. Run make check test test-browser first.
+# Copied from ova_cg_web's GNUmakefile.
+#
+# GPG_KEY=ID signs with that key, else gpg's and git's default for
+# your email. DRY=1 builds and signs SHA256SUMS but only shows the tag,
+# the push and the gh command. If gh fails once the tag is pushed, run
+# the gh command it shows by hand.
+GH      ?= gh
+GPG     ?= gpg
+GPG_KEY ?=
+DRY     ?=
+VERSION  = $(shell $(NODE) -p 'require("./package.json").version')
+TAG      = v$(VERSION)
+SUMS    := dist/SHA256SUMS
+run      = $(if $(DRY),@echo "would run:",)
+release: node_modules
+	@test -z "$$(git status --porcelain --untracked-files=no)" || \
+	  { echo "release: the tree has uncommitted changes"; exit 1; }
+	@git fetch -q --tags origin
+	@! git rev-parse -q --verify "refs/tags/$(TAG)" >/dev/null || \
+	  { echo "release: $(TAG) is already tagged: set a new version"; exit 1; }
+	@git merge-base --is-ancestor HEAD origin/main || \
+	  { echo "release: HEAD isn't on origin/main: push first"; exit 1; }
+	$(NPM) run -s build
+	cd dist && sha256sum besm2_cg_web.html > SHA256SUMS
+	$(GPG) $(if $(GPG_KEY),--local-user $(GPG_KEY)) --yes --armor \
+	  --detach-sign --output $(SUMS).asc $(SUMS)
+	$(GPG) --verify $(SUMS).asc $(SUMS)
+	$(run) git tag -s $(if $(GPG_KEY),-u $(GPG_KEY)) -m "besm2_cg_web $(VERSION)" $(TAG)
+	$(run) git push origin refs/tags/$(TAG)
+	$(run) $(GH) release create $(TAG) $(PAGE) $(SUMS) $(SUMS).asc \
+	  --verify-tag --title "besm2_cg_web $(VERSION)" \
+	  --notes "The BESM2ER character generator in one web page: download besm2_cg_web.html and open it in Firefox or a Chromium-based browser. Built from $$(git rev-parse --short=12 HEAD). SHA256SUMS lists its checksum, and SHA256SUMS.asc is that list's gpg signature."
 
 clean:
 	rm -rf obj dist test-results playwright-report

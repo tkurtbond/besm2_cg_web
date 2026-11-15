@@ -76,8 +76,12 @@ make check-pages     # rules' pages against the rulebook PDF (needs mutool)
 make check-guide     # the guide shares no run of 8 words with the rulebook (Phase 14)
 make golden          # remake test/golden/ from besm2_calc_po and pobesm2_fmt2
 make clean           # rm -rf obj dist
+make version V=X.Y.Z # set the version in package.json and package-lock.json
+make release         # a signed tag and a GitHub release: only with the user's go-ahead
 ```
 
+- A release build over its budget (320 KiB, `budget` in
+  `build/build.mjs`) fails; raising it is the user's decision.
 - `npm ci` once after cloning; `package-lock.json` is committed. Adding
   a dependency needs the user's go-ahead: the built file inlines it.
   Pin exact versions.

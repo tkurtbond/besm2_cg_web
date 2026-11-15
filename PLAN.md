@@ -992,7 +992,8 @@ shows the PDF's page asked for, that later openings reuse the tab, and
 that the question cancelled opens nothing. Planted, each failed: the
 printed page sent in place of the PDF's (on happy-dom and in both
 browsers), and a blocked tab not told. The built page is now 264,048
-bytes, over ova_cg_web's 256 KiB; Phase 15 sets this page's budget.
+bytes, over ova_cg_web's 256 KiB; Phase 15 set this page's budget
+(320 KiB).
 
 ## Phase 14 The guide [done]
 
@@ -1052,13 +1053,54 @@ the wrong tab, the points line without its tabindex, a bold name the
 page lacks, a guide page off by one (`make check-pages`), and the
 Firefox menu fix undone. The built page is 286,813 bytes.
 
-## Phase 15 Release
+## Phase 15 Release [done]
 
 Browsers and size (a budget set from the first full build; ova_cg_web
 holds 256 KiB), a README for users, `make version` and `make release`
 as ova_cg_web's (a signed `SHA256SUMS`, a signed tag, a GitHub
 release asset, open question 7), with the user's go-ahead for each
 release.
+
+Done (2026-11-15):
+
+- **Every fixture**: `test/browser/fixtures.spec.ts`, adapted from
+  ova_cg_web's, opens each of `testdata/cg/` and `testdata/fmt/` (42)
+  through File > Open..., shows each entity in turn, with the title
+  saying which, and clicks every tab; no request, no console error,
+  and no ` *` after. Which fixtures open, and which say something, is
+  besm2_calc_po's answer from `test/golden/*/status` and `.fill.err`:
+  a fixture opens when `--fill` succeeds, and a dialog appears when
+  `--fill` printed something or failed. One exception: a file with no
+  entities (`edge-empty`, `edge-empty-seq`), which `--fill` writes as
+  `[]` with status 0, the page refuses ("holds no entities"), as
+  besm2_cg_po's window does (`Besm2Character.Mod`, `Load`). 86 tests
+  in each of the file:// and http:// runs. Planted, failing: a throw
+  in `showTitle` on the second entity of
+  `composite-multi-doc-2e.yaml`, in both browsers.
+- **The size**, release build: 286,813 bytes (89,089 gzipped with
+  `-9`). Of the minified script (270,086), the `yaml` library is
+  97,503 bytes, `src/core` 93,579, `src/ui` 72,133 and the guide's
+  text about 6,700; the CSS is 16,194. The debug build is 2,094,398.
+  **The budget is 320 KiB** (327,680; the user's, 2026-11-15; `budget`
+  in `build/build.mjs`), so a release build over it fails. Planted,
+  failing: a budget of 280 KiB failed `make`.
+- **README.md**: besm2_cg_po's "Using the window", adapted as
+  ova_cg_web's README adapted ova_cg_go's: the Alt+Shift keys, no Quit
+  and no Viewer..., Help > Guide and About, files as downloads, a file
+  with no entities refused, nothing kept in the browser (open
+  question 6), the rulebook as a PDF chosen for the session; and
+  ova_cg_web's Building and Making a release.
+- **`make version` and `make release`**: ova_cg_web's (its Phase
+  14.3), with the names changed. Tried in a scratch clone with a local
+  bare repository as origin and a throwaway ed25519 key in a scratch
+  `GNUPGHOME`: an empty, two-part, `v`-prefixed and pre-release
+  version refused, 0.2.0 set in both files; a release refused for
+  uncommitted changes, for a commit not on `origin/main` and, the
+  second time, for its tag; `DRY=1` signing and making no tag;
+  `GH=echo` pushing a tag `git verify-tag` takes, a `SHA256SUMS` that
+  `sha256sum -c` and `gpg --verify` take, and the gh command; a page
+  changed after failing `sha256sum -c`. No release is made without
+  the user's go-ahead; the version is 0.1.0.
 
 ## Testing
 

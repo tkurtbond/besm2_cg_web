@@ -1,7 +1,7 @@
 // Builds dist/besm2_cg_web.html: esbuild bundles src/main.ts into one
 // script, and inlinePage puts it and src/style.css into src/index.html.
 // Copied from ova_cg_web's build/build.mjs, with its guide (Phase 14)
-// and without its size budget (until Phase 15).
+// and its size budget (Phase 15).
 //
 //   node build/build.mjs           the release: minified, no source map
 //   node build/build.mjs --debug   not minified, an inline source map
@@ -14,6 +14,10 @@ import { parse, stripComments } from "../src/core/guide.ts";
 
 const debug = process.argv.includes("--debug");
 const out = "dist/besm2_cg_web.html";
+// The release's size budget (PLAN.md, Phase 15; the user's, 2026-11-15):
+// 286,813 bytes when it was set. A release over it fails the build, so
+// growth is a decision, not an accident.
+const budget = 320 * 1024;
 
 // Which build this is: package.json's version, and the commit, with
 // "+" if the tree has changes it doesn't record.
@@ -75,3 +79,7 @@ await mkdir("dist", { recursive: true });
 await writeFile(out, inlinePage(html, css, js));
 const size = Buffer.byteLength(await readFile(out));
 console.log(`${out}: ${size} bytes`);
+if (!debug && size > budget) {
+  console.error(`${out}: over its budget of ${budget} bytes (build/build.mjs)`);
+  process.exit(1);
+}
