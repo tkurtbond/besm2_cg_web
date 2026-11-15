@@ -492,7 +492,7 @@ key and a tab as indentation, which take libfyaml's ("duplicate key",
 with either is a likely mistake. Tests compare other syntax errors by
 file, line and column only.
 
-### Phase 3.2 character, warnings and check
+### Phase 3.2 character, warnings and check [done]
 
 The model, load notices and edits; the port of `TestModel` and
 `Check`; every fixture's notices match its `NAME.fill.err` and
@@ -501,11 +501,46 @@ from Phase 2). Every fixture character's numbers come out of
 `compute` (the fixtures are the oracle), the same differences as
 besm2_calc_po reports.
 
+Done 2026-11-15: `character.ts`, `check.ts` and `warnings.ts`.
+`test/core/warnings.test.ts` ports TestWarnings with its labels;
+`character.test.ts` ports TestModel's checks that need no save, with
+its labels, and one of its own (`ChangeAttr` to another name keeps the
+keys it doesn't know, `b.extra := a.extra`). `notices.test.ts` loads
+every fixture of `testdata/fmt` and `testdata/cg` as `--check` and
+`--fill` do, and compares its lines with `test/golden/*/NAME.*.err`:
+all match, so every fixture character's numbers come out of `compute`,
+with exactly the differences besm2_calc_po reports (bad-root's twice,
+as there, for its two documents).
+
+Proved to fail: `copyHouseSkills` sharing the costs array,
+`changeAttr` keeping the old subject, `changeAttr` dropping `extra`, a
+warning citing the wrong page, `adopt` missing a difference of 1, and
+`keep` silent each failed their checks.
+
+Decided 2026-11-15:
+- The Oberon's own lists (a Skill's specialisations, the creation
+  keys) are arrays and `Set`s; the linked lists that `calc` walks
+  (`attrs`, `defects`, `skills`, a weapon's Abilities, the house
+  Skills) stay linked, with `next`, so `calc`'s port stays faithful.
+- `Besm2Upgrade` is not ported (open question 2), so `character` has
+  no upgrade path.
+- Loading takes the file's text and the name to report it by
+  (`load(text, name)`, `loadAll`, `loadCampaign`), since the page reads
+  a file chosen by the user, not a path; a file that can't be read is
+  the page's to report.
+- TestModel's checks that save (ReadText of a save, Copy, SaveLoad, a
+  saved Weapon Attack, creation and campaign saved), and the notices of
+  the `window.with-CAMPAIGN` fixtures, which need `--campaign`'s save,
+  move to Phase 3.3.
+- `notices.test.ts` compares a syntax error by file, line and column
+  only (as decided for Phase 3.1).
+
 ### Phase 3.3 save
 
 The YAML a save writes; every fixture loaded and saved is byte for byte
 its `NAME.fill.yaml`, and loads again with no notices and the same
-bytes.
+bytes. TestModel's checks that save, and the `window.with-CAMPAIGN`
+fixtures' notices (moved from Phase 3.2).
 
 ### Phase 3.4 The round trip
 
