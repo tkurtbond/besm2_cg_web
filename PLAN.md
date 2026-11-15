@@ -85,6 +85,7 @@ src/main.ts                 makes the Window on the document
 src/core/rules.ts           Besm2Rules     the tables, Label, PageText, PdfIndex
 src/core/calc.ts            Besm2Calc      Compute
 src/core/warnings.ts        Besm2Warnings
+src/core/fyaml.ts           Fyaml          (polibfyaml's) nodes, paths, places, Resolve, errors
 src/core/text.ts            Besm2Text      (from pobesm2_fmt2)
 src/core/entities.ts        Besm2Entities  (from pobesm2_fmt2): reading YAML
 src/core/config.ts          Besm2Config    the formatters' options
@@ -454,10 +455,42 @@ as in besm2_cg_po's step 2.
 
 ## Phase 3 Files
 
-### Phase 3.1 text and entities
+### Phase 3.1 text and entities [done]
 
 Reading YAML as pobesm2_fmt2 reads it; the libfyaml-versus-`yaml`
 questions above, answered and tested.
+
+Done 2026-11-15: `fyaml.ts` (the part of polibfyaml the Oberon uses:
+`Node` with its fields and paths, `Document.resolve`, `parseStream`,
+the error kinds and messages, `parseIntText` and `parseBoolText`) over
+the `yaml` library's failsafe-schema nodes; `text.ts`, `config.ts`,
+`layout.ts` and `entities.ts`, ported from besm2_cg_po's copies.
+`test/core/text.test.ts` and `entities.test.ts` port TestText's and
+TestEntities' checks with their labels; `fyaml.test.ts` has no Oberon
+counterpart, and checks the messages, places and paths besm2_calc_po
+`--check` printed for some sixty probe files, every one of which this
+port matched (a throwaway script ran both over the probes and every
+fixture), except where "Findings" says otherwise.
+
+Proved to fail: a quoted scalar placed at its quote, merged pairs in
+the opposite order, a key with a space left unquoted in a path, a block
+scalar placed on its indicator's line, an untrimmed tagline, and no
+folding of Latin-1 lead bytes each failed their checks.
+
+Decided 2026-11-15: where besm2_cg_po halts on an assertion (a
+customizer's counts-as that is a mapping or sequence,
+`enhancements: [[Foo, {a: 1}]]`: `Customizer` calls `IntegerValue` on a
+node that isn't a scalar, "assertion failed (62)"), the port reports
+`PATH: not a scalar`, as `scalar` does for every other place, since an
+exception from a loaded file must not escape (AGENTS.md). Reported to
+the user as a finding for besm2_cg_po and pobesm2_fmt2.
+
+Decided 2026-11-15: a syntax error keeps the `yaml` library's words at
+libfyaml's line and column, as ova_cg_web decided, except a duplicate
+key and a tab as indentation, which take libfyaml's ("duplicate key",
+"tab character may not be used as indentation"), since a character
+with either is a likely mistake. Tests compare other syntax errors by
+file, line and column only.
 
 ### Phase 3.2 character, warnings and check
 
@@ -591,6 +624,53 @@ ova_cg_web's "Findings" are taken as known and not repeated.
 - **npm 11 doesn't run esbuild's `postinstall`** (`allow-scripts`)
   unless approved; the build works without it, since the platform's
   binary comes as an optional dependency (2026-11-15).
+
+- **libfyaml's places, in characters** (2026-11-15, besm2_calc_po
+  over probe files): a column counts characters, not bytes; a quoted
+  scalar is placed one past its quote; a block scalar at the start of
+  its first content line, column 1; an empty value at the `:` (or `-`,
+  `?`) before it; an alias at its name, after the `*`; a value that
+  isn't a scalar where a scalar field is wanted, at its key. The `yaml`
+  library's ranges are UTF-16 offsets; `fyaml.ts` converts them.
+- **Empty values** (2026-11-15): a key with no value (`points:`) is a
+  plain empty scalar, so a text field holds the present text `""`, and
+  an integer or boolean field says `not a valid integer: ""`.
+- **Integers and booleans** (2026-11-15): polibfyaml trims only spaces
+  from a scalar before parsing it, so `" 4 "` is 4 but `"\t4"` gives
+  `not a valid integer: "<TAB>4"`, its text unescaped in the message;
+  beyond 32 bits is `integer out of range`, beyond 64 bits too.
+  Booleans are `true`/`false` in three cases each (`True`, `TRUE`).
+- **Paths** (2026-11-15): a key is written bare if it matches
+  `[A-Za-z_][A-Za-z0-9_-]*` or is empty, and otherwise in double
+  quotes with libfyaml's escapes (`\_` for U+00A0, `\L` for U+2028,
+  `\U0001F600` beyond U+FFFF, `\x01`); printable characters beyond
+  ASCII (`é`) stay as they are; a complex key is written as its flow
+  text (`[k]`).
+- **Aliases and merges** (2026-11-15): an undefined alias is `invalid
+  alias`, at the alias; an alias inside its own anchor is `cyclic
+  reference detected`, at the alias; only a plain `<<` merges (`"<<"`
+  is an ordinary key); a merge value that isn't an alias of a mapping
+  or a sequence of them is `invalid merge key value`, at the value's
+  start (a block mapping's or sequence's first item). Merged pairs go
+  in where the `<<` was, skipping keys the mapping already has, and
+  each merged pair goes in *before* the ones merged before it: `<<:
+  [*b]` with `b: {p: 1, q: 2}` gives `q, p`; the first of several
+  mappings wins a key. Errors after resolving name the path to the copy.
+- **Syntax errors** (2026-11-15): libfyaml says `duplicate key` (at the
+  second key) and `tab character may not be used as indentation`
+  where the `yaml` library says otherwise; other wordings differ too
+  (bad-yaml.yaml at 6:1: libfyaml's "missing comma in flow mapping"
+  against the library's "Flow map in block collection..."), and are
+  kept as the library's. A syntax error in a later document ends the
+  stream after the documents before it.
+- **Other forms** (2026-11-15): a BOM at the start is skipped, but not
+  one after `---`; an empty file, or one of comments, has no documents
+  and no entities; a complex key is never found by lookups, nor is a
+  key without a value; tags (`!!int`) are ignored; CR LF reads as LF.
+- **pobesm2_fmt2 ignores an undefined alias** (2026-11-15): it prints
+  nothing and exits 0 for `- name: *nope`, where besm2_calc_po says
+  `f.yaml:1:10: error: invalid alias`. The port follows besm2_calc_po;
+  reported to the user as a finding for pobesm2_fmt2.
 
 ## Open questions
 
