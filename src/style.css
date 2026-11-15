@@ -611,3 +611,43 @@ textarea.description {
 .mecha-lines .line-column:last-child {
   text-align: left;
 }
+
+/* ---- The Creation dialog (Phase 11; besm2_cg_po's Besm2Creation) ----
+   Each row is a label (with its checkbox, if it has one), its control,
+   and its ?, in a three-column grid; the rows' children take the grid's
+   columns, so the controls line up. */
+.creation-dialog .dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.creation-rows {
+  display: grid;
+  grid-template-columns: max-content max-content max-content;
+  gap: 4px 8px;
+  align-items: center;
+}
+
+.creation-row {
+  display: contents;
+}
+
+.creation-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.creation-control select.genre {
+  width: 250px;
+}
+
+.creation-summary {
+  margin-top: 4px;
+}
+
+.creation-dialog .copy-choice {
+  flex: 1;
+  min-width: 0;
+}

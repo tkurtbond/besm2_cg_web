@@ -39,6 +39,7 @@ import { keyMatches, MenuBar, MenuItem, Separator, type Key } from "./menu.ts";
 import { Background } from "./background.ts";
 import { AttrPanel, DefectPanel, SkillPanel, type Host } from "./itempanel.ts";
 import { WeaponDialog } from "./weapondialog.ts";
+import { CreationDialog } from "./creation.ts";
 import { MechaPanel } from "./mechapanel.ts";
 import {
   bold,
@@ -228,6 +229,17 @@ export class Window {
    *  when it opened */
   private weaponLine = -1;
   private weaponModified = false;
+  /** The Creation dialog; undefined when closed (Phase 11) */
+  creation: CreationDialog | undefined = undefined;
+  /** modified, when the Creation dialog opened */
+  private creationModified = false;
+  /**
+   * The campaign File > New starts a character in: the last New from
+   * Campaign...'s (undefined: none). Its creation is copied
+   * (Ch.takeCreation), never linked. besm2_cg_po's --campaign has no
+   * counterpart: the page has no command line.
+   */
+  campaign: Ch.Entity | undefined = undefined;
 
   /** The Window on doc, in its #app, with a new character (Build). */
   constructor(doc: Document) {
@@ -247,13 +259,17 @@ export class Window {
       new MenuItem(doc, label, key, action);
     // File: Quit has no counterpart (closing the tab is quitting).
     this.newItem = item("New", keys.new, () => this.newAction());
-    this.newFromCampaignItem = item("New from Campaign...");
+    this.newFromCampaignItem = item("New from Campaign...", undefined, () =>
+      this.newFromCampaign(),
+    );
     this.openItem = item("Open...", keys.open, () => this.open());
     this.saveItem = item("Save", keys.save, () => this.save(() => {}));
     this.saveAsItem = item("Save As...", keys.saveAs, () =>
       this.saveAs(() => {}),
     );
-    this.creationItem = item("Creation...");
+    this.creationItem = item("Creation...", undefined, () =>
+      this.creationAction(),
+    );
     this.addCharacterItem = item("Add Character", undefined, () =>
       this.addCharacter(),
     );
@@ -573,6 +589,54 @@ export class Window {
       this.entity,
       a,
       (ok) => this.weaponDone(ok),
+    );
+  }
+
+  // ---- The Creation dialog (Phase 11) ----
+
+  /** The dialog's changed: after each change it makes, and after OK or
+   *  Cancel (CreationChanged). */
+  private creationChanged(): void {
+    this.changed();
+    this.showAll();
+  }
+
+  /** After OK or Cancel; Cancel leaves modified as it was
+   *  (CreationDone). */
+  private creationDone(ok: boolean): void {
+    this.creation = undefined;
+    if (!ok) {
+      this.modified = this.creationModified;
+      this.showTitle();
+    }
+  }
+
+  /** Character > Creation...: the shown character's, or its owner's for
+   *  a mecha (CreationAction). */
+  creationAction(): void {
+    if (this.creation !== undefined) return;
+    const e = this.entity;
+    if (e.isMecha && e.owner === undefined) {
+      this.tell(
+        "This mecha has no owner in the file, whose creation would price it.",
+      );
+      return;
+    }
+    this.creationModified = this.modified;
+    this.creation = new CreationDialog(
+      {
+        doc: this.doc,
+        dialogs: this.dialogs,
+        tell: (text) => this.tell(text),
+        changed: () => this.creationChanged(),
+        openPage: () => this.openPage,
+        chooseCampaign: (then) => this.chooseCampaign(then),
+        nameCampaign: (then) => this.nameCampaign(then),
+        download: (name, text) => this.download(name, text),
+      },
+      e,
+      this.entities,
+      (ok) => this.creationDone(ok),
     );
   }
 
@@ -1053,14 +1117,18 @@ export class Window {
   /** loadFile opens f, as load; false, said why, if it can't be read.
    *  Copied from ova_cg_web's Window.loadFile. */
   async loadFile(f: File): Promise<boolean> {
-    let text: string;
+    const text = await this.readFile(f);
+    return text !== undefined && this.load(text, f.name);
+  }
+
+  /** readFile is f's text; undefined, said why, if it can't be read. */
+  private async readFile(f: File): Promise<string | undefined> {
     try {
-      text = await f.text();
+      return await f.text();
     } catch (e) {
       this.tell(`${f.name} couldn't be read: ${String(e)}`);
-      return false;
+      return undefined;
     }
-    return this.load(text, f.name);
   }
 
   /**
@@ -1149,15 +1217,64 @@ export class Window {
     });
   }
 
-  /** newCharacter is a new character (NewCharacter; the campaign comes
-   *  with Phase 11). */
+  /** newCharacter is a new character, in the campaign if there is one
+   *  (NewCharacter). */
   newCharacter(): Ch.Entity {
-    return Ch.newCharacter();
+    const e = Ch.newCharacter();
+    if (this.campaign !== undefined) Ch.takeCreation(e, this.campaign);
+    return e;
   }
 
   /** newAction is File > New (NewAction). */
   newAction(): void {
     this.mayLeave(() => this.take(Ch.one(this.newCharacter()), undefined));
+  }
+
+  /**
+   * chooseCampaign asks for a campaign file and reads it; then(text,
+   * name) once it is read (DialogCampaign and CampaignPath, to load). A
+   * page can't keep a path, so no last campaign is remembered (PLAN.md,
+   * "Files in the browser").
+   */
+  chooseCampaign(then: (text: string, name: string) => void): void {
+    this.chooseFile(".yaml,.yml", (f) => {
+      void this.readFile(f).then((text) => {
+        if (text !== undefined) then(text, f.name);
+      });
+    });
+  }
+
+  /**
+   * nameCampaign asks for the name a campaign file is saved as;
+   * then(name), never if cancelled or blank (said so) (DialogCampaign, to
+   * save: besm2_cg_po asks for a path, a page downloads under a name).
+   */
+  nameCampaign(then: (name: string) => void): void {
+    this.askText("Save the campaign as:", "campaign.yaml", (text, ok) => {
+      if (!ok) return;
+      const name = fileName(text);
+      if (name === "") this.tell("The file needs a name.");
+      else then(name);
+    });
+  }
+
+  /**
+   * newFromCampaign is File > New from Campaign...: a new character in
+   * the campaign of a file the user chooses, which File > New uses from
+   * then on (NewFromCampaignAction).
+   */
+  newFromCampaign(): void {
+    this.mayLeave(() =>
+      this.chooseCampaign((text, name) => {
+        const r = Ch.loadCampaign(text, name);
+        if (!r.ok) {
+          this.tell(r.msg);
+          return;
+        }
+        this.campaign = r.from;
+        this.take(Ch.one(this.newCharacter()), undefined);
+      }),
+    );
   }
 
   /** open is File > Open... (OpenAction). */

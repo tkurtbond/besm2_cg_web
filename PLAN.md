@@ -874,11 +874,47 @@ in headless Chromium and Firefox. Planted, each failed: no refresh in
 subject (in both browsers), no ": over", "not counted" on a mecha
 flipped, no Mecha totals, and New Mecha enabled on a mecha.
 
-## Phase 11 Creation and campaigns
+## Phase 11 Creation and campaigns [done]
 
 The Creation dialog (Copy from, the options, house skills, **?** on
 each row, Cancel restores); New from Campaign...; Load and Save
 Campaign... as file input and download.
+
+Done 2026-11-15. `src/ui/creation.ts` ports Besm2Creation: a row for
+each setting, its label made by `R.pageLabel` (the checked rows' on
+the checkbox), its control, and a **?** at its page; every change is
+taken at once (`Ch.setCreation`) and the window follows, and Cancel or
+Escape puts back the creation, its keys and the Skills
+(`Ch.restoreCreation`). On a mecha it is its owner's creation; on a
+mecha with no owner Creation... is disabled. Copy from takes another
+character's whole creation, house Skills too. Decided:
+
+- **What the dialog does goes through a `Host`** (`tell`, `changed`,
+  `openPage`, `chooseCampaign`, `nameCampaign`, `download`), as the
+  Oberon's procedure variables. `chooseCampaign` is the file chooser
+  and `readFile`, as Open...'s; `nameCampaign` asks "Save the campaign
+  as:", suggesting `campaign.yaml` (a page can't choose a path), and a
+  blank name is told "The file needs a name.".
+- **The Window keeps `campaign`**, the last campaign loaded by New from
+  Campaign..., and File > New takes its creation (copied, never
+  linked). It isn't remembered across pages (above, "Campaign files"),
+  and there is no `--campaign`, as there is no command line.
+- **Each control is named by its row's label** (`aria-label`), since
+  it sits outside the `<label>`; the dialog's `labels` map gives the
+  same text to the tests.
+- Copy from lists only the other characters: an HTML `<select>` has no
+  extra entry where the Oberon's FLTK Choice counts one more.
+
+`test/ui/creation.test.ts` ports TestWindow's Creation and
+NewFromCampaign with their labels; a file that won't load is
+`campaign-extra.yaml` (a refused file) where besm2_cg_po's is a path
+that isn't there, since a file input only gives files that are. It adds
+Escape, Creation... while open, and a character with no name.
+`test/browser/creation.spec.ts` changes Character Points and cancels,
+saves and loads a campaign and makes a character from one, in headless
+Chromium and Firefox. Planted, each failed: Cancel restoring nothing
+(on happy-dom and in both browsers), a loaded campaign not shown, and
+File > New not taking the campaign.
 
 ## Phase 12 The Preview tab
 

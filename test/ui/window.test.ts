@@ -127,7 +127,9 @@ test("NewCharacter", () => {
     .map((it) => it.label)
     .join("|");
   check(
-    enabled === "New|Open...|Save|Save As...|Add Character|Add Mecha|Duplicate",
+    enabled ===
+      "New|New from Campaign...|Open...|Save|Save As..." +
+        "|Creation...|Add Character|Add Mecha|Duplicate",
     "a lone character: the rest greyed until there are more, or their phase: " +
       enabled,
   );
@@ -375,23 +377,24 @@ test("the menus by keyboard", () => {
     tops.map((t) => t.tabIndex).join() === "0,-1,-1",
     "one menu in the tab order",
   );
-  // A lone new character: of the File and Rulebook menus nothing is
-  // enabled until Phases 6 and 13; of Character, Add Character, Add
-  // Mecha and Duplicate.
+  // A lone new character: of the Character menu, Creation..., Add
+  // Character, Add Mecha and Duplicate are enabled.
   tops[1]!.focus();
   press(doc, { key: "ArrowDown" });
   check(
     w.menu.current === 1 && !w.menu.popup(1).hidden,
     "Down opens Character",
   );
+  check(doc.activeElement === w.creationItem.button, "on Creation...");
+  press(doc, { key: "ArrowDown" });
   check(doc.activeElement === w.addCharacterItem.button, "on Add Character");
   press(doc, { key: "ArrowDown" });
   press(doc, { key: "ArrowDown" });
   check(doc.activeElement === w.duplicateItem.button, "Down to Duplicate");
   press(doc, { key: "ArrowDown" });
   check(
-    doc.activeElement === w.addCharacterItem.button,
-    "Down wraps to Add Character",
+    doc.activeElement === w.creationItem.button,
+    "Down wraps to Creation...",
   );
   press(doc, { key: "ArrowUp" });
   check(doc.activeElement === w.duplicateItem.button, "Up wraps to Duplicate");

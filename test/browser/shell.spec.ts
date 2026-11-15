@@ -43,7 +43,7 @@ test("the menus, by mouse and by keyboard", async ({ page }) => {
   await file.click();
   await expect(fileMenu).toBeVisible();
   await expect(item(page, /^Save As/)).toBeEnabled();
-  await expect(item(page, /^New from Campaign/)).toBeDisabled(); // Phase 11
+  await expect(item(page, /^New from Campaign/)).toBeEnabled();
   // Over another menu's name, that menu opens instead.
   await item(page, "Character").hover();
   await expect(charMenu).toBeVisible();
@@ -61,19 +61,22 @@ test("the menus, by mouse and by keyboard", async ({ page }) => {
   await page.keyboard.press("ArrowRight");
   await expect(item(page, "Character")).toBeFocused();
   await page.keyboard.press("ArrowDown");
+  await expect(item(page, /^Creation/)).toBeFocused();
+  await page.keyboard.press("ArrowDown");
   await expect(item(page, "Add Character")).toBeFocused();
   await page.keyboard.press("ArrowDown");
   await expect(item(page, "Add Mecha")).toBeFocused();
   await page.keyboard.press("ArrowDown");
   await expect(item(page, "Duplicate")).toBeFocused();
-  // Down wraps to Add Character.
+  // Down wraps to Creation....
   await page.keyboard.press("ArrowDown");
-  await expect(item(page, "Add Character")).toBeFocused();
+  await expect(item(page, /^Creation/)).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(charMenu).toBeHidden();
   await expect(item(page, "Character")).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(charMenu).toBeVisible();
+  await page.keyboard.press("ArrowDown"); // Add Character
   await page.keyboard.press("ArrowDown"); // Add Mecha
   await page.keyboard.press("Enter");
   await expect(charMenu).toBeHidden();
