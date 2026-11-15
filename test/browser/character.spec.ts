@@ -61,7 +61,10 @@ test("typing on the Character tab changes the character", async ({ page }) => {
   await page
     .getByRole("button", { name: "The rulebook at this page" })
     .first()
-    .click(); // nothing yet
+    .click(); // no rulebook yet: asked for, and cancelled
+  await expect(dialog(page)).toContainText("hasn't been chosen");
+  await dialog(page).getByRole("button", { name: "Cancel" }).click();
+  await expect(dialog(page)).toHaveCount(0);
   await expect(ar).toBeHidden();
 
   const download = page.waitForEvent("download");

@@ -129,9 +129,8 @@ test("NewCharacter", () => {
   check(
     enabled ===
       "New|New from Campaign...|Open...|Save|Save As..." +
-        "|Creation...|Add Character|Add Mecha|Duplicate",
-    "a lone character: the rest greyed until there are more, or their phase: " +
-      enabled,
+        "|Creation...|Add Character|Add Mecha|Duplicate|Open|Choose PDF...",
+    "a lone character: the rest greyed until there are more: " + enabled,
   );
   done();
 });

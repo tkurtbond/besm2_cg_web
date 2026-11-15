@@ -12,20 +12,16 @@
 // and the title says so with " *".
 //
 // What would wait for the user (a message, a question, a file chooser,
-// a line of text, a download) goes through a function field (tell, ask,
-// confirm, chooseFile, askText, download), each taking a callback for
-// its answer where it has one, so a test can answer it (besm2_cg_po's
-// tell, ask, confirm, choosePath, askText; PLAN.md, "Files in the
-// browser"). The clipboard's copyText comes with the Preview tab
-// (Phase 12), and the rulebook's openPage and openTab with Phase 13.
+// a line of text, a download, the clipboard, the rulebook) goes through
+// a function field (tell, ask, confirm, chooseFile, askText, download,
+// copyText, openPage, openTab), each taking a callback for its answer
+// where it has one, so a test can answer it (besm2_cg_po's tell, ask,
+// confirm, choosePath, askText and Besm2Widgets.openPage; PLAN.md,
+// "Files in the browser" and "The rulebook").
 //
 // The Character tab (Phase 7) shows the entity's name, tagline and
 // size, its Stats, derived values, points and warnings; every number
 // comes from calc.compute, through changed.
-//
-// A menu item whose phase hasn't come has no action and stays disabled
-// (PLAN.md, "Build order"). The other tabs are empty until their phases
-// fill them.
 
 import * as C from "../core/calc.ts";
 import * as Ch from "../core/character.ts";
@@ -42,6 +38,7 @@ import { WeaponDialog } from "./weapondialog.ts";
 import { CreationDialog } from "./creation.ts";
 import { MechaPanel } from "./mechapanel.ts";
 import { CantCopy, copyToClipboard, Preview } from "./preview.ts";
+import { isPdf, pdfTypes, Rulebook, RulebookTab } from "./rulebook.ts";
 import {
   bold,
   button,
@@ -57,6 +54,17 @@ import {
 export const Title = dialogs.Title;
 export type Answer = dialogs.Answer;
 export const { SaveFirst, Discard, Cancel } = dialogs;
+
+/** What ? asks with no rulebook chosen (ova_cg_web's). */
+export const NoRulebook =
+  "The rulebook's PDF hasn't been chosen. Choose it now? " +
+  "The page keeps it until the page is closed.";
+
+/** What ? says when the browser won't open the rulebook's tab
+ *  (ova_cg_web's). */
+export const TabBlocked =
+  "The browser didn't open the rulebook's tab: " +
+  "allow this page's pop-ups, then try again.";
 
 /** The entities' <select>'s width, besm2_cg_po's ChoiceW. */
 export const ChoiceW = 250;
@@ -192,11 +200,14 @@ export class Window {
   copyText: (text: string) => void;
 
   /**
-   * openPage opens the rulebook at a printed page: the ? buttons'. Phase
-   * 13 gives it; until then a ? does nothing, as Besm2Widgets' openPage
-   * NIL.
+   * openPage opens the rulebook at a printed page: the ? buttons' and
+   * Rulebook > Open's (openRulebook, unless a test replaces it); openTab
+   * opens url in the rulebook's tab, saying whether the browser let it.
    */
-  openPage: ((page: number) => void) | undefined = undefined;
+  openPage: (page: number) => void;
+  openTab: (url: string) => boolean;
+  /** The rulebook's PDF, once chosen */
+  readonly rulebook: Rulebook;
 
   /** The fields being set from the entity: no change to report
    *  (besm2_cg_po's showing). */
@@ -263,6 +274,11 @@ export class Window {
     this.download = (name, text) => this.downloadText(name, text);
     this.copyText = (text) =>
       copyToClipboard(doc, text, () => this.tell(CantCopy));
+    const view = doc.defaultView;
+    if (view === null) throw new Error("the document has no window");
+    this.rulebook = new Rulebook(view);
+    this.openPage = (page) => this.openRulebook(page);
+    this.openTab = (url) => this.openRulebookTab(url);
 
     const item = (label: string, key?: Key, action?: () => void) =>
       new MenuItem(doc, label, key, action);
@@ -292,8 +308,10 @@ export class Window {
     this.nextItem = item("Next", keys.next, () => this.step(1));
     this.previousItem = item("Previous", keys.previous, () => this.step(-1));
     // Rulebook: Viewer... has no counterpart (the browser's viewer).
-    this.rulebookItem = item("Open");
-    this.choosePdfItem = item("Choose PDF...");
+    this.rulebookItem = item("Open", undefined, () => this.openPage(1));
+    this.choosePdfItem = item("Choose PDF...", undefined, () =>
+      this.chooseRulebook(() => {}),
+    );
     this.menu = new MenuBar(doc, [
       {
         label: "File",
@@ -1368,6 +1386,62 @@ export class Window {
    */
   private beforeUnload(e: BeforeUnloadEvent): void {
     if (this.modified) e.preventDefault();
+  }
+
+  // ---- The rulebook (copied from ova_cg_web's Window) ----
+
+  /**
+   * chooseRulebook asks for the rulebook's PDF and uses it from now on
+   * (ChooseRulebook); then(true) once one is chosen. A file that isn't a
+   * PDF is said so and not used: then(false). A cancelled chooser calls
+   * nothing (see fileDialog).
+   */
+  chooseRulebook(then: (ok: boolean) => void): void {
+    this.chooseFile(pdfTypes, (f) => {
+      if (!isPdf(f)) {
+        this.tell(f.name + " isn't a PDF: choose the rulebook's PDF.");
+        then(false);
+        return;
+      }
+      this.rulebook.choose(f);
+      then(true);
+    });
+  }
+
+  /**
+   * openRulebook opens the rulebook at printed page page (OpenPage).
+   * With none chosen it asks whether to choose it first, as besm2_cg_po
+   * asks for a rulebook it can't find; then opens it there.
+   */
+  openRulebook(page: number): void {
+    if (this.rulebook.chosen) {
+      this.showRulebook(page);
+      return;
+    }
+    this.confirm(NoRulebook, "Choose PDF...", (ok) => {
+      if (!ok) return;
+      this.chooseRulebook((chosen) => {
+        if (chosen) this.showRulebook(page);
+      });
+    });
+  }
+
+  /** showRulebook opens the PDF chosen at printed page page, in its tab. */
+  private showRulebook(page: number): void {
+    if (!this.openTab(this.rulebook.url(page))) this.tell(TabBlocked);
+  }
+
+  /**
+   * openRulebookTab is openTab's: window.open in the tab named
+   * RulebookTab; window.open gives null when a browser blocks it. That
+   * headless Chromium and Firefox open it from a click, and from the
+   * file chooser's change after openRulebook's question, is
+   * test/browser/rulebook.spec.ts's (as ova_cg_web's).
+   */
+  private openRulebookTab(url: string): boolean {
+    const view = this.doc.defaultView;
+    if (view === null) throw new Error("the document has no window");
+    return view.open(url, RulebookTab) !== null;
   }
 
   /**

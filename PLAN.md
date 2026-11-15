@@ -747,7 +747,7 @@ the fields. Decided:
 - **The name, tagline and size follow each keystroke** (`input`), as
   TextAction's WhenChanged; a blank text keeps a key the entity had,
   empty, and adds none (SetText).
-- **A ? button does nothing until Phase 13** sets `openPage`, as the
+- **A ? button did nothing until Phase 13** set `openPage`, as the
   Oberon's with openPage NIL. The list tabs' copies of the points lines
   and the warnings (`tabPoints`, `tabWarnings`) are filled by Phase 8,
   and ShowNumbers' refresh of the Mecha tab comes with Phase 10.
@@ -959,10 +959,40 @@ checks), the preview not following a change, the preview made while
 hidden, Copy changing the text, and the copy fallback failing (in both
 browsers).
 
-## Phase 13 The rulebook
+## Phase 13 The rulebook [done]
 
 `rulebook.ts` copied; **?** everywhere it is in besm2_cg_po; Rulebook >
 Open and Choose PDF....
+
+Done 2026-11-15:
+
+- **`src/ui/rulebook.ts` is ova_cg_web's**, with its own tab name
+  (`besm2-rulebook`): the PDF chosen is kept for the session, and each
+  opening makes a fresh `blob:` URL of it at `#page=` the PDF's page
+  (`rules.pdfIndex`), letting the one before go 60 s later.
+- **Every ? already went through `Window.openPage`** (Phases 7 to 10);
+  the Window's own `openPage` is now `openRulebook`, so no ? needed a
+  change. With no PDF chosen it asks first (`NoRulebook`, yes button
+  "Choose PDF..."), where besm2_cg_po opens its chooser at once: a
+  browser's file chooser needs a click to open, as in ova_cg_web.
+- **Rulebook > Open opens printed page 1** (the PDF's 3), as the
+  Oberon's RulebookAction; **Rulebook > Choose PDF...** chooses
+  without opening, and a cancel keeps the PDF before. A file that isn't
+  a PDF is refused and said so; a blocked pop-up is told `TabBlocked`.
+- TestWindow.Rulebook's absolute-path and Viewer... checks have no
+  counterpart: a page has no path to keep and no viewer to choose.
+- The Phase 7 browser test's ? that did nothing now meets the
+  question, and cancels it.
+
+`test/ui/rulebook.test.ts`, adapted from ova_cg_web's, drives it on
+happy-dom with fakes for the chooser and the tab; `test/browser/rulebook.spec.ts`,
+adapted too, with ova_cg_web's `pdf.ts` (a made PDF, never the
+rulebook), checks in headless Chromium and Firefox that the viewer
+shows the PDF's page asked for, that later openings reuse the tab, and
+that the question cancelled opens nothing. Planted, each failed: the
+printed page sent in place of the PDF's (on happy-dom and in both
+browsers), and a blocked tab not told. The built page is now 264,048
+bytes, over ova_cg_web's 256 KiB; Phase 15 sets this page's budget.
 
 ## Phase 14 The guide
 

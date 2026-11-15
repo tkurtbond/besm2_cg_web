@@ -1,9 +1,10 @@
 // The page on happy-dom, under plain Node: a Window built into a fresh
 // document, and fakes in place of what would wait for the user, as
-// besm2_cg_po's TestWindow sets its Tell, Ask, Confirm, ChoosePath and
-// AskText. Adapted from ova_cg_web's test/ui/setup.ts, with the fields
-// the Window has. The real dialogs are tested in dialogs.test.ts,
-// and in the browsers by test/browser/shell.spec.ts.
+// besm2_cg_po's TestWindow sets its Tell, Ask, Confirm, ChoosePath,
+// AskText and Besm2Widgets.openPage. Adapted from ova_cg_web's
+// test/ui/setup.ts, with the fields the Window has. The real dialogs are
+// tested in dialogs.test.ts, and in the browsers by
+// test/browser/shell.spec.ts; the rulebook by rulebook.test.ts.
 
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -24,6 +25,7 @@ export interface Fakes {
   yes: boolean; // what confirm answers,
   confirmed: number; // and how often it was asked
   chosen: string | undefined; // the fixture chooseFile gives; undefined: cancelled
+  file: File | undefined; // or, if not undefined, this file
   accepted: string; // the types chooseFile was last asked for
   chooses: number; // how often chooseFile was asked
   typed: string | undefined; // what askText answers; undefined: cancelled
@@ -31,6 +33,9 @@ export interface Fakes {
   suggested: string; // and the text it began with last
   downloads: { name: string; text: string }[];
   copied: string[]; // what copyText was given, in order
+  page: number; // the last page openPage was asked for; 0: none
+  tabs: string[]; // the URLs openTab opened, in order
+  blocked: boolean; // whether openTab is refused
 }
 
 /** A fresh document with the page's #app, on happy-dom. */
@@ -58,6 +63,7 @@ export function newWindow(): {
     yes: false,
     confirmed: 0,
     chosen: undefined,
+    file: undefined,
     accepted: "",
     chooses: 0,
     typed: undefined,
@@ -65,6 +71,9 @@ export function newWindow(): {
     suggested: "",
     downloads: [],
     copied: [],
+    page: 0,
+    tabs: [],
+    blocked: false,
   };
   w.tell = (text) => {
     f.tells++;
@@ -83,6 +92,10 @@ export function newWindow(): {
   w.chooseFile = (accept, then) => {
     f.chooses++;
     f.accepted = accept;
+    if (f.file !== undefined) {
+      then(f.file);
+      return;
+    }
     if (f.chosen === undefined) return;
     const text = readFileSync(DATA_DIR + f.chosen, "utf8");
     then(new happy.File([text], f.chosen) as unknown as File);
@@ -95,6 +108,12 @@ export function newWindow(): {
   };
   w.download = (name, text) => f.downloads.push({ name, text });
   w.copyText = (text) => f.copied.push(text);
+  w.openPage = (p) => (f.page = p);
+  w.openTab = (url) => {
+    if (f.blocked) return false;
+    f.tabs.push(url);
+    return true;
+  };
   return { w, f, doc, happy };
 }
 
