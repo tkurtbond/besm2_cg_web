@@ -1142,7 +1142,7 @@ ova_cg_web's "Findings" are taken as known and not repeated.
 - **pobesm2_fmt2 ignores an undefined alias** (2026-11-15): it prints
   nothing and exits 0 for `- name: *nope`, where besm2_calc_po says
   `f.yaml:1:10: error: invalid alias`. The port follows besm2_calc_po;
-  reported to the user as a finding for pobesm2_fmt2.
+  reported as pobesm2_fmt2 issue #1 (2026-11-15).
 
 - **libfyaml 0.8's emitter, as besm2_calc_po uses it** (2026-11-15,
   besm2_calc_po 42e58e1 over `test/data/save/`): a plain scalar folds
@@ -1166,8 +1166,13 @@ ova_cg_web's "Findings" are taken as known and not repeated.
   besm2_calc_po's `--fill` of its own `--fill` has `wordstwo`... and
   `wordstwospaces` the time after, then stays. The port writes and
   reads exactly as besm2_calc_po does, at each step
-  (`save.test.ts`). Reported to the user as a finding for
-  besm2_cg_po (polibfyaml's emitter should write `\ ` there).
+  (`save.test.ts`). The bug is in libfyaml's C emitter, not in
+  polibfyaml's binding: a C program against libfyaml 0.8 alone,
+  emitting with `FYECF_MODE_BLOCK`, loses the space the same way (it
+  should write `\ ` there). Recorded as issue 1 in
+  `LIBFYAML-ISSUES.md` in polibfyaml, olibfyaml and alibfyaml
+  (2026-11-15). Not reported upstream, and not yet tried with
+  libfyaml 1.0.0-rc2.
 - **The `yaml` library's `ctx.indent` isn't a scalar's column**
   (2026-11-15, yaml 2.9.1, throwaway script): a `str` tag's
   `stringify` is given `ctx.indent` 8 for a value of a mapping nested
@@ -1180,9 +1185,10 @@ ova_cg_web's "Findings" are taken as known and not repeated.
   multi-line string from `stringify` as it is given.
 - **besm2_calc_po and pobesm2_fmt2 halt on a flow sequence of
   sequences in `enhancements`** (2026-11-15): `enhancements: [[Foo,
-  {a: 1}]]` ends both with "assertion failed (62)". Reported to the
-  user as a finding for besm2_cg_po and pobesm2_fmt2; not a case this
-  port's tests use.
+  {a: 1}]]` ends both with "assertion failed (62)", as does
+  `limiters: [[Foo, [1]]]`: `Customizer` calls `IntegerValue` on a
+  node that isn't a scalar. Reported as besm2_cg_po issue #1 and
+  pobesm2_fmt2 issue #2 (2026-11-15); not a case this port's tests use.
 
 ## Open questions
 
@@ -1199,9 +1205,10 @@ ova_cg_web's "Findings" are taken as known and not repeated.
 4. ~~A guide~~ inside the page, as ova_cg_web's Phase 15? Decided (the
    user, 2026-11-15): yes, just before the release (Phase 14).
 5. ~~A dark colour scheme~~? Decided (the user, 2026-11-15): no.
-6. **Draft autosave** in `localStorage`? ova_cg_web has none (nothing
+6. ~~Draft autosave~~ in `localStorage`? ova_cg_web has none (nothing
    in its `src/` uses `localStorage`, `sessionStorage` or IndexedDB,
-   2026-11-15), and it is an open question there too. Proposed: no;
-   nothing is stored.
+   2026-11-15), and it is an open question there too. Decided (the
+   user, 2026-11-15): no; the page saves no drafts in the browser's
+   storage.
 7. ~~Distribution~~. Decided (the user, 2026-11-15): a GitHub release
    asset, as ova_cg_web's.
