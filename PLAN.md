@@ -994,7 +994,7 @@ printed page sent in place of the PDF's (on happy-dom and in both
 browsers), and a blocked tab not told. The built page is now 264,048
 bytes, over ova_cg_web's 256 KiB; Phase 15 sets this page's budget.
 
-## Phase 14 The guide
+## Phase 14 The guide [done]
 
 A guide inside the page, as ova_cg_web's Phase 15 (open question 4),
 written just before the release: its source (`src/guide/guide.md`),
@@ -1003,6 +1003,54 @@ written for BESM2ER, and `make check-guide` checking that it shares no
 run of 8 words with the rulebook, as ova_cg_web's does. The guide, like
 the program, holds no rulebook text; it explains the page and points to
 the rulebook's pages.
+
+Done 2026-11-15:
+
+- **`src/core/guide.ts`, `src/ui/guide.ts`, `src/guide/guide.d.ts`,
+  `tools/checkguide.ts` and the build's `.md` loader are ova_cg_web's**,
+  each saying so. The guide's 14 steps follow the rulebook's eight
+  (its Character Creation Summary), then a mecha, saving and printing,
+  and advancement; each says what to do on the page and sends the
+  rules to the rulebook's pages.
+- **A `page:` link names a `rules.ts` constant**, as in ova_cg_web;
+  the guide's own (`CreationSummaryPage`, `GmDiscussionPage`,
+  `CharacterOutlinePage`, `AttributeTypesPage`, `AdvancementPage`)
+  join the rules' in `rules.ts`, and `guide.pages` gives each one's
+  heading. `tools/listguide.ts` lists them for `make check-pages`, so
+  the guide's pages are checked against the PDF's headings as the
+  rules' are.
+- **Every name and page link shows both pages** (`rules.label`,
+  `rules.pageLabel`), and its ? is labelled "The rulebook at p. 13,
+  PDF 15" (`rules.pagesText`), where ova_cg_web's gives one page.
+- **The Window's target type is `GuideTarget`**: `widgets.ts`
+  already exports a `Target`. The targets are the Character tab's
+  controls, the list tabs' names, Weapon..., the Mecha tab's list and
+  New Mecha, the Background tab's, Preview's Format:, the entities'
+  choice, and five menu items; all are enabled on a new character.
+- **The panel sits beside the sheet from 1000 px wide**, where
+  ova_cg_web's breakpoint is lower: the sheet needs its 640 px and
+  the panel 320 px. Below that it goes above the tabs and folds.
+- **A Show me's target must be focusable in a browser**: the points
+  line is a `<div>`, which happy-dom focuses and the browsers don't
+  without a `tabindex`; it has `tabindex=-1`, and the unit test now
+  checks each target can take the focus.
+- **A menu opened under a still pointer chooses nothing**
+  (`menu.ts`'s `still`): Show me opens the File menu over the guide's
+  button at 760 px, and Firefox then sends `mouseenter` to the item
+  under the pointer, focusing Save As... in place of Save (Findings).
+- Help > About tells the version and commit (`src/ui/version.ts`), and
+  the title line's tooltip says the same.
+
+`test/core/guide.test.ts`, `test/ui/guide.test.ts` and
+`test/browser/guide.spec.ts` are ova_cg_web's, adapted: the parser and
+its refusals, the panel's steps and buttons, every target shown, every
+Show me naming a target, every bold name in the guide a control the
+page shows (the Creation and Weapon dialogs open), and in both browsers
+every Show me at 1280 and 760 px, a ? opening the test PDF at PDF page
+15, and the wide and narrow layouts. Planted, each failed: a target on
+the wrong tab, the points line without its tabindex, a bold name the
+page lacks, a guide page off by one (`make check-pages`), and the
+Firefox menu fix undone. The built page is 286,813 bytes.
 
 ## Phase 15 Release
 
@@ -1039,6 +1087,12 @@ ova_cg_web's "Findings" are taken as known and not repeated.
   both report the `data:,` icon blocked as a console error.
   ova_cg_web's policy allowed `data:` images for its portrait, so it
   never met this.
+- **Firefox sends `mouseenter` to an element that appears under a
+  still pointer** (2026-11-15, Playwright 1.65's Firefox 1572; its
+  Chromium 1254 doesn't): a menu opened by a click elsewhere, over
+  where the pointer rests, had its item there focused. ova_cg_web's
+  `menu.ts` has the same handler; its layout never put a menu over a
+  Show me.
 - **npm 11 doesn't run esbuild's `postinstall`** (`allow-scripts`)
   unless approved; the build works without it, since the platform's
   binary comes as an optional dependency (2026-11-15).

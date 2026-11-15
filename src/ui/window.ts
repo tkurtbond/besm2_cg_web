@@ -22,6 +22,10 @@
 // The Character tab (Phase 7) shows the entity's name, tagline and
 // size, its Stats, derived values, points and warnings; every number
 // comes from calc.compute, through changed.
+//
+// Help > Guide (Phase 14, the page's own) shows guide.ts's panel beside
+// the tabs, whose Show me buttons name the controls in targets; Help >
+// About says the version, as ova_cg_web's do.
 
 import * as C from "../core/calc.ts";
 import * as Ch from "../core/character.ts";
@@ -39,6 +43,9 @@ import { CreationDialog } from "./creation.ts";
 import { MechaPanel } from "./mechapanel.ts";
 import { CantCopy, copyToClipboard, Preview } from "./preview.ts";
 import { isPdf, pdfTypes, Rulebook, RulebookTab } from "./rulebook.ts";
+import type { Guide } from "../core/guide.ts";
+import { GuidePanel } from "./guide.ts";
+import { about } from "./version.ts";
 import {
   bold,
   button,
@@ -99,6 +106,22 @@ const statNames = ["Body", "Mind", "Soul"] as const;
 /** The derived values' boxes, in Ch.ACV .. Ch.AR's order. */
 const derivedNames = ["ACV", "DCV", "HP", "EP", "SV", "AR"] as const;
 
+/** The Help menu's index on the bar */
+export const HelpMenu = 3;
+
+/** How long Show me highlights its control, in ms */
+export const ShownFor = 1500;
+
+/** A control a guide's Show me shows (Window.targets): ova_cg_web's
+ *  Target, renamed here, where widgets.ts has a Target of its own. */
+export interface GuideTarget {
+  /** Its tab, an index into tabNames; undefined: above the tabs */
+  tab: number | undefined;
+  /** Its menu, an index into the bar's; undefined: not in a menu */
+  menu: number | undefined;
+  element: HTMLElement;
+}
+
 /** The tabs, in order (Besm2Window.Build). */
 export const tabNames = [
   "Character",
@@ -157,6 +180,18 @@ export class Window {
   readonly previousItem: MenuItem;
   readonly rulebookItem: MenuItem;
   readonly choosePdfItem: MenuItem;
+  readonly guideItem: MenuItem;
+  readonly aboutItem: MenuItem;
+
+  /** The guide (Help > Guide), if the page was given one */
+  readonly guide: Guide | undefined;
+  /** Its panel; undefined with no guide, and Help > Guide disabled */
+  readonly guidePanel: GuidePanel | undefined;
+  /**
+   * What a guide's Show me can show, by its target's name: a control,
+   * and its tab or menu.
+   */
+  readonly targets = new Map<string, GuideTarget>();
 
   /** The file's entities, by number and name; current chosen. */
   readonly entityIn: HTMLSelectElement;
@@ -259,9 +294,14 @@ export class Window {
    */
   campaign: Ch.Entity | undefined = undefined;
 
-  /** The Window on doc, in its #app, with a new character (Build). */
-  constructor(doc: Document) {
+  /**
+   * The Window on doc, in its #app, with a new character (Build); guide
+   * is the guide's text parsed (main.ts), which the tests leave out
+   * unless they test it.
+   */
+  constructor(doc: Document, guide?: Guide) {
     this.doc = doc;
+    this.guide = guide;
     const app = doc.getElementById("app");
     if (app === null) throw new Error("the page has no #app");
     const d = new dialogs.Dialogs(doc);
@@ -312,6 +352,14 @@ export class Window {
     this.choosePdfItem = item("Choose PDF...", undefined, () =>
       this.chooseRulebook(() => {}),
     );
+    this.guideItem = new MenuItem(
+      doc,
+      "Guide",
+      undefined,
+      guide === undefined ? undefined : () => this.toggleGuide(),
+      true,
+    );
+    this.aboutItem = item("About", undefined, () => this.tell(about()));
     this.menu = new MenuBar(doc, [
       {
         label: "File",
@@ -344,11 +392,13 @@ export class Window {
         label: "Rulebook",
         items: [this.rulebookItem, Separator, this.choosePdfItem],
       },
+      { label: "Help", items: [this.guideItem, this.aboutItem] },
     ]);
 
     this.titleLine = doc.createElement("div");
     this.titleLine.className = "title-line";
     this.titleLine.setAttribute("aria-hidden", "true"); // document.title says it
+    this.titleLine.title = about(); // which build this is
 
     this.entityIn = doc.createElement("select");
     this.entityIn.className = "entities";
@@ -384,7 +434,23 @@ export class Window {
       this.tabs.push(t);
       this.panels.push(p);
     });
-    app.replaceChildren(this.titleLine, bar, tablist, panels);
+    // The sheet's column, and the guide beside it (style.css: at its
+    // right when wide, above the tabs when narrow), as ova_cg_web's.
+    const sheet = el(doc, "div", "sheet");
+    sheet.append(tablist, panels);
+    const work = el(doc, "div", "work");
+    work.append(sheet);
+    if (guide !== undefined) {
+      this.guidePanel = new GuidePanel(
+        doc,
+        guide,
+        (page) => this.openPage(page),
+        (target) => this.showTarget(target),
+      );
+      this.guidePanel.onClose = () => this.closeGuide();
+      work.append(this.guidePanel.element);
+    }
+    app.replaceChildren(this.titleLine, bar, work);
 
     // BuildCharacterTab.
     this.nameIn = this.textInput("name-in");
@@ -457,8 +523,115 @@ export class Window {
     doc.defaultView?.addEventListener("beforeunload", (e) =>
       this.beforeUnload(e),
     );
+    this.addTargets();
     this.showTab(0);
     this.take(Ch.one(Ch.newCharacter()), undefined);
+  }
+
+  // ---- The guide (copied from ova_cg_web's window.ts) ----
+
+  /** Help > Guide: the guide's panel shown, or hidden. */
+  toggleGuide(): void {
+    if (this.guidePanel?.open === true) this.closeGuide();
+    else this.openGuide();
+  }
+
+  /**
+   * openGuide shows the guide at the step it was left at, unfolded, its
+   * heading focused; back is where the focus goes again when it closes.
+   */
+  openGuide(): void {
+    const g = this.guidePanel;
+    if (g === undefined) return;
+    if (!g.open) this.guideBack = this.doc.activeElement;
+    g.element.hidden = false;
+    g.folded = false;
+    this.guideItem.checked = true;
+    g.stepHeading().focus();
+  }
+
+  /** closeGuide hides the guide; a focus in it goes back where it was. */
+  closeGuide(): void {
+    const g = this.guidePanel;
+    if (g === undefined || !g.open) return;
+    const inside = g.element.contains(this.doc.activeElement);
+    g.element.hidden = true;
+    this.guideItem.checked = false;
+    const b = this.guideBack;
+    this.guideBack = null;
+    if (!inside) return;
+    if (b !== null && b.isConnected && "focus" in b && b !== this.doc.body) {
+      (b as HTMLElement).focus();
+    } else {
+      this.menu.top(HelpMenu).focus();
+    }
+  }
+
+  /** Where the focus was as the guide opened */
+  private guideBack: Element | null = null;
+
+  /**
+   * addTargets lists the controls a guide's Show me can show;
+   * test/ui/guide.test.ts checks every show: in the guide names one.
+   */
+  private addTargets(): void {
+    const on = (name: string, tab: number, element: HTMLElement) =>
+      this.targets.set(name, { tab, menu: undefined, element });
+    const inMenu = (name: string, menu: number, it: MenuItem) =>
+      this.targets.set(name, { tab: undefined, menu, element: it.button });
+    on("name", 0, this.nameIn);
+    on("size", 0, this.sizeIn);
+    on("tagline", 0, this.taglineIn);
+    on("stats", 0, this.statValue[0]!.input);
+    on("derived", 0, this.derived[0]!.entry);
+    // A <div>, which Chromium and Firefox focus only with a tabindex
+    // (test/browser/guide.spec.ts; happy-dom focuses it without); -1
+    // keeps it out of the Tab order.
+    this.points[CharacterPoints]!.tabIndex = -1;
+    on("points", 0, this.points[CharacterPoints]!);
+    on("warnings", 0, this.warnings.element);
+    on("attributes", 1, this.attrPanel.choice);
+    on("weapon", 1, this.weaponButton);
+    on("defects", 2, this.defectPanel.choice);
+    on("skills", 3, this.skillPanel.choice);
+    on("mecha", MechaTab, this.mechaPanel.list.element);
+    on("new-mecha", MechaTab, this.mechaPanel.newButton);
+    on("description", BackgroundTab, this.background.description);
+    on("notes", BackgroundTab, this.background.noteIn);
+    on("preview", PreviewTab, this.preview.format);
+    this.targets.set("entities", {
+      tab: undefined,
+      menu: undefined,
+      element: this.entityIn,
+    });
+    inMenu("new-from-campaign", 0, this.newFromCampaignItem);
+    inMenu("save", 0, this.saveItem);
+    inMenu("creation", 1, this.creationItem);
+    inMenu("add-mecha", 1, this.addMechaItem);
+    inMenu("choose-pdf", 2, this.choosePdfItem);
+  }
+
+  /**
+   * showTarget shows the control a Show me names: its tab, or its menu
+   * opened, then the control focused (unless it is disabled, when it
+   * can't be) and highlighted for a moment. A name the Window doesn't
+   * have is a mistake in the guide, which its test finds.
+   */
+  showTarget(name: string): void {
+    const t = this.targets.get(name);
+    if (t === undefined)
+      throw new Error(`the guide shows "${name}", which isn't a target`);
+    if (t.tab !== undefined) this.showTab(t.tab);
+    if (t.menu !== undefined) this.menu.open(t.menu, "none");
+    else this.menu.close(false);
+    t.element.focus();
+    const e = t.element;
+    e.classList.remove("guide-shown");
+    e.classList.add("guide-shown");
+    this.doc.defaultView?.setTimeout(
+      () => e.classList.remove("guide-shown"),
+      ShownFor,
+    );
   }
 
   // ---- Title ----

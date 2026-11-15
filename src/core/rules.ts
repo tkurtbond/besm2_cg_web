@@ -110,6 +110,20 @@ export const BackgroundPointsPage = 130;
 /** Table 4-7, an optional rule */
 export const StagedStatCostPage = 166;
 
+// Pages the guide cites (src/core/guide.ts's pages), the page's own:
+// besm2_cg_po has no guide. Their headings are checked by make
+// check-pages, as the pages above are.
+/** Character Creation Summary */
+export const CreationSummaryPage = 12;
+/** Step 1: GM Discussion */
+export const GmDiscussionPage = 13;
+/** Step 2: Character Outline */
+export const CharacterOutlinePage = 13;
+/** Types of Attributes */
+export const AttributeTypesPage = 17;
+/** Character Advancement */
+export const AdvancementPage = 188;
+
 const MaxItems = 300;
 const MaxAliases = 32;
 const MaxExclusions = 40;

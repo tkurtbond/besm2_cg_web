@@ -87,8 +87,9 @@ test("Basics", () => {
       .join("|") ===
       "New|New from Campaign...|Open...|Save|Save As..." +
         "|Creation...|Add Character|Add Mecha|Duplicate|Remove...|Move Up|Move Down|Next|Previous" +
-        "|Open|Choose PDF...",
-    "the menus' items, in besm2_cg_po's order",
+        "|Open|Choose PDF..." +
+        "|Guide|About",
+    "the menus' items, in besm2_cg_po's order, then the page's own Help",
   );
   check(
     w.menu.element.querySelectorAll(".menu-separator").length === 4,
@@ -129,8 +130,10 @@ test("NewCharacter", () => {
   check(
     enabled ===
       "New|New from Campaign...|Open...|Save|Save As..." +
-        "|Creation...|Add Character|Add Mecha|Duplicate|Open|Choose PDF...",
-    "a lone character: the rest greyed until there are more: " + enabled,
+        "|Creation...|Add Character|Add Mecha|Duplicate|Open|Choose PDF..." +
+        "|About",
+    "a lone character: the rest greyed until there are more, and Guide with no guide: " +
+      enabled,
   );
   done();
 });

@@ -148,6 +148,22 @@ export class MenuBar {
   current = -1;
   /** Where the focus was before a menu opened, to go back to. */
   private back: Element | null = null;
+  /** Where the pointer was last pressed, if it has been */
+  private pressed: { x: number; y: number } | undefined = undefined;
+
+  /**
+   * still says the pointer entering an item hasn't moved since it was
+   * last pressed: the menu opened under it, as Show me opens one over
+   * the guide's button when the page is narrow. Playwright 1.65's
+   * Firefox (firefox-1572) then sends mouseenter to the item that comes
+   * under the still pointer, and Chromium (chromium-1254) doesn't
+   * (test/browser/guide.spec.ts, 760 px wide). Only a pointer that
+   * moves chooses an item.
+   */
+  private still(e: MouseEvent): boolean {
+    const p = this.pressed;
+    return p !== undefined && e.clientX === p.x && e.clientY === p.y;
+  }
 
   constructor(doc: Document, menus: Menu[]) {
     this.doc = doc;
@@ -180,8 +196,8 @@ export class MenuBar {
           popup.append(hr);
         } else {
           it.button.addEventListener("click", () => this.choose(it));
-          it.button.addEventListener("mouseenter", () => {
-            if (!it.disabled) it.button.focus();
+          it.button.addEventListener("mouseenter", (e) => {
+            if (!it.disabled && !this.still(e)) it.button.focus();
           });
           popup.append(it.button);
         }
@@ -202,6 +218,14 @@ export class MenuBar {
       bar.append(wrap);
       this.shown.push({ menu: m, top, popup });
     });
+    // Where the last press was, for still.
+    doc.addEventListener(
+      "mousedown",
+      (e) => {
+        this.pressed = { x: e.clientX, y: e.clientY };
+      },
+      true,
+    );
     // Anything pressed, or focused, outside the bar closes the menu.
     doc.addEventListener("mousedown", (e) => {
       if (this.current >= 0 && !bar.contains(e.target as Node)) {

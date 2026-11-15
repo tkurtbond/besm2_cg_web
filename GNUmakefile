@@ -22,7 +22,7 @@ POBESM2_FMT2  ?= $(POBESM2_FMT2_DIR)/pobesm2_fmt2
 RULEBOOK   ?= $(HOME)/Reference/RPG/Dyskami/BESM/2E/BESM2ER.pdf
 BOOKMARKED ?= $(HOME)/Reference/RPG/Dyskami/BESM/2E/BESM2ER_bookmarked.pdf
 
-.PHONY: all build debug test test-browser check check-pages golden clean
+.PHONY: all build debug test test-browser check check-pages check-guide golden clean
 .NOTPARALLEL:
 
 all: build
@@ -74,8 +74,17 @@ check: node_modules
 # rules' pages against the rulebook's headings, by their font, with
 # besm2_cg_po's tools/check-pages.py (needs mutool); it reads only the
 # headings, never the rulebook's text (AGENTS.md).
+# The guide's pages (tools/listguide.ts) are checked with them, as more
+# of the listing's section lines (Phase 14).
 check-pages: obj/rules.txt
-	@$(BESM2_CG_PO)/tools/check-pages.py $(RULEBOOK) $(BOOKMARKED) $(BESM2_CG_PO)/rules obj/rules.txt
+	$(NODE) tools/listguide.ts | cat obj/rules.txt - > obj/rules-guide.txt
+	@$(BESM2_CG_PO)/tools/check-pages.py $(RULEBOOK) $(BOOKMARKED) $(BESM2_CG_PO)/rules obj/rules-guide.txt
+
+# The guide in its own words: no run of 8 words shared with the
+# rulebook's text, which mutool pipes in and nothing keeps (AGENTS.md;
+# ova_cg_web's check-guide).
+check-guide:
+	set -o pipefail; mutool draw -q -F txt -o - $(RULEBOOK) | $(NODE) tools/checkguide.ts src/guide/guide.md
 
 # The golden files (AGENTS.md, PLAN.md Phase 0.3), from besm2_calc_po
 # and pobesm2_fmt2 as they are built; never edit test/golden/ by hand.
