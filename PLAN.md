@@ -624,21 +624,69 @@ Planted, each failed: TOTAL misspelt (grid), a CP label (terse), the
 h-m-m indent, the raw ms prefix, a blank in `layout`, `-U` ignored, the
 exit marker, and `-o` output sent to standard output.
 
-## Phase 5 The page's shell
+## Phase 5 The page's shell [done]
 
-### Phase 5.1 The look and the layout
+### Phase 5.1 The look and the layout [done]
 
 The menu bar (File, Character, Rulebook), the entity menu, the seven
 tabs, empty; ova_cg_web's CSS adapted.
 
-### Phase 5.2 Menus and keys
+### Phase 5.2 Menus and keys [done]
 
 The keys above, tested in both browsers.
 
-### Phase 5.3 Dialogs and the test harness
+### Phase 5.3 Dialogs and the test harness [done]
 
 `dialogs.ts` copied; the Window's function fields; happy-dom's harness
 from ova_cg_web, with its rule against comparing nodes.
+
+Done 2026-11-15: `src/ui/menu.ts` and `dialogs.ts` are ova_cg_web's,
+unchanged but for their comments and the title; `style.css` is
+ova_cg_web's without the guide, the menu's check mark and the sheet
+(neither besm2_cg_po nor ova_cg_po sets an FLTK scheme, so the colours
+stay ova_cg_web's). `src/ui/window.ts` is Besm2Window's Build: the
+menus in its order, without File > Quit and Rulebook > Viewer...; the
+entities' `<select>` ChoiceW (250 px) wide at the bar's right, with
+EntityLabel's labels; the title as Besm2Window's ShowTitle makes it;
+and the seven tabs, as ova_cg_web's tablist. Decided:
+
+- **The list of entities comes forward from Phase 10**: Add Character,
+  Add Mecha, Duplicate, Remove..., Move Up and Down, Next and Previous
+  and the `<select>` (AddCharacterAction, Append, DuplicateAction,
+  RemoveAction, Move, ShowEntity, ShowEntities) are list operations
+  that need no tab, and the menus' tests need enabled items. Phase 10
+  keeps the Mecha tab and its pricing.
+- Items whose phase hasn't come have no action, so stay disabled
+  (menu.ts disables an item with none): File's five (Phase 6; New from
+  Campaign... Phase 11), Creation... (Phase 11; ShowEntities' rule for
+  it is in place), and Rulebook's two (Phase 13).
+- The function fields are tell, ask, confirm, chooseFile, askText and
+  download; copyText comes with Phase 12, openPage and openTab with 13.
+  `take` is public, so a test can show a fixture's entities before
+  Phase 6's File > Open.
+- `globalThis.besm2` is the Window (src/main.ts), as ova_cg_web's
+  `ova`, for the browser tests and the console.
+
+`test/ui/dialogs.test.ts` is ova_cg_web's. `test/ui/window.test.ts`
+ports TestShortcuts (ova_cg_go's), and TestWindow's Basics, NewCharacter
+(what Phase 5 has of it) and Several (without the Mecha tab, which is
+Phase 10's, and Save, Phase 6's), with their labels where they apply:
+`window.yaml` shown as `window-several.yaml`, its mecha chosen, a mecha
+added, the first duplicated and moved up past the others (the first of
+the name the one tied), Remove... cancelled and done, Next and Previous
+at the ends, Move Down, the unnamed mecha's and character's questions,
+Add Character from a mecha (its owner's creation, copied), and a
+character duplicated, whose copy, last, prices the mecha. Then the
+menus by keyboard, the tabs and their keys. `test/browser/shell.spec.ts`
+is ova_cg_web's adapted: the menus by mouse and keyboard, the entities,
+the tabs, every key pressed for real and prevented (greyed or not), a
+dialog's Escape and focus, a key under a dialog, and screenshots in
+`obj/screenshots/`; it passes in headless Chromium and Firefox, from
+file:// and http://. Planted, each failed: a disabled item's key not
+prevented, Remove of the last showing past the end, Move not swapping,
+Next never greyed, and Add Character from a mecha without its owner's
+creation. (The `<select>`'s filling guard can't fail a test until
+Phase 7 fills fields from the entity.)
 
 ## Phase 6 Files on the page
 
@@ -663,8 +711,8 @@ Different Gunner; the exclusions; Cancel restores.
 
 ## Phase 10 Mecha and several entities
 
-Add Character, Add Mecha, Duplicate, Remove..., Move Up/Down,
-Next/Previous; the Mecha tab; Mecha Points and the last owner pricing.
+~~Add Character, Add Mecha, Duplicate, Remove..., Move Up/Down,
+Next/Previous~~ (Phase 5, 2026-11-15); the Mecha tab; Mecha Points and the last owner pricing.
 
 ## Phase 11 Creation and campaigns
 

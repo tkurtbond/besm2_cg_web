@@ -8,7 +8,9 @@ test("the page opens, fetching nothing", async ({ page }) => {
   const w = watch(page);
   await page.goto(PAGE_URL);
   await expect(page).toHaveTitle("BESM2ER Character Generator");
-  await expect(page.locator("#app")).toHaveText("BESM2ER Character Generator");
+  await expect(page.locator(".title-line")).toHaveText(
+    "BESM2ER Character Generator",
+  );
   expect(w.requests).toEqual([]);
   expect(w.errors).toEqual([]);
 });

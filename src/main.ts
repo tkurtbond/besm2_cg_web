@@ -1,6 +1,13 @@
-// The page's entry point: makes the Window on the document. Until
-// Phase 5, a placeholder that proves the build (PLAN.md, Phase 0.2).
+// The page's entry point: makes the Window on the document.
+//
+// The Window is also globalThis.besm2, so a browser test can reach what
+// the page offers no control for yet, and a user can look at it from
+// the console (as ova_cg_web's globalThis.ova).
 
-const app = document.getElementById("app");
-if (app === null) throw new Error("the page has no #app");
-app.textContent = "BESM2ER Character Generator";
+import { Window } from "./ui/window.ts";
+
+declare global {
+  var besm2: Window;
+}
+
+globalThis.besm2 = new Window(document);
