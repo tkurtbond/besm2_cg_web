@@ -55,10 +55,8 @@ function tabLine(t: number, i: number): boolean {
 
 /** Whether every tab's warnings are the Character tab's (TabWarnings). */
 function tabWarnings(): boolean {
-  // The Mecha tab's come with Phase 10.
-  const n = Math.min(NLists, w.tabWarnings.length);
-  if (n < 3) return false;
-  for (let t = 0; t < n; t++) {
+  if (w.tabWarnings.length !== NLists) return false;
+  for (let t = 0; t < NLists; t++) {
     const l = w.tabWarnings[t]!;
     if (l.count() !== w.warnings.count()) return false;
     for (let i = 0; i < l.count(); i++) {

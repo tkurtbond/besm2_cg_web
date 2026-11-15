@@ -2,8 +2,8 @@
 // TestWindow Basics, and ova_cg_go's TestShortcuts, with their labels),
 // what the keys and the menus do, the title and the entities' <select>,
 // the Character menu's list of entities (TestWindow's Several, without
-// what the Mecha tab and Save add, which come with Phases 10 and 6), and
-// the tabs. What the browsers do themselves (focus, a real Escape) is
+// what the Mecha tab and Save add: test/ui/mecha.test.ts's and
+// files.test.ts's), and the tabs. What the browsers do themselves (focus, a real Escape) is
 // test/browser/shell.spec.ts's.
 import { test } from "node:test";
 import assert from "node:assert/strict";

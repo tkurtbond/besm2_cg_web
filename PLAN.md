@@ -835,10 +835,44 @@ OK not taking the subject, Cancel not putting back the Disabilities,
 the Window's modified not put back, and Cancel not restoring the
 attack (in both browsers).
 
-## Phase 10 Mecha and several entities
+## Phase 10 Mecha and several entities [done]
 
 ~~Add Character, Add Mecha, Duplicate, Remove..., Move Up/Down,
-Next/Previous~~ (Phase 5, 2026-11-15); the Mecha tab; Mecha Points and the last owner pricing.
+Next/Previous~~ (Phase 5, 2026-11-15); the Mecha tab; Mecha Points and
+the last owner pricing.
+
+Done 2026-11-15: `mechapanel.ts` ports Besm2MechaPanel. Mecha Points
+and the last owner pricing were already `calc.compute`'s (Phase 2); the
+tab shows them. On a character, a line for each Own a Big Mecha: the
+attr, its Mecha Points, and its mecha's spent of available (": over"
+past it), or that another character's later Own a Big Mecha prices it
+("not counted"), or that no mecha of that name is in the file, or that
+it has no subject. On a mecha, a line for each Own a Big Mecha in the
+file that names it, with its character, and "not counted" on all but
+the last. With none, the one line says how to make one. Decided:
+
+- **What the tab does goes through a `Host`** (`tell`, `askText`,
+  `show`, `add`, `openPage`), as the Oberon's procedure variables;
+  `askText` takes a callback, since the page's dialog doesn't block.
+- **The columns are 70 px (Mecha Points) and 300 px (the mecha's)**;
+  the last reads as a sentence, so it is left-aligned (`style.css`).
+- **New Mecha names the mecha by the subject** without asking; with no
+  subject it asks, and the name typed (trimmed) becomes the subject. A
+  blank name is refused, a cancel does nothing. On a mecha it is
+  disabled, and Show Mecha becomes Show Owner.
+- `showNumbers` ends with the tab's refresh, keeping its selection, so
+  every change elsewhere (a Level, a rename, a removed mecha) shows.
+
+`test/ui/mecha.test.ts` ports TestWindow's Several whole, with its
+labels, and adds the tab's messages: none, ": over", a subject naming
+no mecha, New Mecha by the subject and by a name typed, blank or
+cancelled, and a mecha no one owns. `test/ui/lists.test.ts` now checks
+every tab's warnings, the Mecha tab's too. `test/browser/mecha.spec.ts`
+shows the mecha and its owner, makes a mecha with New Mecha and saves,
+in headless Chromium and Firefox. Planted, each failed: no refresh in
+`showNumbers`, the only line not meant, the typed name not made the
+subject (in both browsers), no ": over", "not counted" on a mecha
+flipped, no Mecha totals, and New Mecha enabled on a mecha.
 
 ## Phase 11 Creation and campaigns
 

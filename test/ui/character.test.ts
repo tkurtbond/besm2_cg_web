@@ -2,8 +2,8 @@
 // TestWindow NewCharacter, Editing, the lines and warnings of Files,
 // Mecha, and the renaming and the points lines of Several
 // (test/TestWindow.Mod), with their labels. What the Mecha tab adds to
-// Several comes with Phase 10. Values from the DOM are compared with
-// assert.ok or check only, never equal or deepEqual (AGENTS.md).
+// Several is test/ui/mecha.test.ts's. Values from the DOM are compared
+// with assert.ok or check only, never equal or deepEqual (AGENTS.md).
 
 import { test } from "node:test";
 import * as C from "../../src/core/calc.ts";

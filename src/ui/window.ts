@@ -39,6 +39,7 @@ import { keyMatches, MenuBar, MenuItem, Separator, type Key } from "./menu.ts";
 import { Background } from "./background.ts";
 import { AttrPanel, DefectPanel, SkillPanel, type Host } from "./itempanel.ts";
 import { WeaponDialog } from "./weapondialog.ts";
+import { MechaPanel } from "./mechapanel.ts";
 import {
   bold,
   button,
@@ -72,7 +73,8 @@ export const DefectsList = 1;
 export const SkillsList = 2;
 export const MechaList = 3;
 export const NLists = 4;
-/** The Background tab's index in tabNames. */
+/** The Mecha and Background tabs' indexes in tabNames. */
+const MechaTab = 4;
 const BackgroundTab = 5;
 /** A list tab's lines, in px; the browser grows with the page (CSS). */
 const ListH = 200;
@@ -215,6 +217,8 @@ export class Window {
   readonly defectPanel: DefectPanel;
   readonly skillPanel: SkillPanel;
   readonly background: Background;
+  /** The Mecha tab (Phase 10) */
+  readonly mechaPanel: MechaPanel;
   /** The Attributes tab's: the Weapon Attack dialog on the line
    *  selected (Phase 9). */
   readonly weaponButton: HTMLButtonElement;
@@ -371,6 +375,21 @@ export class Window {
       R.pageText(R.find("Weapon Attack")) +
       ")";
     this.attrPanel.addButton.parentElement!.append(this.weaponButton);
+    this.mechaPanel = new MechaPanel(
+      doc,
+      {
+        tell: (text) => this.tell(text),
+        askText: (p, text, then) => this.askText(p, text, then),
+        show: (e) => this.showOne(e),
+        add: (e) => this.append(e),
+        openPage: () => this.openPage,
+      },
+      ListH,
+    );
+    const mecha = this.panels[MechaTab]!;
+    mecha.classList.add("list-tab");
+    mecha.append(this.mechaPanel.element);
+    this.buildTotals(mecha);
     this.background = new Background(doc, {
       tell: (text) => this.tell(text),
       filling: () => this.filling,
@@ -474,8 +493,8 @@ export class Window {
   /**
    * showNumbers shows every number again: the Stats only on a character,
    * a mecha has none (p. 59, PDF 61); ACV, DCV, EP and SV likewise; AR
-   * only with armour, or an override of it (ShowNumbers). The Mecha
-   * tab's refresh comes with it (Phase 10).
+   * only with armour, or an override of it; the Mecha tab again
+   * (ShowNumbers).
    */
   showNumbers(): void {
     const e = this.entity;
@@ -499,6 +518,7 @@ export class Window {
     else this.derived[Ch.AR]!.hide();
     this.showPoints();
     this.showWarnings();
+    this.mechaPanel.refresh();
   }
 
   /** changed follows any change to an entity: computed again and shown
@@ -883,6 +903,12 @@ export class Window {
     }
   }
 
+  /** showOne shows e, if it is in the file (ShowOne). */
+  private showOne(e: Ch.Entity): void {
+    const i = this.entities.indexOf(e);
+    if (i >= 0) this.showEntity(i);
+  }
+
   /** append adds e after the last entity, and shows it (Append). */
   private append(e: Ch.Entity): void {
     this.entities.push(e);
@@ -970,6 +996,7 @@ export class Window {
     this.defectPanel.show(e);
     this.skillPanel.show(e);
     this.background.show(e);
+    this.mechaPanel.show(this.entities, e);
     this.showNumbers();
     this.showEntities();
     this.showTitle();

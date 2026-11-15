@@ -599,3 +599,15 @@ textarea.description {
 .weapon-dialog .warnings > .lines {
   height: 5em;
 }
+
+/* The Mecha tab (Phase 10): its last column, the mecha's, reads as a
+   sentence, so it starts at the left. */
+.mecha-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mecha-lines .line-column:last-child {
+  text-align: left;
+}
