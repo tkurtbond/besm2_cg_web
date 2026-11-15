@@ -5,3 +5,4 @@ testdata/
 test/golden/
 package-lock.json
 *.md
+test/data/

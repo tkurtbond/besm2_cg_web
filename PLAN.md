@@ -535,12 +535,44 @@ Decided 2026-11-15:
 - `notices.test.ts` compares a syntax error by file, line and column
   only (as decided for Phase 3.1).
 
-### Phase 3.3 save
+### Phase 3.3 save [done]
 
 The YAML a save writes; every fixture loaded and saved is byte for byte
 its `NAME.fill.yaml`, and loads again with no notices and the same
 bytes. TestModel's checks that save, and the `window.with-CAMPAIGN`
 fixtures' notices (moved from Phase 3.2).
+
+Done 2026-11-15: `save.ts`, the port of Besm2Save, building the
+`yaml` library's nodes with a `str` tag of its own that writes each
+string as libfyaml 0.8's emitter would (Findings). Every fixture of
+`testdata/` that `--fill` writes, and window.yaml given campaign.yaml,
+saves byte for byte as its `test/golden/` file, and loads again with
+the same bytes and nothing noted that its source didn't note (an
+override stays one, an empty string is still warned of: "no notices"
+was too strong, since `--fill` keeps both). `character.test.ts` now
+holds all of TestModel's checks, with its labels; `notices.test.ts`
+ports `--campaign`'s UseCampaign for the `window.with-CAMPAIGN`
+notices, through `character.addNotice` (the Oberon's `AddNotice*`).
+
+This repo's own save fixtures are `test/data/save/` (`scalars.yaml`:
+each kind of string, every escape, chomping and indentation
+indicator; `folds.yaml`: where long strings fold, swept over their
+starting column, and quoted keys; `keys.yaml`: keys of more than one
+line). `make golden` now also writes their `--check` and `--fill` into
+`test/golden/save/`, so the scalar writers are checked against
+besm2_calc_po, not text copied by hand.
+
+Proved to fail: the line width 79, no `\` before a fold's blank, the
+indentation indicator from the first character rather than the first
+non-empty line, `+` from three line feeds, no `\_`, a lost `details`,
+`genre` written for no genre, a sequence indented under its key, a
+choice's count written from 1, and a duplicate key let through each
+failed their checks.
+
+Decided 2026-11-15:
+- `saveAll` and `saveCampaign` return the file's text or the
+  Oberon's message, since the page downloads a file rather than writing
+  a path.
 
 ### Phase 3.4 The round trip
 
@@ -706,6 +738,46 @@ ova_cg_web's "Findings" are taken as known and not repeated.
   nothing and exits 0 for `- name: *nope`, where besm2_calc_po says
   `f.yaml:1:10: error: invalid alias`. The port follows besm2_calc_po;
   reported to the user as a finding for pobesm2_fmt2.
+
+- **libfyaml 0.8's emitter, as besm2_calc_po uses it** (2026-11-15,
+  besm2_calc_po 42e58e1 over `test/data/save/`): a plain scalar folds
+  at the first blank past column 80 whose next character isn't a blank
+  (a run of blanks never breaks), the blank dropped; a double-quoted
+  one with nothing to escape is written as is, never folded; one with
+  an escape folds the same way but only at a space, writing `\` before
+  the line end when the next character is a blank. It escapes all but
+  0x20-0x7E, 0xA1-0xD7FF (but U+2028, U+2029) and 0xE000-0xFFFD (but
+  U+FEFF), and `"` and `\`: short escapes where YAML has them (`\_`
+  for U+00A0, `\N`, `\L`, `\P`, `\e`), else `\xHH`, `\uHHHH`,
+  `\UHHHHHHHH`, upper case. A literal block's header has `2` when its
+  first line that isn't empty starts with a blank, then `-` for no
+  final line feed or `+` for more than one; every line, empty ones
+  too, is written at the indent. A key is never folded; a key of more
+  than one line is an explicit `? |-` key. Columns count characters.
+- **libfyaml 0.8's folds lose a space** (2026-11-15, besm2_calc_po
+  42e58e1): a double-quoted string with an escape and two spaces at a
+  fold (`words  two`) is written `words\`, then the next line indented
+  and ` two`; read back, YAML drops that leading space, so
+  besm2_calc_po's `--fill` of its own `--fill` has `wordstwo`... and
+  `wordstwospaces` the time after, then stays. The port writes and
+  reads exactly as besm2_calc_po does, at each step
+  (`save.test.ts`). Reported to the user as a finding for
+  besm2_cg_po (polibfyaml's emitter should write `\ ` there).
+- **The `yaml` library's `ctx.indent` isn't a scalar's column**
+  (2026-11-15, yaml 2.9.1, throwaway script): a `str` tag's
+  `stringify` is given `ctx.indent` 8 for a value of a mapping nested
+  in a mapping that is written at 6 (`creation:` then `options:`).
+  So `save.ts` walks the nodes first (`place`) and gives each string
+  the column it starts at and its continuation indent, as libfyaml
+  lays them out. With `indent: 2, indentSeq: false, lineWidth: 0,
+  flowCollectionPadding: false`, the library writes the collections
+  as libfyaml does (`[]` and `{}` for empty ones), and keeps a
+  multi-line string from `stringify` as it is given.
+- **besm2_calc_po and pobesm2_fmt2 halt on a flow sequence of
+  sequences in `enhancements`** (2026-11-15): `enhancements: [[Foo,
+  {a: 1}]]` ends both with "assertion failed (62)". Reported to the
+  user as a finding for besm2_cg_po and pobesm2_fmt2; not a case this
+  port's tests use.
 
 ## Open questions
 

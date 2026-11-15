@@ -1,0 +1,8 @@
+# This repo's own fixture for save (PLAN.md, Phase 3.3): unknown keys
+# of more than one line, which libfyaml writes as explicit keys.
+- name: K
+  "a\nb": 1
+  ? |-
+    c
+    d
+  : 2

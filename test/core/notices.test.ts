@@ -4,7 +4,8 @@
 // and, without a polibfyaml error, "error processing "; then its
 // notices, "NAME: KIND: TEXT"; and with --fill and a problem, that the
 // file wasn't written. besm2_calc_po's Besm2CalcMain.ProcessOne, which
-// this follows. --campaign (window.with-*) needs save, Phase 3.3.
+// this follows. window.with-CAMPAIGN is --campaign CAMPAIGN.yaml on
+// window.yaml (tools/golden.sh), its UseCampaign ported here.
 //
 // A syntax error is compared by its file, line and column, but its words
 // only where the port takes libfyaml's (PLAN.md, Phase 3.1, 2026-11-15).
@@ -12,6 +13,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import * as Ch from "../../src/core/character.ts";
+import * as Save from "../../src/core/save.ts";
 
 const Program = "besm2_calc_po";
 
@@ -27,8 +29,37 @@ function words(l: string): string {
   return m === null || libfyamls.includes(m[2]!) ? l : m[1]!;
 }
 
-function lines(name: string, fill: boolean): string[] {
-  const { results } = Ch.readStream(text(name), base(name));
+// e's creation as save would write it, to compare (CreationText).
+function creationText(e: Ch.Entity): string {
+  const x = Ch.newCharacter();
+  Ch.takeCreation(x, e);
+  return Save.toText(Ch.one(x))!;
+}
+
+// Each character of es given campaign's creation, from the file named
+// file; a difference notice for each whose own differed (UseCampaign).
+function useCampaign(es: Ch.Entity[], campaign: Ch.Entity, file: string) {
+  const want = creationText(campaign);
+  for (const e of es)
+    if (!e.isMecha) {
+      if (creationText(e) !== want)
+        Ch.addNotice(
+          Ch.Difference,
+          `${e.label}: creation differs from the campaign's, ${file}, which is used`,
+        );
+      Ch.takeCreation(e, campaign);
+    }
+  Ch.computeAll(es);
+}
+
+function lines(
+  name: string,
+  fill: boolean,
+  campaign?: { from: Ch.Entity; file: string },
+): string[] {
+  const { results, es } = Ch.readStream(text(name), base(name));
+  if (campaign !== undefined && es !== undefined)
+    useCampaign(es, campaign.from, campaign.file);
   const r: string[] = [];
   let problems = false;
   for (const x of results)
@@ -80,5 +111,30 @@ for (const d of ["fmt", "cg"]) {
         );
       });
     }
+  }
+}
+
+// --campaign CAMPAIGN.yaml --MODE window.yaml: a campaign that doesn't
+// load is besm2_calc_po's only line; one that does is used.
+for (const f of readdirSync("testdata/cg").sort()) {
+  if (!f.startsWith("campaign") || !f.endsWith(".yaml")) continue;
+  const n = `window.with-${f.slice(0, -".yaml".length)}`;
+  for (const mode of ["check", "fill"]) {
+    const g = `test/golden/cg/${n}.${mode}.err`;
+    const want = existsSync(g)
+      ? text(g)
+          .split("\n")
+          .filter((l) => l !== "")
+      : [];
+    test(`cg/${n} --${mode}: the notices of besm2_calc_po`, () => {
+      const c = Ch.loadCampaign(text(`testdata/cg/${f}`), f);
+      const got = c.ok
+        ? lines("testdata/cg/window.yaml", mode === "fill", {
+            from: c.from,
+            file: f,
+          })
+        : [`${Program}: ${c.msg}`];
+      assert.deepEqual(got, want);
+    });
   }
 }

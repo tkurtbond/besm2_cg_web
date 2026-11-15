@@ -1,17 +1,17 @@
-// The checks of besm2_cg_po's test/TestModel.Mod that need no save,
-// with its labels: character's editing, as the page's tabs and dialogs
-// use it, on entities built by hand; and the Creation and Campaign
-// checks that load a file. What TestModel saves and loads again
-// (ReadText of a save, Copy, SaveLoad, a saved Weapon Attack, creation
-// and campaign) waits for save, Phase 3.3. A file is given as its text
-// and the name the Oberon opens it by ("data/unpriced.yaml"), so the
+// The checks of besm2_cg_po's test/TestModel.Mod, with its labels:
+// character's editing, as the page's tabs and dialogs use it, on
+// entities built by hand, then saved and loaded again; and the Creation
+// and Campaign checks that load a file. A file is given as its text and
+// the name the Oberon opens it by ("data/unpriced.yaml"), so the
 // messages are its; a file that isn't there is the page's to report.
+// Where the Oberon saves to a file and loads it, save's text is loaded.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import * as C from "../../src/core/calc.ts";
 import * as Ch from "../../src/core/character.ts";
 import * as R from "../../src/core/rules.ts";
+import * as Save from "../../src/core/save.ts";
 
 function check(ok: boolean, label: string): void {
   test(label, () => assert.ok(ok, label));
@@ -20,6 +20,18 @@ function check(ok: boolean, label: string): void {
 /** The text of besm2_cg_po's test/data/NAME, as testdata/cg has it. */
 function data(name: string): string {
   return readFileSync(`testdata/cg/${name}`, "utf8");
+}
+
+/** es saved, and loaded again as a file named name; undefined if
+ *  either fails. */
+function saveLoad(
+  es: readonly Ch.Entity[],
+  name: string,
+): Ch.Entity[] | undefined {
+  const s = Save.saveAll(es);
+  if (!s.ok) return undefined;
+  const r = Ch.loadAll(s.text, name);
+  return r.ok ? r.es : undefined;
 }
 
 function count(a: C.Attr | undefined): number {
@@ -239,7 +251,7 @@ let es: Ch.Entity[] = Ch.one(e);
   check(a.mecha === undefined, "renamed: unlinked");
 }
 
-// ---- Several (step 9), without save ----
+// ---- Several (step 9) ----
 {
   const w = Ch.newMecha("Walker");
   check(
@@ -267,14 +279,51 @@ let es: Ch.Entity[] = Ch.one(e);
       w.spent === 4,
     "Own a Big Mecha 2 names it: 40 Mecha Points (p. 59), 4 spent",
   );
-  const { es: rs } = Ch.readText("- name: [bad");
+  const text = Save.toText(ces)!;
+  let { es: rs } = Ch.readText(text);
+  check(
+    rs !== undefined &&
+      rs.length === 2 &&
+      rs[0]!.name === "Pilot" &&
+      rs[1]!.isMecha &&
+      rs[1]!.name === "Walker" &&
+      rs[0]!.attrs!.mecha === rs[1] &&
+      rs[1]!.owner === rs[0] &&
+      rs[1]!.available === 40,
+    "ReadText: the entities saved, linked, priced",
+  );
+  ({ es: rs } = Ch.readText("- name: [bad"));
   check(
     rs === undefined || rs.length === 0,
     "and of text that isn't YAML, none",
   );
+
+  let cm = Save.copy(ces, 1);
+  check(
+    cm !== undefined &&
+      cm !== w &&
+      cm.isMecha &&
+      cm.name === "Walker" &&
+      cm.attrs !== undefined &&
+      cm.attrs !== w.attrs &&
+      C.value(cm.attrs.points) === 4 &&
+      !cm.attrs.points.overridden,
+    "Copy: a mecha's copy, priced as its owner prices it, no override",
+  );
+  cm = Save.copy(ces, 0);
+  check(
+    cm !== undefined &&
+      cm !== c &&
+      cm.name === "Pilot" &&
+      cm.attrs !== oa &&
+      (cm.attrs as Ch.Attr).subject === "Walker" &&
+      C.value(cm.attrs!.points) === C.value(oa.points),
+    "a character's: its Own a Big Mecha still names the mecha",
+  );
+  check(oa.mecha === w && w.owner === c, "the entities copied unchanged");
 }
 
-// ---- Weapons, without save ----
+// ---- Weapons ----
 {
   const we = Ch.newCharacter();
   const wes = Ch.one(we);
@@ -408,9 +457,68 @@ let es: Ch.Entity[] = Ch.one(e);
     C.hasWarning(we, C.GunnerNotMecha, w2),
     "a different gunner on a character: warned",
   );
+  w2.differentGunner = false;
+
+  const wback = saveLoad(wes, "../obj/model-weapon.yaml");
+  check(wback !== undefined, "saved and loaded again");
+  if (wback !== undefined) {
+    const bw = wback[0]!.attrs as Ch.Attr;
+    check(
+      bw.abilities !== undefined &&
+        bw.abilities.countsAs === 0 &&
+        (bw.abilities as Ch.Mod).detail === "far" &&
+        bw.abilities.next !== undefined &&
+        bw.abilities.next.countsAs === 1 &&
+        bw.disabilities !== undefined &&
+        bw.disabilities.countsAs === 1,
+      "the Abilities and Disabilities, a counts-as of 1 kept",
+    );
+    check(
+      C.value(bw.damage) === C.value(w.damage) &&
+        C.value(bw.points) === C.value(w.points) &&
+        !bw.damage.overridden,
+      "the damage and points the same",
+    );
+  }
 }
 
-// ---- Creation (step 10), without save ----
+// ---- SaveLoad ----
+{
+  const a = Ch.newAttr(item("Flight"), 2, undefined, undefined);
+  a.times[opt(a.item, "glider")] = 1;
+  Ch.insertAttr(e, a);
+  Ch.computeAll(es);
+  const s = Save.saveAll(es);
+  check(s.ok, "saved");
+  const r = s.ok ? Ch.loadAll(s.text, "../obj/model-test.yaml") : undefined;
+  const ok = r !== undefined && r.ok && r.es.length === 2;
+  check(ok, "and loaded again");
+  if (r?.ok && ok) {
+    const b = r.es[0]!;
+    const ba = b.attrs!.next as Ch.Attr;
+    check(
+      b.creation.genre === R.Cyberpunk &&
+        b.defects !== undefined &&
+        (b.skills as Ch.Skill).name === "Driving" &&
+        b.skills!.specs === 2,
+      "the genre, the Defect, the Skill and its specialisations",
+    );
+    check(
+      ba.item === a.item &&
+        ba.times[opt(a.item, "glider")] === 1 &&
+        C.value(ba.points) === C.value(a.points) &&
+        !ba.points.overridden,
+      "the option taken, and the points the same, not an override",
+    );
+    check(
+      (b.attrs as Ch.Attr).subject === "Other" &&
+        (b.defects as Ch.Defect).rank === 1,
+      "the subject, the rank",
+    );
+  }
+}
+
+// ---- Creation (step 10) ----
 {
   const r = Ch.loadAll(data("unpriced.yaml"), "data/unpriced.yaml");
   const ok = r.ok && r.es.length === 2;
@@ -479,6 +587,21 @@ let es: Ch.Entity[] = Ch.one(e);
       "Gaming's 99 still kept",
     );
 
+    const saved = saveLoad(back, "../obj/model-creation.yaml");
+    check(saved !== undefined && saved.length === 2, "saved and loaded again");
+    if (saved !== undefined && saved.length === 2) {
+      const s0 = saved[0]!;
+      check(
+        s0.creation.genre === R.ModernMilitary &&
+          s0.creation.characterPoints === 45 &&
+          s0.creation.backgroundPoints === 2 &&
+          s0.creation.statCeiling === 10 &&
+          s0.creation.houseSkills !== undefined &&
+          !s0.skills!.next!.next!.points.overridden,
+        "the creation and its house Skill, and the Skill priced by it",
+      );
+    }
+
     Ch.restoreCreation(u, oc, keys, has, marks);
     Ch.computeAll(back);
     check(
@@ -509,7 +632,7 @@ let es: Ch.Entity[] = Ch.one(e);
   }
 }
 
-// ---- Campaign (step 10a), without save ----
+// ---- Campaign (step 10a) ----
 {
   const r = Ch.loadCampaign(data("campaign.yaml"), "data/campaign.yaml");
   check(
@@ -562,4 +685,54 @@ let es: Ch.Entity[] = Ch.one(e);
     "data/campaign-zero.yaml: /creation/options/stat-points-floor: stat-points-floor must be 1 or more",
     "a floor of 0: refused, said where",
   );
+  // A file that isn't there is the page's to report (its file chooser).
+
+  if (r.ok) {
+    const from = r.from;
+    const saved = Save.saveCampaign(from);
+    const back2 = saved.ok
+      ? Ch.loadCampaign(saved.text, "../obj/model-campaign.yaml")
+      : undefined;
+    check(back2 !== undefined && back2.ok, "SaveCampaign, and loaded again");
+    if (back2?.ok) {
+      const c2 = back2.from.creation;
+      check(
+        c2.characterPoints === 40 &&
+          c2.genre === R.ModernMilitary &&
+          c2.statPointsCeiling === 6 &&
+          c2.statPointsFloor === 4 &&
+          sameSet(back2.from.creationKeys, from.creationKeys),
+        "the same creation",
+      );
+    }
+    const empty = Save.saveCampaign(Ch.newCharacter());
+    const back3 = empty.ok
+      ? Ch.loadCampaign(empty.text, "../obj/model-campaign.yaml")
+      : undefined;
+    check(
+      back3 !== undefined &&
+        back3.ok &&
+        back3.from.creationKeys.size === 0 &&
+        back3.from.creation.genre === C.NoGenre,
+      "a character with no creation: an empty campaign, loaded again",
+    );
+
+    const x2 = Ch.newCharacter();
+    Ch.takeCreation(x2, from);
+    x2.stat[C.Body] = 5;
+    C.compute(x2);
+    const les = saveLoad(Ch.one(x2), "../obj/model-stat-limits.yaml");
+    check(
+      les !== undefined && les.length === 1,
+      "a character in the campaign, saved and loaded again",
+    );
+    if (les !== undefined && les.length === 1)
+      check(
+        les[0]!.creation.statPointsCeiling === 6 &&
+          les[0]!.creation.statPointsFloor === 4 &&
+          C.hasWarning(les[0]!, C.StatPointsAbove, undefined) &&
+          !C.hasWarning(les[0]!, C.StatPointsBelow, undefined),
+        "its Stats' limits kept, and the Stats' 7 above the ceiling of 6",
+      );
+  }
 }

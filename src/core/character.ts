@@ -936,6 +936,12 @@ function note(kind: Check.Kind, r: string): void {
   if (kind !== Warning) nDifferences++;
 }
 
+/** A notice of kind, r, after those of the last read (AddNotice):
+ *  besm2_calc_po's --campaign says so of each creation that differs. */
+export function addNotice(kind: Check.Kind, r: string): void {
+  note(kind, r);
+}
+
 function clearNotices(): void {
   notices = [];
   nDifferences = 0;

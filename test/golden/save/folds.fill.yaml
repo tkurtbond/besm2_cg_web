@@ -1,0 +1,1233 @@
+- name: Corpus2
+  description: x
+  notes:
+  - |2-
+    
+      x
+    y
+  - |2-
+    	x
+    y
+  - |2-
+    
+    	x
+  - |+
+    x
+    
+  - |2-
+     
+    x
+  - |-
+    x
+     
+    y
+  - |-
+    x 
+    y	
+  - |2
+    
+    
+      z
+  - A long one with "quote" and two  spaces at the fold point so we see the backslash
+  - "A long one with \"q\" and an emoji \U0001F600 and nbsp\_ here and a tab\tthere
+    past column eighty ok"
+  - A long one with "q" and a C1  char past the eightieth column of the line here
+    ok
+  - "Ends with a space after column eighty and a \"quote\" so it is in the escaped
+    path "
+  - Short "q" 😀 nbsp x
+  - " A long one with \"quote\" and it goes on past the eightieth column of the line
+    ok"
+  - " A long plain one that goes on past the eightieth column of the line ok right"
+  - " \"q\" words words words words words words words words words words  two  spaces
+    x y"
+  - x A long one with "quote" and it goes on past the eightieth column of the line
+    ok
+  - y A long plain one that goes on past the eightieth column of the line ok right
+  - z "q" words words words words words words words words words words  two  spaces
+    x y
+  - xx A long one with "quote" and it goes on past the eightieth column of the line
+    ok
+  - yy A long plain one that goes on past the eightieth column of the line ok right
+  - zz "q" words words words words words words words words words words  two  spaces
+    x y
+  - xxx A long one with "quote" and it goes on past the eightieth column of the line
+    ok
+  - yyy A long plain one that goes on past the eightieth column of the line ok right
+  - zzz "q" words words words words words words words words words words  two  spaces
+    x y
+  - xxxx A long one with "quote" and it goes on past the eightieth column of the line
+    ok
+  - yyyy A long plain one that goes on past the eightieth column of the line ok right
+  - zzzz "q" words words words words words words words words words words  two  spaces
+    x y
+  - xxxxx A long one with "quote" and it goes on past the eightieth column of the
+    line ok
+  - yyyyy A long plain one that goes on past the eightieth column of the line ok right
+  - zzzzz "q" words words words words words words words words words words  two  spaces
+    x y
+  - xxxxxx A long one with "quote" and it goes on past the eightieth column of the
+    line ok
+  - yyyyyy A long plain one that goes on past the eightieth column of the line ok
+    right
+  - zzzzzz "q" words words words words words words words words words words  two  spaces
+    x y
+  - xxxxxxx A long one with "quote" and it goes on past the eightieth column of the
+    line ok
+  - yyyyyyy A long plain one that goes on past the eightieth column of the line ok
+    right
+  - zzzzzzz "q" words words words words words words words words words words  two  spaces
+    x y
+  - xxxxxxxx A long one with "quote" and it goes on past the eightieth column of the
+    line ok
+  - yyyyyyyy A long plain one that goes on past the eightieth column of the line ok
+    right
+  - zzzzzzzz "q" words words words words words words words words words words  two  spaces
+    x y
+  - xxxxxxxxx A long one with "quote" and it goes on past the eightieth column of
+    the line ok
+  - yyyyyyyyy A long plain one that goes on past the eightieth column of the line
+    ok right
+  - zzzzzzzzz "q" words words words words words words words words words words  two  spaces
+    x y
+  - xxxxxxxxxx A long one with "quote" and it goes on past the eightieth column of
+    the line ok
+  - yyyyyyyyyy A long plain one that goes on past the eightieth column of the line
+    ok right
+  - zzzzzzzzzz "q" words words words words words words words words words words  two  spaces
+    x y
+  - xxxxxxxxxxx A long one with "quote" and it goes on past the eightieth column of
+    the line ok
+  - yyyyyyyyyyy A long plain one that goes on past the eightieth column of the line
+    ok right
+  - zzzzzzzzzzz "q" words words words words words words words words words words  two  spaces
+    x y
+- name: F0
+  description: |2-
+    
+      x
+    y
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: |2-
+      
+        x
+      y
+    overrides:
+    - points
+    zz-extra-key: "\n  x\ny"
+    zz-nested:
+      deeper-key: "\n  x\ny"
+      list:
+      - "\n  x\ny"
+  "a, b": "\n  x\ny"
+  q"key 😀: "\n  x\ny"
+  plainkey: x y
+- name: F1
+  description: |2-
+    	x
+    y
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: |2-
+      	x
+      y
+    overrides:
+    - points
+    zz-extra-key: "\tx\ny"
+    zz-nested:
+      deeper-key: "\tx\ny"
+      list:
+      - "\tx\ny"
+  "a, b": "\tx\ny"
+  q"key 😀: "\tx\ny"
+  plainkey: x y
+- name: F2
+  description: |2-
+    
+    	x
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: |2-
+      
+      	x
+    overrides:
+    - points
+    zz-extra-key: "\n\tx"
+    zz-nested:
+      deeper-key: "\n\tx"
+      list:
+      - "\n\tx"
+  "a, b": "\n\tx"
+  q"key 😀: "\n\tx"
+  plainkey: x
+- name: F3
+  description: |+
+    x
+    
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: |+
+      x
+      
+    overrides:
+    - points
+    zz-extra-key: "x\n\n"
+    zz-nested:
+      deeper-key: "x\n\n"
+      list:
+      - "x\n\n"
+  "a, b": "x\n\n"
+  q"key 😀: "x\n\n"
+  plainkey: x
+- name: F4
+  description: |2-
+     
+    x
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: |2-
+       
+      x
+    overrides:
+    - points
+    zz-extra-key: " \nx"
+    zz-nested:
+      deeper-key: " \nx"
+      list:
+      - " \nx"
+  "a, b": " \nx"
+  q"key 😀: " \nx"
+  plainkey: x
+- name: F5
+  description: |-
+    x
+     
+    y
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: |-
+      x
+       
+      y
+    overrides:
+    - points
+    zz-extra-key: "x\n \ny"
+    zz-nested:
+      deeper-key: "x\n \ny"
+      list:
+      - "x\n \ny"
+  "a, b": "x\n \ny"
+  q"key 😀: "x\n \ny"
+  plainkey: x   y
+- name: F6
+  description: |-
+    x 
+    y	
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: |-
+      x 
+      y	
+    overrides:
+    - points
+    zz-extra-key: "x \ny\t"
+    zz-nested:
+      deeper-key: "x \ny\t"
+      list:
+      - "x \ny\t"
+  "a, b": "x \ny\t"
+  q"key 😀: "x \ny\t"
+  plainkey: x  y
+- name: F7
+  description: |2
+    
+    
+      z
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: |2
+      
+      
+        z
+    overrides:
+    - points
+    zz-extra-key: "\n\n  z\n"
+    zz-nested:
+      deeper-key: "\n\n  z\n"
+      list:
+      - "\n\n  z\n"
+  "a, b": "\n\n  z\n"
+  q"key 😀: "\n\n  z\n"
+  plainkey: z
+- name: F8
+  description: A long one with "quote" and two  spaces at the fold point so we see
+    the backslash
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: A long one with "quote" and two  spaces at the fold point so we see the
+      backslash
+    overrides:
+    - points
+    zz-extra-key: "A long one with \"quote\" and two  spaces at the fold point so
+      we see the backslash"
+    zz-nested:
+      deeper-key: "A long one with \"quote\" and two  spaces at the fold point so
+        we see the backslash"
+      list:
+      - "A long one with \"quote\" and two  spaces at the fold point so we see the
+        backslash"
+  "a, b": "A long one with \"quote\" and two  spaces at the fold point so we see the
+    backslash"
+  q"key 😀: "A long one with \"quote\" and two  spaces at the fold point so we see
+    the backslash"
+  plainkey: A long one with QquoteQ and two  spaces at the fold point so we see the
+    backslash
+- name: F9
+  description: "A long one with \"q\" and an emoji \U0001F600 and nbsp\_ here and
+    a tab\tthere past column eighty ok"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "A long one with \"q\" and an emoji \U0001F600 and nbsp\_ here and a
+      tab\tthere past column eighty ok"
+    overrides:
+    - points
+    zz-extra-key: "A long one with \"q\" and an emoji \U0001F600 and nbsp\_ here and
+      a tab\tthere past column eighty ok"
+    zz-nested:
+      deeper-key: "A long one with \"q\" and an emoji \U0001F600 and nbsp\_ here and
+        a tab\tthere past column eighty ok"
+      list:
+      - "A long one with \"q\" and an emoji \U0001F600 and nbsp\_ here and a tab\tthere
+        past column eighty ok"
+  "a, b": "A long one with \"q\" and an emoji \U0001F600 and nbsp\_ here and a tab\tthere
+    past column eighty ok"
+  q"key 😀: "A long one with \"q\" and an emoji \U0001F600 and nbsp\_ here and a tab\tthere
+    past column eighty ok"
+  plainkey: A long one with QqQ and an emoji 😀 and nbsp  here and a tab there past
+    column eighty ok
+- name: F10
+  description: A long one with "q" and a C1  char past the eightieth column of the
+    line here ok
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: A long one with "q" and a C1  char past the eightieth column of the
+      line here ok
+    overrides:
+    - points
+    zz-extra-key: "A long one with \"q\" and a C1 \x80 char past the eightieth column
+      of the line here ok"
+    zz-nested:
+      deeper-key: "A long one with \"q\" and a C1 \x80 char past the eightieth column
+        of the line here ok"
+      list:
+      - "A long one with \"q\" and a C1 \x80 char past the eightieth column of the
+        line here ok"
+  "a, b": "A long one with \"q\" and a C1 \x80 char past the eightieth column of the
+    line here ok"
+  q"key 😀: "A long one with \"q\" and a C1 \x80 char past the eightieth column of
+    the line here ok"
+  plainkey: A long one with QqQ and a C1  char past the eightieth column of the line
+    here ok
+- name: F11
+  description: "Ends with a space after column eighty and a \"quote\" so it is in
+    the escaped path "
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "Ends with a space after column eighty and a \"quote\" so it is in the
+      escaped path "
+    overrides:
+    - points
+    zz-extra-key: "Ends with a space after column eighty and a \"quote\" so it is
+      in the escaped path "
+    zz-nested:
+      deeper-key: "Ends with a space after column eighty and a \"quote\" so it is
+        in the escaped path "
+      list:
+      - "Ends with a space after column eighty and a \"quote\" so it is in the escaped
+        path "
+  "a, b": "Ends with a space after column eighty and a \"quote\" so it is in the escaped
+    path "
+  q"key 😀: "Ends with a space after column eighty and a \"quote\" so it is in the
+    escaped path "
+  plainkey: Ends with a space after column eighty and a QquoteQ so it is in the escaped
+    path
+- name: F12
+  description: Short "q" 😀 nbsp x
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: Short "q" 😀 nbsp x
+    overrides:
+    - points
+    zz-extra-key: "Short \"q\" \U0001F600 nbsp\_x"
+    zz-nested:
+      deeper-key: "Short \"q\" \U0001F600 nbsp\_x"
+      list:
+      - "Short \"q\" \U0001F600 nbsp\_x"
+  "a, b": "Short \"q\" \U0001F600 nbsp\_x"
+  q"key 😀: "Short \"q\" \U0001F600 nbsp\_x"
+  plainkey: Short QqQ 😀 nbsp x
+- name: F13
+  description: " A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: " A long one with \"quote\" and it goes on past the eightieth column
+      of the line ok"
+    overrides:
+    - points
+    zz-extra-key: " A long one with \"quote\" and it goes on past the eightieth column
+      of the line ok"
+    zz-nested:
+      deeper-key: " A long one with \"quote\" and it goes on past the eightieth column
+        of the line ok"
+      list:
+      - " A long one with \"quote\" and it goes on past the eightieth column of the
+        line ok"
+  "a, b": " A long one with \"quote\" and it goes on past the eightieth column of
+    the line ok"
+  q"key 😀: " A long one with \"quote\" and it goes on past the eightieth column of
+    the line ok"
+  plainkey: A long one with QquoteQ and it goes on past the eightieth column of the
+    line ok
+- name: F14
+  description: " A long plain one that goes on past the eightieth column of the line ok right"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: " A long plain one that goes on past the eightieth column of the line ok right"
+    overrides:
+    - points
+    zz-extra-key: " A long plain one that goes on past the eightieth column of the line ok right"
+    zz-nested:
+      deeper-key: " A long plain one that goes on past the eightieth column of the line ok right"
+      list:
+      - " A long plain one that goes on past the eightieth column of the line ok right"
+  "a, b": " A long plain one that goes on past the eightieth column of the line ok right"
+  q"key 😀: " A long plain one that goes on past the eightieth column of the line ok right"
+  plainkey: A long plain one that goes on past the eightieth column of the line ok
+    right
+- name: F15
+  description: " \"q\" words words words words words words words words words words\
+     two  spaces x y"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: " \"q\" words words words words words words words words words words  two\
+       spaces x y"
+    overrides:
+    - points
+    zz-extra-key: " \"q\" words words words words words words words words words words\
+       two  spaces x y"
+    zz-nested:
+      deeper-key: " \"q\" words words words words words words words words words words\
+         two  spaces x y"
+      list:
+      - " \"q\" words words words words words words words words words words  two  spaces
+        x y"
+  "a, b": " \"q\" words words words words words words words words words words  two\
+     spaces x y"
+  q"key 😀: " \"q\" words words words words words words words words words words  two\
+     spaces x y"
+  plainkey: QqQ words words words words words words words words words words  two  spaces
+    x y
+- name: F16
+  description: x A long one with "quote" and it goes on past the eightieth column
+    of the line ok
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: x A long one with "quote" and it goes on past the eightieth column of
+      the line ok
+    overrides:
+    - points
+    zz-extra-key: "x A long one with \"quote\" and it goes on past the eightieth column
+      of the line ok"
+    zz-nested:
+      deeper-key: "x A long one with \"quote\" and it goes on past the eightieth column
+        of the line ok"
+      list:
+      - "x A long one with \"quote\" and it goes on past the eightieth column of the
+        line ok"
+  "a, b": "x A long one with \"quote\" and it goes on past the eightieth column of
+    the line ok"
+  q"key 😀: "x A long one with \"quote\" and it goes on past the eightieth column of
+    the line ok"
+  plainkey: x A long one with QquoteQ and it goes on past the eightieth column of
+    the line ok
+- name: F17
+  description: y A long plain one that goes on past the eightieth column of the line
+    ok right
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: y A long plain one that goes on past the eightieth column of the line
+      ok right
+    overrides:
+    - points
+    zz-extra-key: "y A long plain one that goes on past the eightieth column of the line ok right"
+    zz-nested:
+      deeper-key: "y A long plain one that goes on past the eightieth column of the line ok right"
+      list:
+      - "y A long plain one that goes on past the eightieth column of the line ok right"
+  "a, b": "y A long plain one that goes on past the eightieth column of the line ok right"
+  q"key 😀: "y A long plain one that goes on past the eightieth column of the line ok right"
+  plainkey: y A long plain one that goes on past the eightieth column of the line
+    ok right
+- name: F18
+  description: z "q" words words words words words words words words words words  two  spaces
+    x y
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: z "q" words words words words words words words words words words  two  spaces
+      x y
+    overrides:
+    - points
+    zz-extra-key: "z \"q\" words words words words words words words words words words\
+       two  spaces x y"
+    zz-nested:
+      deeper-key: "z \"q\" words words words words words words words words words words\
+         two  spaces x y"
+      list:
+      - "z \"q\" words words words words words words words words words words  two\
+         spaces x y"
+  "a, b": "z \"q\" words words words words words words words words words words  two\
+     spaces x y"
+  q"key 😀: "z \"q\" words words words words words words words words words words  two\
+     spaces x y"
+  plainkey: z QqQ words words words words words words words words words words  two  spaces
+    x y
+- name: F19
+  description: xx A long one with "quote" and it goes on past the eightieth column
+    of the line ok
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: xx A long one with "quote" and it goes on past the eightieth column of
+      the line ok
+    overrides:
+    - points
+    zz-extra-key: "xx A long one with \"quote\" and it goes on past the eightieth
+      column of the line ok"
+    zz-nested:
+      deeper-key: "xx A long one with \"quote\" and it goes on past the eightieth
+        column of the line ok"
+      list:
+      - "xx A long one with \"quote\" and it goes on past the eightieth column of
+        the line ok"
+  "a, b": "xx A long one with \"quote\" and it goes on past the eightieth column of
+    the line ok"
+  q"key 😀: "xx A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  plainkey: xx A long one with QquoteQ and it goes on past the eightieth column of
+    the line ok
+- name: F20
+  description: yy A long plain one that goes on past the eightieth column of the line
+    ok right
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: yy A long plain one that goes on past the eightieth column of the line
+      ok right
+    overrides:
+    - points
+    zz-extra-key: "yy A long plain one that goes on past the eightieth column of the line ok right"
+    zz-nested:
+      deeper-key: "yy A long plain one that goes on past the eightieth column of the line ok right"
+      list:
+      - "yy A long plain one that goes on past the eightieth column of the line ok right"
+  "a, b": "yy A long plain one that goes on past the eightieth column of the line ok right"
+  q"key 😀: "yy A long plain one that goes on past the eightieth column of the line ok right"
+  plainkey: yy A long plain one that goes on past the eightieth column of the line
+    ok right
+- name: F21
+  description: zz "q" words words words words words words words words words words  two  spaces
+    x y
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: zz "q" words words words words words words words words words words  two  spaces
+      x y
+    overrides:
+    - points
+    zz-extra-key: "zz \"q\" words words words words words words words words words
+      words  two  spaces x y"
+    zz-nested:
+      deeper-key: "zz \"q\" words words words words words words words words words
+        words  two  spaces x y"
+      list:
+      - "zz \"q\" words words words words words words words words words words  two\
+         spaces x y"
+  "a, b": "zz \"q\" words words words words words words words words words words  two\
+     spaces x y"
+  q"key 😀: "zz \"q\" words words words words words words words words words words  two\
+     spaces x y"
+  plainkey: zz QqQ words words words words words words words words words words  two  spaces
+    x y
+- name: F22
+  description: xxx A long one with "quote" and it goes on past the eightieth column
+    of the line ok
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: xxx A long one with "quote" and it goes on past the eightieth column
+      of the line ok
+    overrides:
+    - points
+    zz-extra-key: "xxx A long one with \"quote\" and it goes on past the eightieth
+      column of the line ok"
+    zz-nested:
+      deeper-key: "xxx A long one with \"quote\" and it goes on past the eightieth
+        column of the line ok"
+      list:
+      - "xxx A long one with \"quote\" and it goes on past the eightieth column of
+        the line ok"
+  "a, b": "xxx A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  q"key 😀: "xxx A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  plainkey: xxx A long one with QquoteQ and it goes on past the eightieth column of
+    the line ok
+- name: F23
+  description: yyy A long plain one that goes on past the eightieth column of the
+    line ok right
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: yyy A long plain one that goes on past the eightieth column of the line
+      ok right
+    overrides:
+    - points
+    zz-extra-key: "yyy A long plain one that goes on past the eightieth column of the line ok right"
+    zz-nested:
+      deeper-key: "yyy A long plain one that goes on past the eightieth column of the line ok right"
+      list:
+      - "yyy A long plain one that goes on past the eightieth column of the line ok right"
+  "a, b": "yyy A long plain one that goes on past the eightieth column of the line ok right"
+  q"key 😀: "yyy A long plain one that goes on past the eightieth column of the line ok right"
+  plainkey: yyy A long plain one that goes on past the eightieth column of the line
+    ok right
+- name: F24
+  description: zzz "q" words words words words words words words words words words  two  spaces
+    x y
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: zzz "q" words words words words words words words words words words  two  spaces
+      x y
+    overrides:
+    - points
+    zz-extra-key: "zzz \"q\" words words words words words words words words words
+      words  two  spaces x y"
+    zz-nested:
+      deeper-key: "zzz \"q\" words words words words words words words words words
+        words  two  spaces x y"
+      list:
+      - "zzz \"q\" words words words words words words words words words words  two\
+         spaces x y"
+  "a, b": "zzz \"q\" words words words words words words words words words words  two\
+     spaces x y"
+  q"key 😀: "zzz \"q\" words words words words words words words words words words\
+     two  spaces x y"
+  plainkey: zzz QqQ words words words words words words words words words words  two  spaces
+    x y
+- name: F25
+  description: xxxx A long one with "quote" and it goes on past the eightieth column
+    of the line ok
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: xxxx A long one with "quote" and it goes on past the eightieth column
+      of the line ok
+    overrides:
+    - points
+    zz-extra-key: "xxxx A long one with \"quote\" and it goes on past the eightieth
+      column of the line ok"
+    zz-nested:
+      deeper-key: "xxxx A long one with \"quote\" and it goes on past the eightieth
+        column of the line ok"
+      list:
+      - "xxxx A long one with \"quote\" and it goes on past the eightieth column of
+        the line ok"
+  "a, b": "xxxx A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  q"key 😀: "xxxx A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  plainkey: xxxx A long one with QquoteQ and it goes on past the eightieth column
+    of the line ok
+- name: F26
+  description: yyyy A long plain one that goes on past the eightieth column of the
+    line ok right
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: yyyy A long plain one that goes on past the eightieth column of the line
+      ok right
+    overrides:
+    - points
+    zz-extra-key: "yyyy A long plain one that goes on past the eightieth column of the line ok right"
+    zz-nested:
+      deeper-key: "yyyy A long plain one that goes on past the eightieth column of the line ok right"
+      list:
+      - "yyyy A long plain one that goes on past the eightieth column of the line ok right"
+  "a, b": "yyyy A long plain one that goes on past the eightieth column of the line ok right"
+  q"key 😀: "yyyy A long plain one that goes on past the eightieth column of the line ok right"
+  plainkey: yyyy A long plain one that goes on past the eightieth column of the line
+    ok right
+- name: F27
+  description: zzzz "q" words words words words words words words words words words  two  spaces
+    x y
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: zzzz "q" words words words words words words words words words words  two  spaces
+      x y
+    overrides:
+    - points
+    zz-extra-key: "zzzz \"q\" words words words words words words words words words
+      words  two  spaces x y"
+    zz-nested:
+      deeper-key: "zzzz \"q\" words words words words words words words words words
+        words  two  spaces x y"
+      list:
+      - "zzzz \"q\" words words words words words words words words words words  two\
+         spaces x y"
+  "a, b": "zzzz \"q\" words words words words words words words words words words\
+     two  spaces x y"
+  q"key 😀: "zzzz \"q\" words words words words words words words words words words\
+     two  spaces x y"
+  plainkey: zzzz QqQ words words words words words words words words words words  two  spaces
+    x y
+- name: F28
+  description: xxxxx A long one with "quote" and it goes on past the eightieth column
+    of the line ok
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: xxxxx A long one with "quote" and it goes on past the eightieth column
+      of the line ok
+    overrides:
+    - points
+    zz-extra-key: "xxxxx A long one with \"quote\" and it goes on past the eightieth
+      column of the line ok"
+    zz-nested:
+      deeper-key: "xxxxx A long one with \"quote\" and it goes on past the eightieth
+        column of the line ok"
+      list:
+      - "xxxxx A long one with \"quote\" and it goes on past the eightieth column
+        of the line ok"
+  "a, b": "xxxxx A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  q"key 😀: "xxxxx A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  plainkey: xxxxx A long one with QquoteQ and it goes on past the eightieth column
+    of the line ok
+- name: F29
+  description: yyyyy A long plain one that goes on past the eightieth column of the
+    line ok right
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: yyyyy A long plain one that goes on past the eightieth column of the
+      line ok right
+    overrides:
+    - points
+    zz-extra-key: "yyyyy A long plain one that goes on past the eightieth column of the line ok right"
+    zz-nested:
+      deeper-key: "yyyyy A long plain one that goes on past the eightieth column of the line ok right"
+      list:
+      - "yyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  "a, b": "yyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  q"key 😀: "yyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  plainkey: yyyyy A long plain one that goes on past the eightieth column of the line
+    ok right
+- name: F30
+  description: zzzzz "q" words words words words words words words words words words  two  spaces
+    x y
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: zzzzz "q" words words words words words words words words words words  two  spaces
+      x y
+    overrides:
+    - points
+    zz-extra-key: "zzzzz \"q\" words words words words words words words words words
+      words  two  spaces x y"
+    zz-nested:
+      deeper-key: "zzzzz \"q\" words words words words words words words words words
+        words  two  spaces x y"
+      list:
+      - "zzzzz \"q\" words words words words words words words words words words  two\
+         spaces x y"
+  "a, b": "zzzzz \"q\" words words words words words words words words words words\
+     two  spaces x y"
+  q"key 😀: "zzzzz \"q\" words words words words words words words words words words\
+     two  spaces x y"
+  plainkey: zzzzz QqQ words words words words words words words words words words  two  spaces
+    x y
+- name: F31
+  description: xxxxxx A long one with "quote" and it goes on past the eightieth column
+    of the line ok
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: xxxxxx A long one with "quote" and it goes on past the eightieth column
+      of the line ok
+    overrides:
+    - points
+    zz-extra-key: "xxxxxx A long one with \"quote\" and it goes on past the eightieth
+      column of the line ok"
+    zz-nested:
+      deeper-key: "xxxxxx A long one with \"quote\" and it goes on past the eightieth
+        column of the line ok"
+      list:
+      - "xxxxxx A long one with \"quote\" and it goes on past the eightieth column
+        of the line ok"
+  "a, b": "xxxxxx A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  q"key 😀: "xxxxxx A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  plainkey: xxxxxx A long one with QquoteQ and it goes on past the eightieth column
+    of the line ok
+- name: F32
+  description: yyyyyy A long plain one that goes on past the eightieth column of the
+    line ok right
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: yyyyyy A long plain one that goes on past the eightieth column of the
+      line ok right
+    overrides:
+    - points
+    zz-extra-key: "yyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+    zz-nested:
+      deeper-key: "yyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+      list:
+      - "yyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  "a, b": "yyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  q"key 😀: "yyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  plainkey: yyyyyy A long plain one that goes on past the eightieth column of the
+    line ok right
+- name: F33
+  description: zzzzzz "q" words words words words words words words words words words  two  spaces
+    x y
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: zzzzzz "q" words words words words words words words words words words  two  spaces
+      x y
+    overrides:
+    - points
+    zz-extra-key: "zzzzzz \"q\" words words words words words words words words words
+      words  two  spaces x y"
+    zz-nested:
+      deeper-key: "zzzzzz \"q\" words words words words words words words words words
+        words  two  spaces x y"
+      list:
+      - "zzzzzz \"q\" words words words words words words words words words words\
+         two  spaces x y"
+  "a, b": "zzzzzz \"q\" words words words words words words words words words words\
+     two  spaces x y"
+  q"key 😀: "zzzzzz \"q\" words words words words words words words words words words\
+     two  spaces x y"
+  plainkey: zzzzzz QqQ words words words words words words words words words words  two  spaces
+    x y
+- name: F34
+  description: xxxxxxx A long one with "quote" and it goes on past the eightieth column
+    of the line ok
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: xxxxxxx A long one with "quote" and it goes on past the eightieth column
+      of the line ok
+    overrides:
+    - points
+    zz-extra-key: "xxxxxxx A long one with \"quote\" and it goes on past the eightieth
+      column of the line ok"
+    zz-nested:
+      deeper-key: "xxxxxxx A long one with \"quote\" and it goes on past the eightieth
+        column of the line ok"
+      list:
+      - "xxxxxxx A long one with \"quote\" and it goes on past the eightieth column
+        of the line ok"
+  "a, b": "xxxxxxx A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  q"key 😀: "xxxxxxx A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  plainkey: xxxxxxx A long one with QquoteQ and it goes on past the eightieth column
+    of the line ok
+- name: F35
+  description: yyyyyyy A long plain one that goes on past the eightieth column of
+    the line ok right
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: yyyyyyy A long plain one that goes on past the eightieth column of the
+      line ok right
+    overrides:
+    - points
+    zz-extra-key: "yyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+    zz-nested:
+      deeper-key: "yyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+      list:
+      - "yyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  "a, b": "yyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  q"key 😀: "yyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  plainkey: yyyyyyy A long plain one that goes on past the eightieth column of the
+    line ok right
+- name: F36
+  description: zzzzzzz "q" words words words words words words words words words words  two  spaces
+    x y
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: zzzzzzz "q" words words words words words words words words words words  two  spaces
+      x y
+    overrides:
+    - points
+    zz-extra-key: "zzzzzzz \"q\" words words words words words words words words words
+      words  two  spaces x y"
+    zz-nested:
+      deeper-key: "zzzzzzz \"q\" words words words words words words words words words
+        words  two  spaces x y"
+      list:
+      - "zzzzzzz \"q\" words words words words words words words words words words\
+         two  spaces x y"
+  "a, b": "zzzzzzz \"q\" words words words words words words words words words words\
+     two  spaces x y"
+  q"key 😀: "zzzzzzz \"q\" words words words words words words words words words words\
+     two  spaces x y"
+  plainkey: zzzzzzz QqQ words words words words words words words words words words  two  spaces
+    x y
+- name: F37
+  description: xxxxxxxx A long one with "quote" and it goes on past the eightieth
+    column of the line ok
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: xxxxxxxx A long one with "quote" and it goes on past the eightieth column
+      of the line ok
+    overrides:
+    - points
+    zz-extra-key: "xxxxxxxx A long one with \"quote\" and it goes on past the eightieth
+      column of the line ok"
+    zz-nested:
+      deeper-key: "xxxxxxxx A long one with \"quote\" and it goes on past the eightieth
+        column of the line ok"
+      list:
+      - "xxxxxxxx A long one with \"quote\" and it goes on past the eightieth column
+        of the line ok"
+  "a, b": "xxxxxxxx A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  q"key 😀: "xxxxxxxx A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  plainkey: xxxxxxxx A long one with QquoteQ and it goes on past the eightieth column
+    of the line ok
+- name: F38
+  description: yyyyyyyy A long plain one that goes on past the eightieth column of
+    the line ok right
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: yyyyyyyy A long plain one that goes on past the eightieth column of the
+      line ok right
+    overrides:
+    - points
+    zz-extra-key: "yyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+    zz-nested:
+      deeper-key: "yyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+      list:
+      - "yyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  "a, b": "yyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  q"key 😀: "yyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  plainkey: yyyyyyyy A long plain one that goes on past the eightieth column of the
+    line ok right
+- name: F39
+  description: zzzzzzzz "q" words words words words words words words words words
+    words  two  spaces x y
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: zzzzzzzz "q" words words words words words words words words words words  two  spaces
+      x y
+    overrides:
+    - points
+    zz-extra-key: "zzzzzzzz \"q\" words words words words words words words words
+      words words  two  spaces x y"
+    zz-nested:
+      deeper-key: "zzzzzzzz \"q\" words words words words words words words words
+        words words  two  spaces x y"
+      list:
+      - "zzzzzzzz \"q\" words words words words words words words words words words\
+         two  spaces x y"
+  "a, b": "zzzzzzzz \"q\" words words words words words words words words words words\
+     two  spaces x y"
+  q"key 😀: "zzzzzzzz \"q\" words words words words words words words words words words\
+     two  spaces x y"
+  plainkey: zzzzzzzz QqQ words words words words words words words words words words  two  spaces
+    x y
+- name: F40
+  description: xxxxxxxxx A long one with "quote" and it goes on past the eightieth
+    column of the line ok
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: xxxxxxxxx A long one with "quote" and it goes on past the eightieth column
+      of the line ok
+    overrides:
+    - points
+    zz-extra-key: "xxxxxxxxx A long one with \"quote\" and it goes on past the eightieth
+      column of the line ok"
+    zz-nested:
+      deeper-key: "xxxxxxxxx A long one with \"quote\" and it goes on past the eightieth
+        column of the line ok"
+      list:
+      - "xxxxxxxxx A long one with \"quote\" and it goes on past the eightieth column
+        of the line ok"
+  "a, b": "xxxxxxxxx A long one with \"quote\" and it goes on past the eightieth column
+    of the line ok"
+  q"key 😀: "xxxxxxxxx A long one with \"quote\" and it goes on past the eightieth
+    column of the line ok"
+  plainkey: xxxxxxxxx A long one with QquoteQ and it goes on past the eightieth column
+    of the line ok
+- name: F41
+  description: yyyyyyyyy A long plain one that goes on past the eightieth column of
+    the line ok right
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: yyyyyyyyy A long plain one that goes on past the eightieth column of
+      the line ok right
+    overrides:
+    - points
+    zz-extra-key: "yyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+    zz-nested:
+      deeper-key: "yyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+      list:
+      - "yyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  "a, b": "yyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  q"key 😀: "yyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  plainkey: yyyyyyyyy A long plain one that goes on past the eightieth column of the
+    line ok right
+- name: F42
+  description: zzzzzzzzz "q" words words words words words words words words words
+    words  two  spaces x y
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: zzzzzzzzz "q" words words words words words words words words words words  two  spaces
+      x y
+    overrides:
+    - points
+    zz-extra-key: "zzzzzzzzz \"q\" words words words words words words words words
+      words words  two  spaces x y"
+    zz-nested:
+      deeper-key: "zzzzzzzzz \"q\" words words words words words words words words
+        words words  two  spaces x y"
+      list:
+      - "zzzzzzzzz \"q\" words words words words words words words words words words\
+         two  spaces x y"
+  "a, b": "zzzzzzzzz \"q\" words words words words words words words words words words\
+     two  spaces x y"
+  q"key 😀: "zzzzzzzzz \"q\" words words words words words words words words words
+    words  two  spaces x y"
+  plainkey: zzzzzzzzz QqQ words words words words words words words words words words  two  spaces
+    x y
+- name: F43
+  description: xxxxxxxxxx A long one with "quote" and it goes on past the eightieth
+    column of the line ok
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: xxxxxxxxxx A long one with "quote" and it goes on past the eightieth
+      column of the line ok
+    overrides:
+    - points
+    zz-extra-key: "xxxxxxxxxx A long one with \"quote\" and it goes on past the eightieth
+      column of the line ok"
+    zz-nested:
+      deeper-key: "xxxxxxxxxx A long one with \"quote\" and it goes on past the eightieth
+        column of the line ok"
+      list:
+      - "xxxxxxxxxx A long one with \"quote\" and it goes on past the eightieth column
+        of the line ok"
+  "a, b": "xxxxxxxxxx A long one with \"quote\" and it goes on past the eightieth
+    column of the line ok"
+  q"key 😀: "xxxxxxxxxx A long one with \"quote\" and it goes on past the eightieth
+    column of the line ok"
+  plainkey: xxxxxxxxxx A long one with QquoteQ and it goes on past the eightieth column
+    of the line ok
+- name: F44
+  description: yyyyyyyyyy A long plain one that goes on past the eightieth column
+    of the line ok right
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: yyyyyyyyyy A long plain one that goes on past the eightieth column of
+      the line ok right
+    overrides:
+    - points
+    zz-extra-key: "yyyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+    zz-nested:
+      deeper-key: "yyyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+      list:
+      - "yyyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  "a, b": "yyyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  q"key 😀: "yyyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  plainkey: yyyyyyyyyy A long plain one that goes on past the eightieth column of
+    the line ok right
+- name: F45
+  description: zzzzzzzzzz "q" words words words words words words words words words
+    words  two  spaces x y
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: zzzzzzzzzz "q" words words words words words words words words words
+      words  two  spaces x y
+    overrides:
+    - points
+    zz-extra-key: "zzzzzzzzzz \"q\" words words words words words words words words
+      words words  two  spaces x y"
+    zz-nested:
+      deeper-key: "zzzzzzzzzz \"q\" words words words words words words words words
+        words words  two  spaces x y"
+      list:
+      - "zzzzzzzzzz \"q\" words words words words words words words words words words\
+         two  spaces x y"
+  "a, b": "zzzzzzzzzz \"q\" words words words words words words words words words
+    words  two  spaces x y"
+  q"key 😀: "zzzzzzzzzz \"q\" words words words words words words words words words
+    words  two  spaces x y"
+  plainkey: zzzzzzzzzz QqQ words words words words words words words words words words  two  spaces
+    x y
+- name: F46
+  description: xxxxxxxxxxx A long one with "quote" and it goes on past the eightieth
+    column of the line ok
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: xxxxxxxxxxx A long one with "quote" and it goes on past the eightieth
+      column of the line ok
+    overrides:
+    - points
+    zz-extra-key: "xxxxxxxxxxx A long one with \"quote\" and it goes on past the eightieth
+      column of the line ok"
+    zz-nested:
+      deeper-key: "xxxxxxxxxxx A long one with \"quote\" and it goes on past the eightieth
+        column of the line ok"
+      list:
+      - "xxxxxxxxxxx A long one with \"quote\" and it goes on past the eightieth column
+        of the line ok"
+  "a, b": "xxxxxxxxxxx A long one with \"quote\" and it goes on past the eightieth
+    column of the line ok"
+  q"key 😀: "xxxxxxxxxxx A long one with \"quote\" and it goes on past the eightieth
+    column of the line ok"
+  plainkey: xxxxxxxxxxx A long one with QquoteQ and it goes on past the eightieth
+    column of the line ok
+- name: F47
+  description: yyyyyyyyyyy A long plain one that goes on past the eightieth column
+    of the line ok right
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: yyyyyyyyyyy A long plain one that goes on past the eightieth column of
+      the line ok right
+    overrides:
+    - points
+    zz-extra-key: "yyyyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+    zz-nested:
+      deeper-key: "yyyyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+      list:
+      - "yyyyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  "a, b": "yyyyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  q"key 😀: "yyyyyyyyyyy A long plain one that goes on past the eightieth column of the line ok right"
+  plainkey: yyyyyyyyyyy A long plain one that goes on past the eightieth column of
+    the line ok right
+- name: F48
+  description: zzzzzzzzzzz "q" words words words words words words words words words
+    words  two  spaces x y
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: zzzzzzzzzzz "q" words words words words words words words words words
+      words  two  spaces x y
+    overrides:
+    - points
+    zz-extra-key: "zzzzzzzzzzz \"q\" words words words words words words words words
+      words words  two  spaces x y"
+    zz-nested:
+      deeper-key: "zzzzzzzzzzz \"q\" words words words words words words words words
+        words words  two  spaces x y"
+      list:
+      - "zzzzzzzzzzz \"q\" words words words words words words words words words words\
+         two  spaces x y"
+  "a, b": "zzzzzzzzzzz \"q\" words words words words words words words words words
+    words  two  spaces x y"
+  q"key 😀: "zzzzzzzzzzz \"q\" words words words words words words words words words
+    words  two  spaces x y"
+  plainkey: zzzzzzzzzzz QqQ words words words words words words words words words
+    words  two  spaces x y

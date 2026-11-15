@@ -1,0 +1,692 @@
+# This repo's own fixture for save (PLAN.md, Phase 3.3): one string of
+# each kind a save writes, plain, double-quoted (each escape), literal
+# (each chomping and indentation indicator), long enough to fold or
+# not, as a list item, a value and an unknown key's value. Its
+# besm2_calc_po --fill is test/golden/save/scalars.fill.yaml.
+- name: Corpus
+  description: x
+  notes:
+  - "plain"
+  - "two words"
+  - "a, comma"
+  - "x: y"
+  - "x:y"
+  - "trail:"
+  - "a #b"
+  - "a#b"
+  - "#lead"
+  - " lead"
+  - "trail "
+  - "-5"
+  - "- x"
+  - "-x"
+  - "+3"
+  - ".5"
+  - ".x"
+  - "~"
+  - "null"
+  - "Null"
+  - "NULL"
+  - "nulls"
+  - "true"
+  - "yes"
+  - "123"
+  - "0x1F"
+  - "'quote"
+  - "\"dq\""
+  - "back\\slash"
+  - "tab\there"
+  - "ctl\u0001x"
+  - "delx"
+  - "nelx"
+  - "nbsp x"
+  - "ls x"
+  - "bom﻿x"
+  - "﻿lead"
+  - "émoji 😀"
+  - "×2 shots"
+  - "−3"
+  - "[br]"
+  - "{b}"
+  - "a]b"
+  - "&anc"
+  - "*al"
+  - "!tag"
+  - "|bar"
+  - ">gt"
+  - "%pc"
+  - "@at"
+  - "`bt"
+  - "?q"
+  - "? q"
+  - ""
+  - "   "
+  - "line1\nline2"
+  - "line1\nline2\n"
+  - "line1\nline2\n\n"
+  - "\nlead nl"
+  - "  indented\nnext"
+  - "a\n\nb"
+  - "a\n  b\n"
+  - "tab\tline\nx"
+  - "only\n"
+  - "\n"
+  - "\n\n"
+  - "ctl\u0001\nline"
+  - "This is a long plain description that goes on and on past the eightieth column of the line to fold it"
+  - "Short then averyveryveryveryveryveryveryveryveryveryveryveryveryveryveryverylongwordthatexceedsthewidth and more"
+  - "Thisisalongplainwordwithoutanyspacesatallthatgoespastthewidthofeightycolumnsforsureyes"
+  - "A long one, with a comma, so it is double quoted and it goes on past the eightieth column of the line"
+  - "A long one with a \"quote\" so it has escapes and it goes on past the eightieth column of the line"
+  - "A long one with two  spaces at the fold point so we can see the backslash continuation line here x"
+  - "A long plain one with two  spaces near the fold point so we can see what happens to them, okay?x"
+  - "Long × non-ASCII text — with dashes and “quotes” that runs on past the eightieth column of a line"
+  - "A long line\nthat is literal and goes on past the eightieth column of the line to see no folding at all here"
+- name: "E0"
+  description: "plain"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "plain"
+    zz-extra-key: "plain"
+- name: "E1"
+  description: "two words"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "two words"
+    zz-extra-key: "two words"
+- name: "E2"
+  description: "a, comma"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "a, comma"
+    zz-extra-key: "a, comma"
+- name: "E3"
+  description: "x: y"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "x: y"
+    zz-extra-key: "x: y"
+- name: "E4"
+  description: "x:y"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "x:y"
+    zz-extra-key: "x:y"
+- name: "E5"
+  description: "trail:"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "trail:"
+    zz-extra-key: "trail:"
+- name: "E6"
+  description: "a #b"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "a #b"
+    zz-extra-key: "a #b"
+- name: "E7"
+  description: "a#b"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "a#b"
+    zz-extra-key: "a#b"
+- name: "E8"
+  description: "#lead"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "#lead"
+    zz-extra-key: "#lead"
+- name: "E9"
+  description: " lead"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: " lead"
+    zz-extra-key: " lead"
+- name: "E10"
+  description: "trail "
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "trail "
+    zz-extra-key: "trail "
+- name: "E11"
+  description: "-5"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "-5"
+    zz-extra-key: "-5"
+- name: "E12"
+  description: "- x"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "- x"
+    zz-extra-key: "- x"
+- name: "E13"
+  description: "-x"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "-x"
+    zz-extra-key: "-x"
+- name: "E14"
+  description: "+3"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "+3"
+    zz-extra-key: "+3"
+- name: "E15"
+  description: ".5"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: ".5"
+    zz-extra-key: ".5"
+- name: "E16"
+  description: ".x"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: ".x"
+    zz-extra-key: ".x"
+- name: "E17"
+  description: "~"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "~"
+    zz-extra-key: "~"
+- name: "E18"
+  description: "null"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "null"
+    zz-extra-key: "null"
+- name: "E19"
+  description: "Null"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "Null"
+    zz-extra-key: "Null"
+- name: "E20"
+  description: "NULL"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "NULL"
+    zz-extra-key: "NULL"
+- name: "E21"
+  description: "nulls"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "nulls"
+    zz-extra-key: "nulls"
+- name: "E22"
+  description: "true"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "true"
+    zz-extra-key: "true"
+- name: "E23"
+  description: "yes"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "yes"
+    zz-extra-key: "yes"
+- name: "E24"
+  description: "123"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "123"
+    zz-extra-key: "123"
+- name: "E25"
+  description: "0x1F"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "0x1F"
+    zz-extra-key: "0x1F"
+- name: "E26"
+  description: "'quote"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "'quote"
+    zz-extra-key: "'quote"
+- name: "E27"
+  description: "\"dq\""
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "\"dq\""
+    zz-extra-key: "\"dq\""
+- name: "E28"
+  description: "back\\slash"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "back\\slash"
+    zz-extra-key: "back\\slash"
+- name: "E29"
+  description: "tab\there"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "tab\there"
+    zz-extra-key: "tab\there"
+- name: "E30"
+  description: "ctl\u0001x"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "ctl\u0001x"
+    zz-extra-key: "ctl\u0001x"
+- name: "E31"
+  description: "delx"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "delx"
+    zz-extra-key: "delx"
+- name: "E32"
+  description: "nelx"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "nelx"
+    zz-extra-key: "nelx"
+- name: "E33"
+  description: "nbsp x"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "nbsp x"
+    zz-extra-key: "nbsp x"
+- name: "E34"
+  description: "ls x"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "ls x"
+    zz-extra-key: "ls x"
+- name: "E35"
+  description: "bom﻿x"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "bom﻿x"
+    zz-extra-key: "bom﻿x"
+- name: "E36"
+  description: "﻿lead"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "﻿lead"
+    zz-extra-key: "﻿lead"
+- name: "E37"
+  description: "émoji 😀"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "émoji 😀"
+    zz-extra-key: "émoji 😀"
+- name: "E38"
+  description: "×2 shots"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "×2 shots"
+    zz-extra-key: "×2 shots"
+- name: "E39"
+  description: "−3"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "−3"
+    zz-extra-key: "−3"
+- name: "E40"
+  description: "[br]"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "[br]"
+    zz-extra-key: "[br]"
+- name: "E41"
+  description: "{b}"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "{b}"
+    zz-extra-key: "{b}"
+- name: "E42"
+  description: "a]b"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "a]b"
+    zz-extra-key: "a]b"
+- name: "E43"
+  description: "&anc"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "&anc"
+    zz-extra-key: "&anc"
+- name: "E44"
+  description: "*al"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "*al"
+    zz-extra-key: "*al"
+- name: "E45"
+  description: "!tag"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "!tag"
+    zz-extra-key: "!tag"
+- name: "E46"
+  description: "|bar"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "|bar"
+    zz-extra-key: "|bar"
+- name: "E47"
+  description: ">gt"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: ">gt"
+    zz-extra-key: ">gt"
+- name: "E48"
+  description: "%pc"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "%pc"
+    zz-extra-key: "%pc"
+- name: "E49"
+  description: "@at"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "@at"
+    zz-extra-key: "@at"
+- name: "E50"
+  description: "`bt"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "`bt"
+    zz-extra-key: "`bt"
+- name: "E51"
+  description: "?q"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "?q"
+    zz-extra-key: "?q"
+- name: "E52"
+  description: "? q"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "? q"
+    zz-extra-key: "? q"
+- name: "E53"
+  description: ""
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: ""
+    zz-extra-key: ""
+- name: "E54"
+  description: "   "
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "   "
+    zz-extra-key: "   "
+- name: "E55"
+  description: "line1\nline2"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "line1\nline2"
+    zz-extra-key: "line1\nline2"
+- name: "E56"
+  description: "line1\nline2\n"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "line1\nline2\n"
+    zz-extra-key: "line1\nline2\n"
+- name: "E57"
+  description: "line1\nline2\n\n"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "line1\nline2\n\n"
+    zz-extra-key: "line1\nline2\n\n"
+- name: "E58"
+  description: "\nlead nl"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "\nlead nl"
+    zz-extra-key: "\nlead nl"
+- name: "E59"
+  description: "  indented\nnext"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "  indented\nnext"
+    zz-extra-key: "  indented\nnext"
+- name: "E60"
+  description: "a\n\nb"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "a\n\nb"
+    zz-extra-key: "a\n\nb"
+- name: "E61"
+  description: "a\n  b\n"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "a\n  b\n"
+    zz-extra-key: "a\n  b\n"
+- name: "E62"
+  description: "tab\tline\nx"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "tab\tline\nx"
+    zz-extra-key: "tab\tline\nx"
+- name: "E63"
+  description: "only\n"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "only\n"
+    zz-extra-key: "only\n"
+- name: "E64"
+  description: "\n"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "\n"
+    zz-extra-key: "\n"
+- name: "E65"
+  description: "\n\n"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "\n\n"
+    zz-extra-key: "\n\n"
+- name: "E66"
+  description: "ctl\u0001\nline"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "ctl\u0001\nline"
+    zz-extra-key: "ctl\u0001\nline"
+- name: "E67"
+  description: "This is a long plain description that goes on and on past the eightieth column of the line to fold it"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "This is a long plain description that goes on and on past the eightieth column of the line to fold it"
+    zz-extra-key: "This is a long plain description that goes on and on past the eightieth column of the line to fold it"
+- name: "E68"
+  description: "Short then averyveryveryveryveryveryveryveryveryveryveryveryveryveryveryverylongwordthatexceedsthewidth and more"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "Short then averyveryveryveryveryveryveryveryveryveryveryveryveryveryveryverylongwordthatexceedsthewidth and more"
+    zz-extra-key: "Short then averyveryveryveryveryveryveryveryveryveryveryveryveryveryveryverylongwordthatexceedsthewidth and more"
+- name: "E69"
+  description: "Thisisalongplainwordwithoutanyspacesatallthatgoespastthewidthofeightycolumnsforsureyes"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "Thisisalongplainwordwithoutanyspacesatallthatgoespastthewidthofeightycolumnsforsureyes"
+    zz-extra-key: "Thisisalongplainwordwithoutanyspacesatallthatgoespastthewidthofeightycolumnsforsureyes"
+- name: "E70"
+  description: "A long one, with a comma, so it is double quoted and it goes on past the eightieth column of the line"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "A long one, with a comma, so it is double quoted and it goes on past the eightieth column of the line"
+    zz-extra-key: "A long one, with a comma, so it is double quoted and it goes on past the eightieth column of the line"
+- name: "E71"
+  description: "A long one with a \"quote\" so it has escapes and it goes on past the eightieth column of the line"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "A long one with a \"quote\" so it has escapes and it goes on past the eightieth column of the line"
+    zz-extra-key: "A long one with a \"quote\" so it has escapes and it goes on past the eightieth column of the line"
+- name: "E72"
+  description: "A long one with two  spaces at the fold point so we can see the backslash continuation line here x"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "A long one with two  spaces at the fold point so we can see the backslash continuation line here x"
+    zz-extra-key: "A long one with two  spaces at the fold point so we can see the backslash continuation line here x"
+- name: "E73"
+  description: "A long plain one with two  spaces near the fold point so we can see what happens to them, okay?x"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "A long plain one with two  spaces near the fold point so we can see what happens to them, okay?x"
+    zz-extra-key: "A long plain one with two  spaces near the fold point so we can see what happens to them, okay?x"
+- name: "E74"
+  description: "Long × non-ASCII text — with dashes and “quotes” that runs on past the eightieth column of a line"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "Long × non-ASCII text — with dashes and “quotes” that runs on past the eightieth column of a line"
+    zz-extra-key: "Long × non-ASCII text — with dashes and “quotes” that runs on past the eightieth column of a line"
+- name: "E75"
+  description: "A long line\nthat is literal and goes on past the eightieth column of the line to see no folding at all here"
+  attributes:
+  - name: Highly Skilled
+    level: 1
+    points: 2
+    details: "A long line\nthat is literal and goes on past the eightieth column of the line to see no folding at all here"
+    zz-extra-key: "A long line\nthat is literal and goes on past the eightieth column of the line to see no folding at all here"

@@ -9,6 +9,7 @@
 #   SOURCE        the commits they came from
 #   rules.txt     besm2_cg_po's obj/rules.txt (test/ListRules)
 #   fmt2/         pobesm2_fmt2's test/golden/ and test/golden.cases
+#   save/         --check and --fill of this repo's test/data/save/
 #   fmt/, cg/     for each fixture NAME, run in its directory as
 #                 besm2_cg_po's test/files.sh runs them:
 #     NAME.check.err           besm2_calc_po --check NAME.yaml, standard error
@@ -79,6 +80,24 @@ for d in fmt cg; do
   # Empty files say nothing; keep only those that do.
   find "$out" -type f -empty -delete
 done
+cd "$here"
+
+# This repo's own fixtures for save (test/data/save/): --check and
+# --fill only, into test/golden/save/.
+mkdir -p test/golden/save
+out="$here/test/golden/save"
+cd "$here/test/data/save"
+for f in *.yaml; do
+  n=${f%.yaml}
+  for m in check fill; do
+    st=0
+    if [ $m = fill ]; then "$calc" --fill "$f" >"$out/$n.fill.yaml" 2>"$out/$n.fill.err" || st=$?
+    else "$calc" --check "$f" >/dev/null 2>"$out/$n.check.err" || st=$?
+    fi
+    echo "$n $m $st" >>"$out/status"
+  done
+done
+find "$out" -type f -empty -delete
 cd "$here"
 
 commit() { # the commit of repo $1, and whether its tree is clean
