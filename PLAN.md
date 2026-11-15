@@ -574,11 +574,27 @@ Decided 2026-11-15:
   Oberon's message, since the page downloads a file rather than writing
   a path.
 
-### Phase 3.4 The round trip
+### Phase 3.4 The round trip [done]
 
 `test/files.sh` (from besm2_cg_po's): each saved file formats through
 pobesm2_fmt2 as the fixture's `--fill` does, and passes
 `besm2_calc_po --check`. A Node script saves them into `obj/`.
+
+Done 2026-11-15: `test/save-files.ts` saves, into `obj/files/`, each
+fixture of `testdata/` and `test/data/save/` that loads (as `--fill`,
+`[]` for none), and window.yaml given each campaign; `test/files.sh`
+then checks, live against besm2_calc_po and pobesm2_fmt2: a file is
+saved exactly when `test/golden/` has its `--fill`, and byte for byte
+as it; formatted by pobesm2_fmt2 in each of the eight formats it is
+what `--fill`'s output formats as (output, errors and status) and,
+where `test/golden/` has it, what besm2_calc_po prints of the fixture;
+and `--check` of it says what `--check` of `--fill`'s output says.
+27 files, all as `--fill`'s, 26 with no difference: `--fill` keeps
+empty-strings-2e.yaml's `value: ""` as written, and `--check` reports
+it again, of besm2_calc_po's own output too, so "passes `--check`"
+became "checks as `--fill`'s output does". Planted: a file saved that
+`--fill` refuses, and a number changed in a saved file, each failed.
+`make test` runs it.
 
 ## Phase 4 The formatters
 

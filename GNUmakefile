@@ -47,9 +47,9 @@ obj/rules.txt: src/core/rules.ts tools/listrules.ts | obj
 	$(NODE) tools/listrules.ts > $@
 
 # What needs no browser: the unit tests under Node; besm2_cg_po's
-# tools/check-rules.py on rules' listing (its rules/*.tsv, no PDF); then,
-# once it exists (Phase 3.4), test/files.sh. Fail at the end if any
-# failed.
+# tools/check-rules.py on rules' listing (its rules/*.tsv, no PDF); then
+# test/files.sh, the round trip through besm2_calc_po and pobesm2_fmt2
+# (PLAN.md, Phase 3.4). Fail at the end if any failed.
 test: node_modules obj/rules.txt | obj
 	@status=0; \
 	echo "== node --test"; $(NPM) run -s test || status=1; \
