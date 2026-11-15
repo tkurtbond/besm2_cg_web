@@ -596,11 +596,33 @@ became "checks as `--fill`'s output does". Planted: a file saved that
 `--fill` refuses, and a number changed in a saved file, each failed.
 `make test` runs it.
 
-## Phase 4 The formatters
+## Phase 4 The formatters [done]
 
 `config`, `out`, `layout`, `grid`, `terse`, `rawms`, `hmm`; the port
 of `TestOut`; pobesm2_fmt2's `golden.cases` byte for byte, then each
-fixture's four formats against `test/golden/format/`.
+fixture's ~~four~~ eight formats against ~~`test/golden/format/`~~
+`test/golden/{fmt,cg}/NAME.ID.out` and `.err` (tools/golden.sh's IDs).
+
+Done 2026-11-15: `out` keeps what is written, always (the page has no
+standard output), and `takeRope` gives it where the Oberon would flush
+it; Flush, ToFile and Close have no counterpart. `test/core/out.test.ts`
+ports TestOut, its labels kept (no buffer here; "past the buffer" is
+kept as a long write). `test/core/format.test.ts` ports Besm2Fmt's main
+(`fmt2`, with the Besm2Cli options the cases use) and runs every line of
+pobesm2_fmt2's `golden.cases` as its `test/golden.sh` does, in its
+modes (stdout, all, stdin, file), byte for byte against
+`test/golden/fmt2/`: 523 cases. A glob's matches are in bash's
+en_US.UTF-8 order (`FV2021-Coleopteran-2e` between `enyon-boase-2e`
+and `notes-2e`), which `Intl.Collator("en-US")` gives, checked for the
+`*-2e` fixtures. As a FyamlStreams stream, a resolve error ends the
+file. Then each fixture of `testdata/{fmt,cg}`, in each of the eight
+formats, as besm2_calc_po's FormatFile does it (read, saved, each saved
+entity loaded and formatted, a problem reported in its place): output
+byte for byte, errors line for line (a syntax error's words only where
+they are libfyaml's, as in `notices.test.ts`), and status: 336 runs.
+Planted, each failed: TOTAL misspelt (grid), a CP label (terse), the
+h-m-m indent, the raw ms prefix, a blank in `layout`, `-U` ignored, the
+exit marker, and `-o` output sent to standard output.
 
 ## Phase 5 The page's shell
 
