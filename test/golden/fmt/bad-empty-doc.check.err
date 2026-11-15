@@ -1,0 +1,3 @@
+besm2_calc_po: error processing bad-empty-doc.yaml: expected a top-level YAML sequence of entities in bad-empty-doc.yaml
+bad-empty-doc.yaml: difference: Good: Body (p. 15, PDF 17): points is 8 in the file, 4 by the rules: kept as an override
+bad-empty-doc.yaml: difference: Good: Body (p. 15, PDF 17): points is 8 in the file, 4 by the rules: kept as an override

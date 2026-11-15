@@ -1,0 +1,298 @@
+stat	15	17	Body	0	12	0		0	0	1	
+stat	15	17	Mind	0	12	0		0	0	1	
+stat	15	17	Soul	0	12	0		0	0	1	
+attribute	20	22	Animal Friendship	1	6	0		0	0	1	
+attribute	21	23	Appearance	1	6	0		0	0	1	
+attribute	21	23	Art of Distraction	1	6	0		0	0	1	
+attribute	22	24	Astral Projection	3	6	0		0	0	1	
+attribute	22	24	Aura of Command	1	6	0		0	0	1	
+attribute	23	25	Combat Mastery	2	6	0		0	0	1	
+attribute	23	25	Contamination	0	6	0		0	0	1	
+attribute	24	26	Damn Healthy!	1	6	0		0	0	1	
+attribute	25	27	Dimensional Portal	0	6	0	subject	0	0	1	
+attribute	26	28	Divine Relationship	1	6	0		0	0	1	
+attribute	26	28	Dynamic Sorcery	0	6	0		0	0	1	
+attribute	28	30	Elasticity	1	2	0		0	0	1	
+attribute	28	30	ECM	1	6	0	subject	0	0	1	
+attribute	29	31	Energy Bonus	1	6	0		0	0	1	
+attribute	29	31	Environmental Control	0	6	0	subject	0	0	1	
+attribute	31	33	Exorcism	1	6	0		0	0	1	
+attribute	31	33	Extra Arms	1	6	0		0	0	1	
+attribute	32	34	Extra Attacks	4	6	0		0	0	1	
+attribute	32	34	Features or Accessories	1	6	0	subject	0	0	1	
+attribute	33	35	Flight	0	6	0		0	0	1	
+attribute	34	36	Flunkies	1	6	0		0	0	1	
+attribute	35	37	Focused Damage	1	6	0	subject	0	0	1	
+attribute	35	37	Force Field	0	6	0		0	0	1	
+attribute	37	39	Ground Speed	2	6	0		0	0	1	
+attribute	38	40	Gun Bunny	1	6	0	subject	0	0	1	
+attribute	39	41	Healing	4	6	0		0	0	1	
+attribute	40	42	Heavy Armour	4	6	1		0	0	1	
+attribute	41	43	Heightened Awareness	1	2	0		0	0	1	
+attribute	41	43	Heightened Senses	1	6	0	subject	0	0	1	
+attribute	42	44	Highly Skilled	1	unlimited	0		0	0	1	
+attribute	42	44	Illusion	0	6	0		0	0	1	
+attribute	43	45	Insubstantial	4	6	0	subject	0	0	1	
+attribute	44	46	Invisibility	0	2	0		0	0	1	
+attribute	45	47	Item of Power	2	6	0	subject	0	0	1	
+attribute	46	48	Jumping	1	6	0		0	0	1	
+attribute	46	48	Kensei	1	6	0	subject	0	0	1	
+attribute	47	49	Life Support	1	2	0		0	0	1	
+attribute	48	50	Light Armour	1	6	1		0	0	1	
+attribute	48	50	Magic (and Psionics)	4	6	0	subject	0	0	1	
+attribute	51	53	Massive Damage	2	6	0		0	0	1	
+attribute	52	54	Mechanical Genius	2	6	0		0	0	1	
+attribute	53	55	Meld	0	2	0		0	0	1	
+attribute	53	55	Metamorphosis	5	6	0		0	0	1	
+attribute	55	57	Mind Control	0	6	0	subject	0	0	1	
+attribute	56	58	Mind Shield	1	6	0		0	0	1	
+attribute	57	59	Natural Weapons	1	6	0	subject	0	0	1	
+attribute	58	60	Organizational Ties	0	6	0	subject	0	0	1	
+attribute	59	61	Own a Big Mecha	4	6	1	subject	0	0	1	
+attribute	62	64	Personal Gear	1	6	0	subject	0	0	1	
+attribute	63	65	Place of Power	1	6	0	subject	0	0	1	
+attribute	63	65	Precognition	0	2	0		0	0	1	
+attribute	64	66	Regeneration	4	6	0		0	0	1	
+attribute	64	66	Reincarnation	3	6	0		0	0	1	
+attribute	65	67	Sensors	1	6	0	subject	0	0	1	
+attribute	66	68	Servant	0	6	0	subject	0	0	1	
+attribute	66	68	Shape Change	0	2	0		0	0	1	
+attribute	67	69	Shield	1	6	0		0	0	1	
+attribute	68	70	Sixth Sense	1	6	0	subject	0	0	1	
+attribute	69	71	Size Change	0	6	0		0	0	1	
+attribute	70	72	Space Flight	2	6	0		0	0	1	
+attribute	71	73	Special Defense	1	2	0	subject	0	0	1	
+attribute	71	73	Special Movement	1	6	0	subject	0	0	1	
+attribute	72	74	Speed	1	6	0		0	0	1	
+attribute	72	74	Spirit Ward	1	6	0		0	0	1	
+attribute	73	75	Star Flight	2	6	0		0	0	1	
+attribute	73	75	Stealth	1	6	0	subject	0	0	1	
+attribute	74	76	Super Strength	0	6	0		0	0	1	
+attribute	74	76	Swarm	2	6	0		0	0	1	
+attribute	75	77	Telekinesis	0	6	0	subject	0	0	1	
+attribute	76	78	Telepathy	0	6	0		0	0	1	
+attribute	78	80	Teleport	0	6	0		0	0	1	
+attribute	78	80	Transmutation	0	6	0	subject	0	0	1	
+attribute	79	81	Tunnelling	2	6	0		0	0	1	
+attribute	80	82	Unique Character Attribute	0	6	0	subject,gm-cost	0	0	1	
+attribute	81	83	Water Speed	0	6	0		0	0	1	
+attribute	81	83	Weapon Attack	4	6	0	subject	0	0	1	
+mecha-attribute	93	95	A.I.	2	6	0	mecha-only	0	0	1	
+mecha-attribute	94	96	Extra Capacity	1	6	0	mecha-only	0	0	1	
+mecha-attribute	94	96	Extra Endurance	1	6	0	mecha-only	0	0	1	
+mecha-attribute	94	96	Manoeuvre Bonus	1	6	0	subject,mecha-only	0	0	1	
+mecha-attribute	95	97	Mecha Regeneration	4	6	0	mecha-only	0	0	1	
+mecha-attribute	95	97	Mechanical Transformation	0	6	0		0	0	1	
+mecha-attribute	96	98	Merging	2	6	0		0	0	1	
+mecha-attribute	97	99	Multiple Mecha Attacks	10	6	0	mecha-only	0	0	1	
+mecha-attribute	98	100	Special Equipment	2	6	0	subject	0	0	1	
+mecha-attribute	98	100	Subordinate Mecha	1	6	0	subject,mecha-only	0	0	1	
+mecha-attribute	98	100	Summonable	4	2	0	mecha-only	0	0	1	
+mecha-attribute	99	101	Super Transformation	0	6	0	mecha-only	0	0	1	
+mecha-attribute	99	101	Toughness	4	6	0	mecha-only	0	0	1	
+defect	101	103	Ageism	1	2	0		0	0	1	
+defect	101	103	Attack Restriction	1	2	0		0	0	1	
+defect	101	103	Awkward	1	2	0		0	0	1	
+defect	101	103	Awkward Size	1	6	0	special	0	0	1	
+defect	102	104	Bane	1	2	0	special	0	0	1	
+defect	102	104	Cannot Talk	1	2	0		0	0	1	
+defect	103	105	Conditional Ownership	1	2	0	special	0	0	1	
+defect	103	105	Cursed	1	2	0	special	0	0	1	
+defect	103	105	Diminutive	3	2	0	special	0	0	1	
+defect	104	106	Easily Distracted	1	2	0		0	0	1	
+defect	104	106	Girl/Guy Magnet	1	2	0		0	0	1	
+defect	105	107	Hangar Queen	1	2	0	special	0	0	1	
+defect	105	107	Inept Combat	1	2	0		0	0	1	
+defect	105	107	Involuntary Physical Change	1	2	0	special	0	0	1	
+defect	105	107	Magical Restrictions	1	2	0	special	0	0	1	
+defect	106	108	Marked	1	2	0		0	0	1	
+defect	106	108	Nemesis	1	2	0		0	0	1	
+defect	107	109	Not So Fast	1	2	0		0	0	1	
+defect	107	109	Not So Strong	1	2	0		0	0	1	
+defect	107	109	Not So Tough	1	2	0		0	0	1	
+defect	108	110	One Arm/No Arms	1	2	0		0	0	1	
+defect	108	110	One-Way Transformation	1	2	0	special	0	0	1	
+defect	108	110	Owned By A Megacorp	1	2	0		0	0	1	
+defect	108	110	Phobia	1	2	0		0	0	1	
+defect	109	111	Physically Unappealing	1	2	0		0	0	1	
+defect	109	111	Recurring Nightmares	1	2	0		0	0	1	
+defect	109	111	Red Tape	1	2	0		0	0	1	
+defect	110	112	Restricted Ground Movement	1	2	0	special	0	0	1	
+defect	110	112	Restricted Path	1	2	0	special	0	0	1	
+defect	110	112	Sensory Impairment	1	2	0		0	0	1	
+defect	111	113	Significant Other (S.O.)	1	2	0		0	0	1	
+defect	111	113	Skeleton in the Closet	1	2	0		0	0	1	
+defect	112	114	Special Requirement	1	2	0	special	0	0	1	
+defect	112	114	Unique Character Defect	1	2	0	gm-cost	0	0	1	
+defect	112	114	Unskilled	1	2	0		0	0	1	
+defect	113	115	Volatile	1	2	0	special	0	0	1	
+defect	113	115	Vulnerability	1	2	0	special	0	0	1	
+defect	113	115	Wanted	1	2	0		0	0	1	
+mecha-defect	114	116	Crew Requirement	1	6	0	mecha-only	0	0	1	
+mecha-defect	114	116	Exposed Occupants	1	2	0	mecha-only	0	0	1	
+mecha-defect	114	116	Limited Endurance	1	2	0	mecha-only	0	0	1	
+mecha-defect	115	117	Mutual Damage	1	2	0	mecha-only	0	0	1	
+mecha-defect	115	117	Noisy	1	2	0	mecha-only	0	0	1	
+mecha-defect	115	117	Poor Manoeuvrability	1	2	0	mecha-only	0	0	1	
+mecha-defect	115	117	Reduced Capacity	1	2	0	mecha-only	0	0	1	
+mecha-defect	116	118	Start-Up Time	1	2	0	mecha-only	0	0	1	
+mecha-defect	116	118	Summoning Object	1	2	0	mecha-only	0	0	1	
+mecha-defect	116	118	Wind Powered	1	2	0	mecha-only	0	0	1	
+skill	120	122	Acrobatics	0	6	0		0	0	1	4,4,5,3,2,4,3,3
+skill	120	122	Animal Training	0	6	0		0	0	1	1,1,1,2,1,1,1,1
+skill	120	122	Architecture	0	6	0		0	0	1	2,1,1,2,2,1,1,1
+skill	121	123	Artisan	0	6	0		0	0	1	2,2,4,4,2,2,1,2
+skill	121	123	Biological Sciences	0	6	0		0	0	1	4,2,1,2,2,3,4,2
+skill	121	123	Boating	0	6	0		0	0	1	2,3,2,3,2,1,1,2
+skill	121	123	Burglary	0	6	0		0	0	1	3,2,2,4,2,2,2,2
+skill	121	123	Business Management	0	6	0		0	0	1	2,4,2,2,2,1,2,2
+skill	121	123	Computers	0	6	0		0	0	1	5,4,1,0,4,2,4,3
+skill	121	123	Controlled Breathing	0	6	0		0	0	1	1,1,3,2,2,3,1,1
+skill	121	123	Cooking	0	6	0		0	0	1	1,1,1,1,1,1,1,4
+skill	122	124	Cultural Arts	0	6	0		0	0	1	2,2,2,2,1,1,1,4
+skill	122	124	Demolitions	0	6	0		0	0	1	3,4,2,3,3,2,2,2
+skill	122	124	Disguise	0	6	0		0	0	1	3,3,3,3,2,2,2,2
+skill	122	124	Driving	0	6	0		0	0	1	3,6,2,2,4,2,2,4
+skill	122	124	Electronics	0	6	0		0	0	1	4,4,2,0,4,2,4,2
+skill	122	124	Forgery	0	6	0		0	0	1	3,4,1,2,2,2,2,2
+skill	122	124	Gaming	0	6	0		0	0	1	2,2,1,2,1,1,2,4
+skill	122	124	Interrogation	0	6	0		0	0	1	3,3,3,3,3,2,2,3
+skill	123	125	Intimidation	0	6	0		0	0	1	4,4,4,4,3,3,3,4
+skill	123	125	Law	0	6	0		0	0	1	3,2,2,2,1,1,2,2
+skill	123	125	Linguistics	0	6	0		0	0	1	2,2,2,3,2,1,2,2
+skill	123	125	Mechanics	0	6	0		0	0	1	3,4,2,2,4,2,4,3
+skill	123	125	Medical	0	6	0		0	0	1	4,3,4,4,4,3,3,2
+skill	123	125	Military Sciences	0	6	0		0	0	1	3,3,2,3,5,2,3,2
+skill	124	126	Navigation	0	6	0		0	0	1	2,3,2,2,3,2,3,2
+skill	124	126	Performing Arts	0	6	0		0	0	1	2,1,1,2,1,1,1,4
+skill	124	126	Physical Sciences	0	6	0		0	0	1	2,2,1,1,2,2,3,2
+skill	124	126	Piloting	0	6	0		0	0	1	3,4,2,0,4,1,5,2
+skill	124	126	Poisons	0	6	0		0	0	1	2,2,2,3,1,2,1,2
+skill	125	127	Police Sciences	0	6	0		0	0	1	3,4,2,2,2,2,3,2
+skill	125	127	Riding	0	6	0		0	0	1	1,1,1,3,1,1,1,2
+skill	125	127	Seduction	0	6	0		0	0	1	3,2,3,3,3,2,3,4
+skill	125	127	Sleight of Hand	0	6	0		0	0	1	2,2,2,4,2,2,2,3
+skill	125	127	Social Sciences	0	6	0		0	0	1	2,2,2,1,2,1,2,2
+skill	125	127	Sports	0	6	0		0	0	1	1,1,2,1,1,1,1,5
+skill	125	127	Stealth	0	6	0		0	0	1	4,4,4,4,4,4,4,3
+skill	126	128	Swimming	0	6	0		0	0	1	1,1,1,1,1,1,1,2
+skill	126	128	Urban Tracking	0	6	0		0	0	1	4,4,3,3,3,3,3,3
+skill	126	128	Visual Arts	0	6	0		0	0	1	1,1,2,2,1,1,1,3
+skill	126	128	Wilderness Survival	0	6	0		0	0	1	1,1,2,3,3,2,2,2
+skill	126	128	Wilderness Tracking	0	6	0		0	0	1	1,1,2,3,3,2,2,2
+skill	126	128	Writing	0	6	0		0	0	1	2,1,1,1,1,1,2,3
+skill	127	129	Archery	0	6	0		0	0	1	4,4,4,5,3,4,2,4
+skill	127	129	Gun Combat	0	6	0		0	0	1	5,6,4,0,5,4,5,3
+skill	127	129	Heavy Weapons	0	6	0		0	0	1	5,4,4,0,5,4,5,0
+skill	127	129	Melee Attack	0	6	0		0	0	1	4,4,6,5,4,5,4,5
+skill	127	129	Melee Defense	0	6	0		0	0	1	4,4,6,5,4,5,4,5
+skill	127	129	Ranged Defense	0	6	0		0	0	1	5,6,4,4,5,5,5,4
+skill	128	130	Thrown Weapons	0	6	0		0	0	1	4,4,5,4,4,4,4,4
+skill	128	130	Unarmed Attack	0	6	0		0	0	1	4,4,6,4,4,5,4,5
+skill	128	130	Unarmed Defense	0	6	0		0	0	1	4,4,6,4,4,5,4,5
+ability	83	85	Accurate	0	0	0		1	0	3	
+ability	83	85	Affects Incorporeal	0	0	0	not-personal-gear	1	0	1	
+ability	84	86	Area Effect	0	0	0		1	0	unlimited	
+ability	84	86	Aura	0	0	0		2	0	1	
+ability	84	86	Auto-Fire	0	0	0		3	0	1	
+ability	84	86	Burning	0	0	0		1	0	1	
+ability	85	87	Concealable	0	0	0		1	0	1	
+ability	85	87	Contagious	0	0	0	needs-detail	3	0	2	
+ability	85	87	Drain Body	0	0	0		1	0	1	
+ability	85	87	Drain Energy	0	0	0		1	0	1	
+ability	85	87	Drain Mind	0	0	0		1	0	1	
+ability	85	87	Drain Soul	0	0	0	not-personal-gear	1	0	1	
+ability	86	88	Flare	0	0	0		1	0	unlimited	
+ability	86	88	Flexible	0	0	0		1	0	1	
+ability	86	88	Homing	0	0	0		1	2	1	
+ability	86	88	Incapacitating	0	0	0	needs-detail	3	0	1	
+ability	86	88	Incurable	0	0	0	needs-detail,not-personal-gear	2	0	1	
+ability	86	88	Indirect	0	0	0		1	0	1	
+ability	87	89	Irritant	0	0	0		1	0	1	
+ability	87	89	Linked (Attack)	0	0	0	needs-detail	2	0	1	
+ability	87	89	Linked (Attribute)	0	0	0	needs-detail	1	0	1	
+ability	87	89	Long Range	0	0	0		1	0	unlimited	
+ability	87	89	Muscle-Powered	0	0	0		1	0	1	
+ability	88	90	No Regeneration	0	0	0	not-personal-gear	1	0	1	
+ability	88	90	Penetrating (Armour)	0	0	0		1	0	2	
+ability	88	90	Penetrating (Force Field)	0	0	0		1	0	2	
+ability	88	90	Quake	0	0	0		1	0	1	
+ability	88	90	Soul Attack	0	0	0	not-personal-gear	5	2	1	
+ability	88	90	Spreading	0	0	0		1	0	unlimited	
+ability	88	90	Stun	0	0	0		1	0	1	
+ability	88	90	Tangle	0	0	0		1	0	1	
+ability	89	91	Trap	0	0	0		1	0	1	
+ability	89	91	Unique Ability	0	0	0	gm-cost,needs-detail	1	0	unlimited	
+ability	89	91	Vampiric	0	0	0	not-personal-gear	1	2	1	
+disability	89	91	Backblast	0	0	0		1	0	2	
+disability	90	92	Drop Shields	0	0	0		1	0	1	
+disability	90	92	Exposed (Mecha Only)	0	0	0	mecha-only	1	0	1	
+disability	90	92	Extra Energy	0	0	0		1	0	unlimited	
+disability	90	92	Fixed (Mecha Only)	0	0	0	mecha-only	1	0	1	
+disability	90	92	Inaccurate	0	0	0		1	0	3	
+disability	90	92	Internal	0	0	0	needs-detail	1	0	1	
+disability	90	92	Limited Shots	0	0	0		1	0	3	
+disability	90	92	Low Penetration	0	0	0		1	0	1	
+disability	91	93	Melee	0	0	0		2	0	1	
+disability	91	93	No Damage	0	0	0		1	0	1	
+disability	91	93	Only In (Environment)	0	0	0	needs-detail	1	2	1	
+disability	91	93	Self-Destruct	0	0	0		4	0	1	
+disability	91	93	Short Range	0	0	0		1	0	1	
+disability	91	93	Slow	0	0	0		1	0	5	
+disability	91	93	Static	0	0	0		1	0	1	
+disability	91	93	Stoppable	0	0	0		1	0	unlimited	
+disability	92	94	Toxic	0	0	0		1	0	1	
+disability	92	94	Unique Weapon Disability	0	0	0	gm-cost,needs-detail	1	0	unlimited	
+disability	92	94	Unreliable	0	0	0		1	0	1	
+disability	92	94	Uses Energy	0	0	0		1	0	2	
+alias	Electronic Counter-Measures (ECM)	ECM
+alias	Own a Big Mecha (OBM)	Own a Big Mecha
+alias	OBM	Own a Big Mecha
+alias	Weapon Attack (or Special Attack)	Weapon Attack
+alias	Special Attack	Weapon Attack
+alias	Artificial Intelligence (A.I.)	A.I.
+alias	Wind-Powered	Wind Powered
+alias	Magic (or Psionics)	Magic (and Psionics)
+alias	Magic	Magic (and Psionics)
+alias	Significant Other	Significant Other (S.O.)
+alias	Features	Features or Accessories
+alias	Accessories	Features or Accessories
+alias	Weapon	Weapon Attack
+alias	Hanger Queen	Hangar Queen
+alias	Super-Strength	Super Strength
+alias	Armour	Heavy Armour
+alias	Unique Defect	Unique Character Defect
+alias	Unarmed Defence	Unarmed Defense
+exclude	Accurate	Linked (Attack)
+exclude	Area Effect	Vampiric
+exclude	Aura	Quake
+exclude	Aura	Backblast
+exclude	Aura	Melee
+exclude	Aura	Short Range
+exclude	Linked (Attack)	Long Range
+exclude	Linked (Attack)	Inaccurate
+exclude	Linked (Attack)	Low Penetration
+exclude	Linked (Attack)	Melee
+exclude	Linked (Attack)	Short Range
+exclude	Linked (Attack)	Slow
+exclude	Long Range	Melee
+exclude	Long Range	Short Range
+exclude	Penetrating (Armour)	Low Penetration
+exclude	Penetrating (Force Field)	Low Penetration
+exclude	Limited Shots	Self-Destruct
+exclude	Melee	Short Range
+exclude	Melee	Stoppable
+section	15	Step 3: Assign Stats
+section	16	Step 4: Character Attributes
+section	82	Alternate Attacks
+section	83	Weapon Attack Abilities
+section	89	Attack Disabilities
+section	93	Mecha-Only Attributes
+section	100	Step 5: Character Defects
+section	114	Mecha-Only Defects
+section	117	Step 6: Skill System
+section	117	Skill Point Costs
+section	129	Step 7: Derived Values
+section	130	Shock Value (Optional)
+section	130	Step 8: Background Points
+section	166	Staged Stat Cost — Optional Rule

@@ -75,7 +75,7 @@ the same with DOM elements, as ova_cg_web's does.
 
 ```
 package.json, package-lock.json
-tsconfig.base.json, tsconfig.core.json, tsconfig.ui.json, tsconfig.test.json
+tsconfig.base.json, tsconfig.core.json, tsconfig.ui.json, tsconfig.json (the tests')
 GNUmakefile                 make, make test, make test-browser, ...
 build/build.mjs             esbuild, then inline.mjs: dist/besm2_cg_web.html
 build/inline.mjs            copied from ova_cg_web
@@ -120,6 +120,7 @@ test/golden/                made by make golden; SOURCE names the commits
 testdata/fmt/               pobesm2_fmt2's test/data/, copied
 testdata/cg/                besm2_cg_po's test/data/, copied
 tools/listrules.ts          rules' tables as ListRules prints them
+tools/golden.sh             make golden
 obj/, dist/                 ignored by git
 ```
 
@@ -208,7 +209,7 @@ are replaced with libfyaml's. From besm2_cg_po's `Besm2Save` and the
   double-quoted (`- "partial, thin area"`); a multi-line text is a
   literal block. The test for "plain" is `Besm2Save`'s
   `CreateStyledScalar` together with what libfyaml's emitter does
-  with the style it is given; Phase 3.4 reads both and ports them,
+  with the style it is given; Phase 3.3 reads both and ports them,
   then proves them on a corpus of awkward strings (leading and
   trailing spaces, `: `, ` #`, indicators, `yes`/`no`/`~`/numbers,
   non-ASCII, `−`, empty) saved through besm2_calc_po.
@@ -309,41 +310,67 @@ ova_cg_web's for the page. Each phase ends with `make test` (and
 `make test-browser` from Phase 5) passing, and its decisions and
 findings recorded here.
 
-## Phase 0 Skeleton
+## Phase 0 Skeleton [done]
 
-### Phase 0.1 The toolchain
+### Phase 0.1 The toolchain [done]
 
-`package.json` with ova_cg_web's pinned versions, the three tsconfigs,
-`.gitignore`, prettier's settings, the GNUmakefile's targets (stubs
-where a phase hasn't come), `npm ci`. A trivial core module and test,
-a trivial UI test on happy-dom.
+`package.json` with ova_cg_web's pinned versions (TypeScript 7.0.2,
+esbuild 0.28.2, `yaml` 2.9.1, happy-dom 21.0.4, Playwright 1.65.0,
+prettier 3.9.10, @types/node 22.20.5); ova_cg_web's three tsconfig
+projects (`tsconfig.core.json` with no DOM and no Node,
+`tsconfig.ui.json` with the DOM, `tsconfig.json` for the tests, tools
+and build), `.gitignore`, prettier's settings; the GNUmakefile's
+targets as far as Phase 0 needs them (`make`, `debug`, `test`,
+`test-browser`, `check`, `golden`, `clean`; `check-pages` comes with
+Phase 1, `check-guide` with 14, `version` and `release` with 15).
+`test/ui/happydom.test.ts` shows happy-dom gives the tests a document.
 
-### Phase 0.2 The single-file build
+### Phase 0.2 The single-file build [done]
 
-`build/` copied from ova_cg_web; `src/index.html` with the CSP
-(`default-src 'none'`, inline script and style, and the `data:,`
-favicon); a Playwright test that the page loads from `file://` and
-`http://` in both browsers and makes no request. Install no browser
-without the user's go-ahead; ova_cg_web's are in `~/.cache/ms-playwright/`.
+`build/inline.mjs` and its test copied from ova_cg_web; `build/build.mjs`
+copied without the guide and the size budget, which come in their
+phases. `src/index.html` with the CSP (`default-src 'none'`, inline
+script and style, `img-src data:` for the empty icon), and a
+placeholder `src/main.ts`. `test/browser/build.spec.ts` opens the page
+in headless Chromium and Firefox from `file://` and from `http://`
+(`test/browser/serve.ts`, on port 8714, so it doesn't meet
+ova_cg_web's 8713) and finds no request and no error; a planted image
+request made it fail in both. Playwright uses the browsers ova_cg_web
+installed (chromium-1254, firefox-1572); none was added.
 
-### Phase 0.3 Fixtures and golden files
+### Phase 0.3 Fixtures and golden files [done]
 
-`testdata/fmt/` and `testdata/cg/` copied. `make golden` runs
-besm2_calc_po (`BESM2_CALC_PO`) and pobesm2_fmt2 (`POBESM2_FMT2`)
-where they are built, writing only `test/golden/`:
+`make golden` (`tools/golden.sh`) copies the fixtures and makes the
+golden files from besm2_calc_po (`BESM2_CALC_PO`) and pobesm2_fmt2
+(`POBESM2_FMT2`) where they are built. It stops if a binary (or
+besm2_cg_po's `obj/rules.txt`) is older than its sources; it never
+rebuilds another repo. It writes only `testdata/` and `test/golden/`:
 
-- `fill/NAME.yaml` and `fill/NAME.notices`: `--fill` of each fixture,
-  its standard output and standard error, and its exit status;
-- `check/NAME.notices`: `--check` of each fixture;
-- `format/CASE.*`: each format (grid, `-t`, `-m`, `-H`) of each
-  fixture's `--fill` output with the default options, and pobesm2_fmt2's
-  `test/golden.cases` copied with its golden files;
-- `rules.txt`: besm2_cg_po's `obj/rules.txt`;
-- `SOURCE`: the commits of besm2_cg_po and pobesm2_fmt2 (and whether
-  each tree was clean), and the binaries' dates.
+- `testdata/fmt/`: pobesm2_fmt2's `test/data/` (33 fixtures);
+  `testdata/cg/`: besm2_cg_po's `test/data/` (9).
+- `test/golden/fmt/` and `test/golden/cg/`, for each fixture NAME, run
+  in its directory as besm2_cg_po's `test/files.sh` runs them, so a
+  message names the file as `NAME.yaml`:
+  - `NAME.check.err`: `--check`'s standard error;
+  - `NAME.fill.yaml`, `NAME.fill.err`: `--fill`'s output and notices;
+  - `NAME.ID.out`, `NAME.ID.err`: the formats of the file as
+    besm2_calc_po prints them (computed, overrides marked), ID one of
+    `grid` (the default), `t`, `m`, `H`, `H-S`, `1`, `b`, `l`, the
+    options `test/files.sh` tries, with `-t`;
+  - `window.with-CAMPAIGN.{check,fill}.*`: each campaign fixture given
+    to `window.yaml` with `--campaign`, as besm2_cg_po's `test/cli.sh`
+    does (a campaign file on its own isn't an entity file, and
+    besm2_calc_po refuses it);
+  - `status`: `NAME MODE STATUS`, a line per run.
+  Empty outputs are not kept.
+- `test/golden/fmt2/`: pobesm2_fmt2's `test/golden/` and
+  `test/golden.cases`, copied.
+- `test/golden/rules.txt`: besm2_cg_po's `obj/rules.txt`.
+- `test/golden/SOURCE`: the two commits, and whether each tree was
+  clean.
 
-If a binary is older than its sources, `make golden` says so and
-stops; it never rebuilds another repo.
+Made from besm2_cg_po 42e58e1 and pobesm2_fmt2 78a0fe6 (2026-11-15):
+1,070 files, 4.6 MB.
 
 ## Phase 1 rules
 
@@ -367,13 +394,13 @@ questions above, answered and tested.
 ### Phase 3.2 character and check
 
 The model, load notices and edits; the port of `TestModel` and
-`Check`; every fixture's notices match `test/golden/fill/*.notices`
-and `check/*.notices`.
+`Check`; every fixture's notices match its `NAME.fill.err` and
+`NAME.check.err`.
 
 ### Phase 3.3 save
 
 The YAML a save writes; every fixture loaded and saved is byte for byte
-its `fill/NAME.yaml`, and loads again with no notices and the same
+its `NAME.fill.yaml`, and loads again with no notices and the same
 bytes.
 
 ### Phase 3.4 The round trip
@@ -485,7 +512,14 @@ What the port finds out about TypeScript, the `yaml` library, libfyaml,
 esbuild and the browsers that besm2_cg_po's design didn't have to know.
 ova_cg_web's "Findings" are taken as known and not repeated.
 
-(None yet.)
+- **The empty icon needs `img-src data:`** (2026-11-15, headless
+  Chromium 1254 and Firefox 1572): with `default-src 'none'` alone,
+  both report the `data:,` icon blocked as a console error.
+  ova_cg_web's policy allowed `data:` images for its portrait, so it
+  never met this.
+- **npm 11 doesn't run esbuild's `postinstall`** (`allow-scripts`)
+  unless approved; the build works without it, since the platform's
+  binary comes as an optional dependency (2026-11-15).
 
 ## Open questions
 

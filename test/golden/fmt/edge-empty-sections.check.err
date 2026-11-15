@@ -1,0 +1,5 @@
+edge-empty-sections.yaml: warning: Sparse: derived: an empty list
+edge-empty-sections.yaml: warning: Sparse: attributes: an empty list
+edge-empty-sections.yaml: warning: Sparse: defects: an empty list
+edge-empty-sections.yaml: warning: Sparse: skills: an empty list
+edge-empty-sections.yaml: difference: Sparse: Body (p. 15, PDF 17): points is 0 in the file, 4 by the rules: kept as an override

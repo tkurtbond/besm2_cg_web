@@ -84,7 +84,7 @@ make clean           # rm -rf obj dist
 - **The built page loads nothing from the network**: no CDN, no web
   fonts, no analytics. Everything is inlined, so it works offline from
   `file://`. `make test-browser` checks that it makes no request.
-- **`testdata/` is copied, never edited**: `testdata/fmt/` is
+- **`testdata/` is copied by `make golden`, never edited**: `testdata/fmt/` is
   pobesm2_fmt2's `test/data/` (itself the Ada besm2_fmt's), and
   `testdata/cg/` is besm2_cg_po's `test/data/`. A fixture changes in
   its own repo first, then down the chain to here. Likewise

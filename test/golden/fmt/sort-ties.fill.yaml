@@ -1,0 +1,60 @@
+- name: Ties
+  attributes:
+  - name: armour
+    level: 1
+    points: 1
+    overrides:
+    - points
+  - name: Armour
+    level: 2
+    points: 2
+    overrides:
+    - points
+  - name: ARMOUR
+    level: 3
+    points: 3
+    overrides:
+    - points
+  - name: Aegis
+    level: 1
+    points: 1
+    overrides:
+    - points
+  - name: armour
+    level: 4
+    points: 4
+    overrides:
+    - points
+  defects:
+  - name: slow
+    points: -1
+  - name: Slow
+    points: -2
+  - name: SLOW
+    points: -3
+  skills:
+  - name: law
+    level: 1
+    points: 1
+    overrides:
+    - points
+  - name: Law
+    level: 2
+    points: 2
+    overrides:
+    - points
+  - name: LAW
+    level: 3
+    points: 3
+    overrides:
+    - points
+  - name: Law
+    level: 4
+    points: 4
+    overrides:
+    - points
+  - name: lAw
+    level: 5
+    points: 5
+    overrides:
+    - points

@@ -1,0 +1,138 @@
+- name: Rana “Frog” Élan
+  tagline: "  A swamp hero, trimmed.  "
+  description: One line of description.
+  size: Small
+  stats:
+  - name: Body
+    value: 5
+    points: 10
+    overrides:
+    - points
+  - name: Mind
+    value: 4
+    points: 8
+    overrides:
+    - points
+  - name: Soul
+    value: 3
+    points: 6
+    overrides:
+    - points
+  derived:
+  - name: ACV
+    value: 5
+    alternatives:
+    - 6 hand-to-hand
+    - 4 ranged
+    overrides:
+    - value
+  - name: DCV
+    value: 3
+  - name: DM
+    value: 1
+  - name: AR
+    value: 0
+    overrides:
+    - value
+  - name: XYZ
+    value: 7
+  attributes:
+  - name: Weapon Attack
+    level: 3
+    points: 12
+    effective: 5
+    details: |
+      Damage 45, Tongue lash
+    elements:
+    - Water
+    - air
+    - Earth
+    enhancements:
+    - Area
+    - - Range
+      - 5
+    - - Zone
+      - 2
+      - Swamp
+    - - Big
+      - 3
+      - lakes
+      - ponds
+      - rivers
+    limiters:
+    - Slow
+    - - Short
+      - 1
+  - name: élan vital
+    level: 1
+    points: 2
+    overrides:
+    - points
+  - name: Zebra Stripes
+    level: 1
+    points: 1
+    overrides:
+    - points
+  - name: “Quoted” Power
+    level: 2
+    points: 4
+    overrides:
+    - points
+  - name: armour
+    level: 1
+    points: 4
+    effective: ""
+  defects:
+  - name: Marked
+    points: -1
+    details: |
+      Green skin,
+      webbed feet
+  - name: Awkward
+    points: -2
+  skills:
+  - name: Swimming
+    level: 2
+    points: 4
+    specialisations:
+    - Underwater
+    - Racing
+    overrides:
+    - points
+  - name: acrobatics
+    level: 1
+    points: 2
+    overrides:
+    - points
+- name: Unit 7
+  mecha: false
+  attributes:
+  - name: Armour
+    level: 1
+    points: 4
+  defects:
+  - name: Fragile
+    points: -3
+- tagline: No name here
+  mecha: true
+  stats:
+  - name: Body
+    value: 2
+    points: 4
+    overrides:
+    - points
+  attributes:
+  - name: Flight
+    level: 1
+    points: 4
+    enhancements:
+    - Silent
+  defects:
+  - name: Big
+    points: -6
+  skills:
+  - name: Piloting
+    level: 1
+    points: 1
+    overrides:
+    - points

@@ -1,0 +1,87 @@
+- name: Lieutenant Enyon Boase
+  stats:
+  - name: Body
+    value: 8
+    points: 8
+  - name: Mind
+    value: 6
+    points: 6
+  - name: Soul
+    value: 6
+    points: 6
+  derived:
+  - name: ACV
+    value: 9
+  - name: DCV
+    value: 7
+  - name: HP
+    value: 70
+  - name: EP
+    value: 60
+  - name: SV
+    value: 14
+  attributes:
+  - name: Combat Mastery
+    level: 3
+    points: 6
+  - name: Extra Attacks
+    level: 1
+    points: 4
+    details: +1 Extra Attack
+  - name: "Own a Big Mecha: FV2021 Coleopteran"
+    level: 2
+    points: 8
+  defects:
+  - name: "Conditional Ownership: Army ownership"
+    points: -2
+  - name: "Unique Defect: Obsessed by Military History"
+    points: -1
+  skills:
+  - name: Interrogation
+    level: 1
+    points: 3
+    overrides:
+    - points
+  - name: Law
+    level: 1
+    points: 1
+    specialisations:
+    - Military
+    overrides:
+    - points
+  - name: Military Sciences
+    level: 1
+    points: 5
+    specialisations:
+    - Leadership
+    overrides:
+    - points
+  - name: Persuasion
+    level: 1
+    points: 3
+    overrides:
+    - points
+  - name: Social Sciences
+    level: 1
+    points: 2
+    specialisations:
+    - Politics
+    overrides:
+    - points
+  - name: Stealth
+    level: 1
+    points: 4
+    overrides:
+    - points
+  - name: Visual Arts
+    level: 1
+    points: 1
+    overrides:
+    - points
+  - name: Writing
+    level: 1
+    points: 1
+    specialisations:
+    - Reports
+    overrides:
+    - points

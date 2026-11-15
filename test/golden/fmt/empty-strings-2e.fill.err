@@ -1,0 +1,18 @@
+empty-strings-2e.yaml: warning: entity 1: name: an empty string
+empty-strings-2e.yaml: warning: entity 1: tagline: an empty string
+empty-strings-2e.yaml: warning: entity 1: description: an empty string
+empty-strings-2e.yaml: warning: entity 1: size: an empty string
+empty-strings-2e.yaml: warning: Tagline that trims to nothing: tagline: an empty string
+empty-strings-2e.yaml: warning: Tagline that trims to nothing: attributes/Empty Effective/effective: an empty string
+empty-strings-2e.yaml: warning: Tagline that trims to nothing: attributes/Empty Effective/details: an empty string
+empty-strings-2e.yaml: warning: Tagline that trims to nothing: attributes/Blank Details/details: an empty string
+empty-strings-2e.yaml: warning: Tagline that trims to nothing: defects/Empty Details/details: an empty string
+empty-strings-2e.yaml: warning: Tagline that trims to nothing: skills/No Specialisations/specialisations: an empty list
+empty-strings-2e.yaml: warning: entity 3: stats/0/name: an empty string
+empty-strings-2e.yaml: warning: entity 3: stats/0/value: an empty string
+empty-strings-2e.yaml: warning: entity 3: derived/ACV/value: an empty string
+empty-strings-2e.yaml: warning: Tagline that trims to nothing: Empty Effective: not in the rulebook: points 2 kept as an override
+empty-strings-2e.yaml: warning: Tagline that trims to nothing: Blank Details: not in the rulebook: points 1 kept as an override
+empty-strings-2e.yaml: warning: Tagline that trims to nothing: No Specialisations: not in the rulebook: points 1 kept as an override
+empty-strings-2e.yaml: warning: entity 3: "": not a Stat of the rulebook: points 0 kept as an override
+empty-strings-2e.yaml: difference: entity 3: ACV (p. 129, PDF 131): value is "" in the file, not a number: kept as written

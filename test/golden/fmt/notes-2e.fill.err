@@ -1,0 +1,4 @@
+notes-2e.yaml: warning: Empty Notes: notes: an empty list
+notes-2e.yaml: difference: With Skills: Body (p. 15, PDF 17): points is 8 in the file, 4 by the rules: kept as an override
+notes-2e.yaml: warning: With Skills: no genre in creation to price Skills by (Table 2-4, p. 119, PDF 121): their points kept as overrides
+notes-2e.yaml: difference: Empty Notes: Mind (p. 15, PDF 17): points is 6 in the file, 3 by the rules: kept as an override

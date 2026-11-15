@@ -1,0 +1,39 @@
+Unpriced
+--------
+
+.. raw:: ms
+
+   .LP
+   .TS
+   tab(#) ;
+   c c lx .
+   =
+   \fBLEVEL\fP#\fBPOINTS\fP#\fBSKILL\fP
+   2#8#T{
+   Driving
+   T}
+   1#99#T{
+   Gaming
+   T}
+   1#5#T{
+   Mecha Piloting
+   T}
+
+   #\fB0\fP#\fBTOTAL\fP
+   =
+   .TE
+
+Campaign
+--------
+
+.. raw:: ms
+
+   .LP
+   .TS
+   tab(#) ;
+   c c lx .
+   =
+   #\fB0\fP#\fBTOTAL\fP
+   =
+   .TE
+

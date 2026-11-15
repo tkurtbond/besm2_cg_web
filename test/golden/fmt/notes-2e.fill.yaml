@@ -1,0 +1,30 @@
+- name: Notes Only
+  notes:
+  - Second note first; order is kept
+  - |
+    A block note,
+    on two lines
+  - "  Padded  "
+- name: With Skills
+  stats:
+  - name: Body
+    value: 4
+    points: 8
+    overrides:
+    - points
+  skills:
+  - name: Driving
+    level: 1
+    points: 1
+    overrides:
+    - points
+  notes:
+  - Drives a truck
+- name: Empty Notes
+  stats:
+  - name: Mind
+    value: 3
+    points: 6
+    overrides:
+    - points
+  notes: []

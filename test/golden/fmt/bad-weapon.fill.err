@@ -1,0 +1,5 @@
+besm2_calc_po: error processing bad-weapon.yaml: /1/attributes/0/abilities/0: not a name or a mapping
+besm2_calc_po: bad-weapon.yaml: error: /2/attributes/0/disabilities/0: missing required key "name"
+besm2_calc_po: error processing bad-weapon.yaml: /3/attributes/0/disabilities/0/counts-as: counts-as must be positive
+besm2_calc_po: error processing bad-weapon.yaml: /4/attributes/0/abilities: not a sequence
+besm2_calc_po: bad-weapon.yaml: not written, since an entity didn't load

@@ -1,0 +1,44 @@
+- name: ""
+  tagline: ""
+  description: ""
+  size: ""
+  stats:
+  - name: Body
+    value: 4
+    points: 4
+- name: Tagline that trims to nothing
+  tagline: "   "
+  attributes:
+  - name: Empty Effective
+    level: 2
+    points: 2
+    effective: ""
+    details: ""
+    overrides:
+    - points
+  - name: Blank Details
+    level: 1
+    points: 1
+    details: "  "
+    overrides:
+    - points
+  defects:
+  - name: Empty Details
+    points: -1
+    details: ""
+  skills:
+  - name: No Specialisations
+    level: 1
+    points: 1
+    specialisations: []
+    overrides:
+    - points
+- stats:
+  - name: ""
+    value: ""
+    points: 0
+    overrides:
+    - points
+  derived:
+  - name: ACV
+    value: ""

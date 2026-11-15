@@ -1,0 +1,2 @@
+besm2_calc_po: bad-bool.yaml:5:10: error: /1/mecha: not a valid boolean: "maybe"
+bad-bool.yaml: difference: Good: Body (p. 15, PDF 17): points is 8 in the file, 4 by the rules: kept as an override

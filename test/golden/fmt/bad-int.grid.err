@@ -1,0 +1,1 @@
+besm2_calc_po: bad-int.yaml:5:42: error: /1/stats/0/points: not a valid integer: "lots"

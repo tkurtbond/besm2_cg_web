@@ -1,0 +1,6 @@
+# Made up, for TestWindow (PLAN.md, Part B, step 10): a creation that
+# writes an option turned off, which a copy of it must keep.
+- name: Options
+  creation:
+    genre: Cyberpunk
+    options: {staged-stat-cost: false}

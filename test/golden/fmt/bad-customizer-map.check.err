@@ -1,0 +1,2 @@
+besm2_calc_po: error processing bad-customizer-map.yaml: /1/attributes/0/limiters/0: do not understand customizer
+bad-customizer-map.yaml: difference: Good: Body (p. 15, PDF 17): points is 8 in the file, 4 by the rules: kept as an override

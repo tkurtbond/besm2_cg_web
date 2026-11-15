@@ -1,0 +1,2 @@
+FV2021-Coleopteran-2e.yaml: warning: FV2021 Coleopteran: bogus: an empty string
+FV2021-Coleopteran-2e.yaml: difference: FV2021 Coleopteran: Heavy Armour (p. 40, PDF 42): points is 7 in the file, 8 by the rules: kept as an override

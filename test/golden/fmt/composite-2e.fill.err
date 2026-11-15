@@ -1,0 +1,4 @@
+composite-2e.yaml: warning: FV2021 Coleopteran: bogus: an empty string
+composite-2e.yaml: warning: Lieutenant Enyon Boase: Persuasion: not in the rulebook: points 3 kept as an override
+composite-2e.yaml: warning: Lieutenant Enyon Boase: no genre in creation to price Skills by (Table 2-4, p. 119, PDF 121): their points kept as overrides
+composite-2e.yaml: difference: FV2021 Coleopteran: Heavy Armour (p. 40, PDF 42): points is 7 in the file, 8 by the rules: kept as an override

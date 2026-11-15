@@ -1,0 +1,7 @@
+- name: Lieutenant Commander Theodora Wilhelmina Featherstonehaugh
+  stats:
+  - name: Body
+    value: 4
+    points: 9
+    overrides:
+    - points

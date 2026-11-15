@@ -1,0 +1,5 @@
+# Made up, for TestWindow: a number the rules compute differently, with
+# a name long enough that its notice is wrapped.
+- name: Lieutenant Commander Theodora Wilhelmina Featherstonehaugh
+  stats:
+    - {name: Body, value: 4, points: 9}

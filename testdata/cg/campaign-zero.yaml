@@ -1,0 +1,4 @@
+# Made up, for TestModel (PLAN.md, Part B, step 10a): a floor of 0,
+# which is refused.
+creation:
+  options: {stat-points-floor: 0}

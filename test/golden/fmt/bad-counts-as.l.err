@@ -1,0 +1,2 @@
+besm2_calc_po: error processing bad-counts-as.yaml: /1/attributes/0/limiters/0/1: counts-as must be positive
+besm2_calc_po: error processing bad-counts-as.yaml: /2/attributes/0/enhancements/0/1: counts-as must be positive

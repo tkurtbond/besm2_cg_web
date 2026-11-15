@@ -1,0 +1,2 @@
+besm2_calc_po: error processing campaign-extra.yaml: expected a top-level YAML sequence of entities in campaign-extra.yaml
+besm2_calc_po: campaign-extra.yaml: not written, since an entity didn't load

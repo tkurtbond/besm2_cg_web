@@ -1,0 +1,15 @@
+synthetic-2e.yaml: warning: Rana “Frog” Élan: attributes/Weapon Attack: enhancements are 4th Edition's, deprecated for 2nd Edition files
+synthetic-2e.yaml: warning: Rana “Frog” Élan: attributes/Weapon Attack: limiters are 4th Edition's, deprecated for 2nd Edition files
+synthetic-2e.yaml: warning: Rana “Frog” Élan: attributes/armour/effective: an empty string
+synthetic-2e.yaml: warning: entity 3: attributes/Flight: enhancements are 4th Edition's, deprecated for 2nd Edition files
+synthetic-2e.yaml: difference: Rana “Frog” Élan: Body (p. 15, PDF 17): points is 10 in the file, 5 by the rules: kept as an override
+synthetic-2e.yaml: difference: Rana “Frog” Élan: Mind (p. 15, PDF 17): points is 8 in the file, 4 by the rules: kept as an override
+synthetic-2e.yaml: difference: Rana “Frog” Élan: Soul (p. 15, PDF 17): points is 6 in the file, 3 by the rules: kept as an override
+synthetic-2e.yaml: difference: Rana “Frog” Élan: ACV (p. 129, PDF 131): value is 5 in the file, 4 by the rules: kept as an override
+synthetic-2e.yaml: difference: Rana “Frog” Élan: AR (p. 129, PDF 131): value is 0 in the file, 10 by the rules: kept as an override
+synthetic-2e.yaml: warning: Rana “Frog” Élan: élan vital: not in the rulebook: points 2 kept as an override
+synthetic-2e.yaml: warning: Rana “Frog” Élan: Zebra Stripes: not in the rulebook: points 1 kept as an override
+synthetic-2e.yaml: warning: Rana “Frog” Élan: “Quoted” Power: not in the rulebook: points 4 kept as an override
+synthetic-2e.yaml: warning: Rana “Frog” Élan: no genre in creation to price Skills by (Table 2-4, p. 119, PDF 121): their points kept as overrides
+synthetic-2e.yaml: warning: entity 3: Body (p. 15, PDF 17): a mecha's Stat: points 4 kept as an override
+synthetic-2e.yaml: warning: entity 3: no genre in creation to price Skills by (Table 2-4, p. 119, PDF 121): their points kept as overrides

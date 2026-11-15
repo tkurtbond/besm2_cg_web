@@ -1,0 +1,3 @@
+besm2_calc_po: error processing bad-root.yaml: expected a top-level YAML sequence of entities in bad-root.yaml
+bad-root.yaml: difference: Good: Body (p. 15, PDF 17): points is 8 in the file, 4 by the rules: kept as an override
+bad-root.yaml: difference: Good: Body (p. 15, PDF 17): points is 8 in the file, 4 by the rules: kept as an override

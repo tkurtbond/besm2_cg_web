@@ -1,0 +1,28 @@
+- name: Unpriced
+  skills:
+  - name: Driving
+    level: 2
+    points: 8
+    overrides:
+    - points
+  - name: Gaming
+    level: 1
+    points: 99
+    overrides:
+    - points
+  - name: Mecha Piloting
+    level: 1
+    points: 5
+    overrides:
+    - points
+- name: Campaign
+  creation:
+    character-points: 45
+    background-points: 2
+    genre: Cyberpunk
+    options:
+      stat-ceiling: 10
+    house-skills:
+    - name: Mecha Piloting
+      costs:
+        Cyberpunk: 5

@@ -1,0 +1,40 @@
+- name: Empty items
+  derived:
+  - name: ACV
+    value: 9
+    alternatives:
+    - ""
+    overrides:
+    - value
+  - name: DCV
+    value: 7
+    alternatives:
+    - ""
+    - ""
+  - name: HP
+    value: 60
+    alternatives: []
+    overrides:
+    - value
+  attributes:
+  - name: Elemental
+    level: 1
+    points: 1
+    elements:
+    - ""
+    overrides:
+    - points
+  skills:
+  - name: Law
+    level: 1
+    points: 2
+    specialisations:
+    - ""
+    overrides:
+    - points
+  - name: Medical
+    level: 1
+    points: 2
+    specialisations: []
+    overrides:
+    - points

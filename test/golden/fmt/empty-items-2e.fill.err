@@ -1,0 +1,11 @@
+empty-items-2e.yaml: warning: Empty items: derived/ACV/alternatives/0: an empty string
+empty-items-2e.yaml: warning: Empty items: derived/DCV/alternatives/0: an empty string
+empty-items-2e.yaml: warning: Empty items: derived/DCV/alternatives/1: an empty string
+empty-items-2e.yaml: warning: Empty items: derived/HP/alternatives: an empty list
+empty-items-2e.yaml: warning: Empty items: attributes/Elemental/elements/0: an empty string
+empty-items-2e.yaml: warning: Empty items: skills/Law/specialisations/0: an empty string
+empty-items-2e.yaml: warning: Empty items: skills/Medical/specialisations: an empty list
+empty-items-2e.yaml: difference: Empty items: ACV (p. 129, PDF 131): value is 9 in the file, 1 by the rules: kept as an override
+empty-items-2e.yaml: difference: Empty items: HP (p. 129, PDF 131): value is 60 in the file, 10 by the rules: kept as an override
+empty-items-2e.yaml: warning: Empty items: Elemental: not in the rulebook: points 1 kept as an override
+empty-items-2e.yaml: warning: Empty items: no genre in creation to price Skills by (Table 2-4, p. 119, PDF 121): their points kept as overrides

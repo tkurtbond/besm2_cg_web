@@ -1,0 +1,63 @@
+Ties
+----
+
+.. raw:: ms
+
+   .LP
+   .TS
+   tab(#) ;
+   c c lx .
+   =
+   \fBLEVEL\fP#\fBPOINTS\fP#\fBATTRIBUTE\fP
+   1#1#T{
+   Aegis
+   T}
+   1#1#T{
+   armour
+   T}
+   2#2#T{
+   Armour
+   T}
+   3#3#T{
+   ARMOUR
+   T}
+   4#4#T{
+   armour
+   T}
+
+   .T&
+   c c lx .
+   #\fBPOINTS\fP#\fBDEFECT\fP
+   #−1#T{
+   slow
+   T}
+   #−2#T{
+   Slow
+   T}
+   #−3#T{
+   SLOW
+   T}
+
+   .T&
+   c c lx .
+   \fBLEVEL\fP#\fBPOINTS\fP#\fBSKILL\fP
+   1#1#T{
+   law
+   T}
+   2#2#T{
+   Law
+   T}
+   3#3#T{
+   LAW
+   T}
+   4#4#T{
+   Law
+   T}
+   5#5#T{
+   lAw
+   T}
+
+   #\fB5\fP#\fBTOTAL\fP
+   =
+   .TE
+

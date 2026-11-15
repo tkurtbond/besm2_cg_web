@@ -1,0 +1,6 @@
+besm2_calc_po: error processing bad-counts-as.yaml: /1/attributes/0/limiters/0/1: counts-as must be positive
+besm2_calc_po: error processing bad-counts-as.yaml: /2/attributes/0/enhancements/0/1: counts-as must be positive
+bad-counts-as.yaml: warning: Good: attributes/Weapon: enhancements are 4th Edition's, deprecated for 2nd Edition files
+bad-counts-as.yaml: warning: Good: attributes/Weapon: limiters are 4th Edition's, deprecated for 2nd Edition files
+bad-counts-as.yaml: difference: Also Good: Body (p. 15, PDF 17): points is 8 in the file, 4 by the rules: kept as an override
+besm2_calc_po: bad-counts-as.yaml: not written, since an entity didn't load

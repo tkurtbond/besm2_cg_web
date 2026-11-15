@@ -1,0 +1,3 @@
+besm2_calc_po: error processing bad-overrides.yaml: /1/attributes/0/overrides/0: "pionts" is not one of points, damage
+besm2_calc_po: error processing bad-overrides.yaml: /2/skills/0/overrides/0: an override is not a key name
+besm2_calc_po: error processing bad-overrides.yaml: /3/stats/0/overrides/0: "value" is not one of points

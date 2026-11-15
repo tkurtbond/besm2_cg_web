@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Nothing is fetched: everything is inlined (AGENTS.md). The only
+         image is the empty data: icon below, which needs img-src data:
+         (without it, Chromium and Firefox both report it blocked). -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:"
+    />
+    <title>BESM2ER Character Generator</title>
+    <!-- An empty icon of its own, so a browser doesn't ask a server for
+         /favicon.ico, which the policy above refuses (ova_cg_web's
+         finding: Firefox 159 did, from http://). -->
+    <link rel="icon" href="data:," />
+    <!-- STYLE -->
+  </head>
+  <body>
+    <main id="app"></main>
+    <!-- SCRIPT -->
+  </body>
+</html>

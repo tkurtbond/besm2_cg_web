@@ -1,0 +1,6 @@
+# Made up, for the tests (PLAN.md, Part B, step 10a): a campaign file,
+# a mapping of only `creation`, with the Stats' total limited.
+creation:
+  character-points: 40
+  genre: Modern Military
+  options: {stat-points-ceiling: 6, stat-points-floor: 4}

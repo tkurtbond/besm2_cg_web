@@ -1,0 +1,3 @@
+besm2_calc_po: error processing shape-customizer-short.yaml: /1/attributes/0/enhancements/0: customizer sequence too short
+shape-customizer-short.yaml: difference: Good: Body (p. 15, PDF 17): points is 8 in the file, 4 by the rules: kept as an override
+besm2_calc_po: shape-customizer-short.yaml: not written, since an entity didn't load

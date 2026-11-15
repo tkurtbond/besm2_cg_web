@@ -1,0 +1,39 @@
+- name: Walker
+  mecha: true
+  attributes:
+  - name: Heavy Armour
+    level: 1
+    points: 4
+- name: Pilot
+  tagline: Test pilot
+  creation:
+    character-points: 20
+    genre: Modern Military
+    skill-points: 20
+  stats:
+  - name: Body
+    value: 5
+    points: 5
+  - name: Mind
+    value: 4
+    points: 4
+  - name: Soul
+    value: 4
+    points: 4
+  attributes:
+  - name: Own a Big Mecha
+    subject: Walker
+    level: 1
+    points: 4
+  - name: Heavy Armour
+    level: 1
+    points: 4
+  defects:
+  - name: Unique Character Defect
+    subject: Stubborn
+    level: 1
+    points: -1
+  skills:
+  - name: Driving
+    level: 2
+    points: 8

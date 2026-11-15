@@ -1,0 +1,5 @@
+- name: Options
+  creation:
+    genre: Cyberpunk
+    options:
+      staged-stat-cost: false

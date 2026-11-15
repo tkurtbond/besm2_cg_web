@@ -1,0 +1,2 @@
+besm2_calc_po: error processing shape-null-stats.yaml: /1/stats: not a sequence
+shape-null-stats.yaml: difference: Good: Body (p. 15, PDF 17): points is 8 in the file, 4 by the rules: kept as an override

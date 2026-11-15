@@ -1,0 +1,4 @@
+sections-2e.yaml: difference: Derived First: HP (p. 129, PDF 131): value is 40 in the file, 10 by the rules: kept as an override
+sections-2e.yaml: warning: Derived First: no genre in creation to price Skills by (Table 2-4, p. 119, PDF 121): their points kept as overrides
+sections-2e.yaml: difference: Even: Armour (p. 40, PDF 42): points is 2 in the file, 4 by the rules: kept as an override
+sections-2e.yaml: warning: entity 4: no genre in creation to price Skills by (Table 2-4, p. 119, PDF 121): their points kept as overrides

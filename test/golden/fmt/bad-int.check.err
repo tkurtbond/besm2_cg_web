@@ -1,0 +1,3 @@
+besm2_calc_po: bad-int.yaml:5:42: error: /1/stats/0/points: not a valid integer: "lots"
+bad-int.yaml: difference: Good: Body (p. 15, PDF 17): points is 8 in the file, 4 by the rules: kept as an override
+bad-int.yaml: difference: Good: Body (p. 15, PDF 17): points is 8 in the file, 4 by the rules: kept as an override
