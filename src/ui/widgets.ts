@@ -1,7 +1,7 @@
 // What the page shares with its dialogs: the number boxes, the ? buttons,
 // a spinner and the lists, the port of besm2_cg_po's Besm2Widgets,
-// copied from ova_cg_web's src/ui/widgets.ts where it fits. The Panel
-// (a list and its editor) comes with the list tabs, Phase 8.
+// copied from ova_cg_web's src/ui/widgets.ts where it fits, and the
+// Panel, a list and its editor, the list tabs' (Phase 8).
 //
 // besm2_cg_po's PLAN.md, A3 `overrides`: beside every number the
 // program computes is an empty entry box. A NumberBox is both: the
@@ -16,6 +16,8 @@
 // + 2, rules.pdfIndex).
 
 import * as C from "../core/calc.ts";
+import * as R from "../core/rules.ts";
+import { trim } from "../core/text.ts";
 
 /** An element of doc, of class cls, holding text. Copied from ova_cg_web. */
 export function el<K extends keyof HTMLElementTagNameMap>(
@@ -28,6 +30,27 @@ export function el<K extends keyof HTMLElementTagNameMap>(
   if (cls !== undefined) e.className = cls;
   if (text !== undefined) e.textContent = text;
   return e;
+}
+
+/** What input holds, trimmed; undefined if blank (InputText). */
+export function inputText(
+  input: HTMLInputElement | HTMLTextAreaElement,
+): string | undefined {
+  const t = trim(input.value);
+  return t === "" ? undefined : t;
+}
+
+/**
+ * setText is an entity's text once text (trimmed) is typed: "" (blank)
+ * keeps a key the entity had, empty, and has none if it had none
+ * (SetText: an entity keeps a key it had, even emptied).
+ */
+export function setText(
+  old: string | undefined,
+  text: string,
+): string | undefined {
+  if (text !== "") return text;
+  return old === undefined ? undefined : "";
 }
 
 /** A heading's label, bold (Besm2Window's Label). Copied from ova_cg_web. */
@@ -386,6 +409,29 @@ export class Lines {
     }
   }
 
+  /** deselect leaves no line selected (FLTK's SetSelected(i, FALSE)). */
+  deselect(): void {
+    this.mark(-1);
+  }
+
+  /** activate and deactivate let the user choose a line, or not. */
+  activate(): void {
+    this.element.classList.remove("inactive");
+    this.element.removeAttribute("aria-disabled");
+    this.element.tabIndex = 0;
+  }
+
+  deactivate(): void {
+    this.element.classList.add("inactive");
+    this.element.setAttribute("aria-disabled", "true");
+    this.element.tabIndex = -1;
+  }
+
+  /** Whether the user can choose a line (FLTK's Active). */
+  get active(): boolean {
+    return !this.element.classList.contains("inactive");
+  }
+
   /** How many lines there are. */
   count(): number {
     return this.rows.length;
@@ -422,7 +468,7 @@ export class Lines {
    * was selected already, as FLTK's callback did.
    */
   select(i: number): void {
-    if (i < 0 || i >= this.rows.length) return;
+    if (i < 0 || i >= this.rows.length || !this.active) return;
     this.mark(i);
     this.onSelect?.(i);
   }
@@ -434,4 +480,306 @@ export class Lines {
     }
     return -1;
   }
+}
+
+// ---- Panel ----
+
+/**
+ * Divider is a row of a Panel's <select> between its kind's names and
+ * second's, and before the extension's: a disabled <option>, which
+ * can't be chosen (FLTK's MenuDivider, a line under an item).
+ */
+export const Divider = "────────────";
+
+/** The <select>'s first option, shown while no name is chosen. Copied
+ *  from ova_cg_web. */
+export const Placeholder = "(choose a name)";
+
+/**
+ * Panel is a list and its editor (Besm2Widgets.Panel, after ova_cg_web's
+ * Panel): the lines, under them a <select> of every name of one kind
+ * (rules.label: "Highly Skilled (p. 42, PDF 44)"), then, after a
+ * Divider, those of a second kind (the Mecha Attributes after the
+ * Attributes) and any its extension adds (a character's house Skills),
+ * a Spinner, a text field, the extension's rows, and Add, Change,
+ * Remove and ? buttons. What the lines are, and what the buttons do to
+ * the model, are its extension's (its hooks).
+ *
+ * A line is numbered from 0, -1 for none, as Lines' (besm2_cg_po's
+ * browser lines are from 1, 0 for none). A name the <select> offers is
+ * numbered as besm2_cg_po's Choice numbers it, dividers left out: kind's
+ * from 0, then second's, then the extension's; the <option>'s value
+ * holds the number ("" for the Placeholder and a Divider).
+ */
+export abstract class Panel {
+  /** The <select>'s: rules kinds; second -1: none */
+  kind: R.Kind;
+  second: R.Kind | -1;
+  readonly lines: Lines;
+  readonly choice: HTMLSelectElement;
+  readonly spinner: Spinner;
+  readonly text: HTMLInputElement;
+  readonly addButton: HTMLButtonElement;
+  readonly changeButton: HTMLButtonElement;
+  readonly removeButton: HTMLButtonElement;
+  readonly help: HelpButton;
+  /** Where the extension puts its rows, before the buttons */
+  readonly extra: HTMLElement;
+  /** After a change the panel made: the Window's or dialog's (Changed) */
+  changed: (() => void) | undefined = undefined;
+  readonly element: HTMLElement;
+
+  // The hooks.
+  /** fill is the lines, from the model, in its order. */
+  protected abstract fill(): string[][];
+  /** load sets the controls from line i, the one the user selected. */
+  protected abstract load(i: number): void;
+  /**
+   * add and change (of line i) change the model from the controls, and
+   * return the line the item will be on once filled again (a change can
+   * move it), or -1 if they changed nothing; remove whether it removed
+   * line i. Each leaves the model recomputed.
+   */
+  protected abstract add(): number;
+  protected abstract change(i: number): number;
+  protected abstract remove(i: number): boolean;
+
+  /**
+   * A panel titled title, offering kind's names then second's (-1:
+   * none), its spinner labelled spinLabel, its text field textLabel,
+   * its lines height px high, their columns right of the name at
+   * widths; its ? button opens the page through openPage.
+   */
+  constructor(
+    doc: Document,
+    kind: R.Kind,
+    second: R.Kind | -1,
+    title: string,
+    spinLabel: string,
+    textLabel: string,
+    height: number,
+    openPage: () => ((page: number) => void) | undefined,
+    ...widths: number[]
+  ) {
+    this.kind = kind;
+    this.second = second;
+    this.lines = new Lines(doc, title, height, ...widths);
+    this.lines.onSelect = (i) => this.load(i);
+    this.choice = el(doc, "select", "choice");
+    this.choice.setAttribute("aria-label", title + ": name");
+    this.choice.addEventListener("change", () => this.chosen());
+    this.help = new HelpButton(doc, 0, openPage);
+    this.spinner = new Spinner(doc, 1, 1, 1);
+    this.text = el(doc, "input", "panel-text");
+    this.text.type = "text";
+    this.addButton = button(doc, "Add", () => this.button(this.addButton));
+    this.changeButton = button(doc, "Change", () =>
+      this.button(this.changeButton),
+    );
+    this.removeButton = button(doc, "Remove", () =>
+      this.button(this.removeButton),
+    );
+    this.setOptions();
+
+    const chooser = el(doc, "div", "panel-row");
+    chooser.append(this.choice, this.help.button);
+    const values = el(doc, "div", "panel-row");
+    values.append(
+      labelled(doc, spinLabel, this.spinner.input),
+      labelled(doc, textLabel, this.text),
+    );
+    this.extra = el(doc, "div", "panel-extra");
+    const buttons = el(doc, "div", "panel-row panel-buttons");
+    buttons.append(this.addButton, this.changeButton, this.removeButton);
+    this.element = el(doc, "section", "panel-editor");
+    this.element.setAttribute("aria-label", title);
+    this.element.append(
+      bold(doc, title),
+      this.lines.element,
+      chooser,
+      values,
+      this.extra,
+      buttons,
+    );
+  }
+
+  /** How many of the rulebook's names the <select> offers: kind's, then
+   *  second's (Offered). */
+  offered(): number {
+    let n = R.count(this.kind);
+    if (this.second !== -1) n += R.count(this.second);
+    return n;
+  }
+
+  /** The extension's: how many names of its own the <select> offers
+   *  after the rulebook's (moreLabels gives them); none here (More). */
+  more(): number {
+    return 0;
+  }
+
+  /** The extension's: its more() names (FillMore). */
+  protected moreLabels(): string[] {
+    return [];
+  }
+
+  /** The rulebook's name i offered, kind's then second's. */
+  private offeredItem(i: number): R.Item {
+    const n = R.count(this.kind);
+    return i < n ? R.get(this.kind, i) : R.get(this.second as R.Kind, i - n);
+  }
+
+  /**
+   * labels is the names the <select> offers, in their order, each with
+   * its pages (rules.label), and the extension's: for tests, as
+   * besm2_cg_po's Choice's ItemText.
+   */
+  labels(): string[] {
+    const l: string[] = [];
+    for (let i = 0; i < this.offered(); i++) {
+      l.push(R.label(this.offeredItem(i)));
+    }
+    return l.concat(this.moreLabels());
+  }
+
+  /**
+   * The <select>'s options: Placeholder, then the labels, a Divider
+   * under the last of kind's if second's follow, and under the last of
+   * the rulebook's if the extension's follow (FillChoice).
+   */
+  private setOptions(): void {
+    const doc = this.choice.ownerDocument;
+    const none = el(doc, "option", undefined, Placeholder);
+    none.value = "";
+    none.disabled = true;
+    none.hidden = true;
+    const options: HTMLOptionElement[] = [none];
+    const divider = () => {
+      const o = el(doc, "option", undefined, Divider);
+      o.value = "";
+      o.disabled = true;
+      options.push(o);
+    };
+    const n = R.count(this.kind);
+    const offered = this.offered();
+    this.labels().forEach((text, i) => {
+      if ((i === n && i < offered) || (i === offered && i > 0)) divider();
+      const o = el(doc, "option", undefined, text);
+      o.value = String(i);
+      options.push(o);
+    });
+    this.choice.replaceChildren(...options);
+    this.choice.selectedIndex = 0;
+  }
+
+  /** The name chosen, by its number; -1 for none (the Choice's Value). */
+  choiceIndex(): number {
+    const v = this.choice.value;
+    return v === "" ? -1 : Number(v);
+  }
+
+  /** The rulebook's name chosen; undefined for none, or one of the
+   *  extension's (Item). */
+  item(): R.Item | undefined {
+    const i = this.choiceIndex();
+    return i >= 0 && i < this.offered() ? this.offeredItem(i) : undefined;
+  }
+
+  /**
+   * After the <select> changes: the ? button turns to the chosen name's
+   * page; an extension sets its own controls too (Chosen).
+   */
+  protected chosen(): void {
+    this.help.page = this.item()?.page ?? 0;
+  }
+
+  /** Chooses name i (-1: none), and follows it as the user's choice is
+   *  followed (ChooseIndex). */
+  chooseIndex(i: number): void {
+    const o = [...this.choice.options].findIndex((o) => o.value === String(i));
+    this.choice.selectedIndex = i >= 0 && o >= 0 ? o : 0;
+    this.chosen();
+  }
+
+  /** Chooses it (none for undefined, or an item the <select> doesn't
+   *  offer), as chooseIndex (Choose). */
+  choose(it: R.Item | undefined): void {
+    let n = -1;
+    if (it !== undefined) {
+      let i = -1;
+      if (it.kind === this.kind) i = 0;
+      else if (it.kind === this.second) i = R.count(this.kind);
+      if (i >= 0) {
+        n = 0;
+        while (n < R.count(it.kind) && R.get(it.kind, n) !== it) n++;
+        n += i;
+      }
+    }
+    this.chooseIndex(n);
+  }
+
+  /** pick chooses the item named name, as the user does: for tests. */
+  pick(name: string): void {
+    this.choose(R.find(name));
+  }
+
+  /** The <select> filled again, nothing chosen: after the extension's
+   *  names change (Refill). */
+  refill(): void {
+    this.setOptions();
+    this.chooseIndex(-1);
+  }
+
+  /** The <select> offers kind's names, then second's (-1: none), from
+   *  now on: filled again, nothing chosen, if that changes it (Offer). */
+  offer(kind: R.Kind, second: R.Kind | -1): void {
+    if (kind !== this.kind || second !== this.second) {
+      this.kind = kind;
+      this.second = second;
+      this.refill();
+    }
+  }
+
+  /** The lines filled again, line i selected (-1: none) and the controls
+   *  loaded from it (Refresh). */
+  refresh(i: number): void {
+    this.lines.set(this.fill(), i);
+    if (this.lines.selected() >= 0) this.load(this.lines.selected());
+  }
+
+  /**
+   * What Add, Change and Remove do: Add and Change leave their item's
+   * line selected; Remove, none. Change and Remove need a line selected
+   * (ButtonAction).
+   */
+  private button(b: HTMLButtonElement): void {
+    let line = this.lines.selected();
+    let done = false;
+    if (b === this.addButton) {
+      line = this.add();
+      done = line >= 0;
+    } else if (line < 0) {
+      // nothing selected
+    } else if (b === this.changeButton) {
+      line = this.change(line);
+      done = line >= 0;
+    } else {
+      done = this.remove(line);
+      line = -1;
+    }
+    if (done) {
+      this.refresh(line);
+      this.changed?.();
+    }
+  }
+}
+
+/** A label holding text and control, so control is named text. */
+export function labelled(
+  doc: Document,
+  text: string,
+  control: HTMLElement,
+): HTMLElement {
+  const l = el(doc, "label", "panel-label", text);
+  l.append(control);
+  return l;
 }

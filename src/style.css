@@ -475,3 +475,97 @@ input.number-override {
 .warnings > .lines {
   height: 8em;
 }
+
+/* ---- A list's editor (copied from ova_cg_web's) ---- */
+
+.panel-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.panel-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.panel-row > select,
+.panel-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.panel-label {
+  display: contents;
+}
+
+.panel-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.panel-buttons button:not(.menu-top, .menu-item, .tab) {
+  min-width: 0;
+  padding: 3px 8px;
+}
+
+/* ---- The list tabs (besm2_cg_po's BuildLists and BuildTotals) ---- */
+
+.list-tab,
+.background {
+  max-width: 760px;
+}
+
+.list-tab > .points {
+  margin-top: 8px;
+}
+
+.options-row {
+  align-items: flex-start;
+}
+
+.options-row > .lines {
+  flex: 1;
+  min-width: 0;
+}
+
+.option-steps {
+  display: flex;
+  gap: 4px;
+}
+
+.option-steps button:not(.menu-top, .menu-item, .tab) {
+  min-width: 2.5em;
+  padding: 3px 8px;
+}
+
+.lines.inactive {
+  background: var(--grey);
+}
+
+select.genre {
+  flex: 0 1 250px;
+}
+
+/* ---- The Background tab (besm2_cg_po's Besm2Background) ---- */
+
+.background {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+textarea.description {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 12em;
+  resize: vertical;
+}
+
+.background > .lines {
+  height: 10em;
+}

@@ -36,12 +36,15 @@ import { wordWrap } from "../core/layout.ts";
 import { join, trim } from "../core/text.ts";
 import * as dialogs from "./dialogs.ts";
 import { keyMatches, MenuBar, MenuItem, Separator, type Key } from "./menu.ts";
+import { Background } from "./background.ts";
+import { AttrPanel, DefectPanel, SkillPanel, type Host } from "./itempanel.ts";
 import {
   bold,
   el,
   HelpButton,
   Lines,
   NumberBox,
+  setText,
   Spinner,
   type Target,
 } from "./widgets.ts";
@@ -67,6 +70,10 @@ export const DefectsList = 1;
 export const SkillsList = 2;
 export const MechaList = 3;
 export const NLists = 4;
+/** The Background tab's index in tabNames. */
+const BackgroundTab = 5;
+/** A list tab's lines, in px; the browser grows with the page (CSS). */
+const ListH = 200;
 
 /** Where the rulebook tells of Character Points: p. 13, PDF 15. */
 export const CharacterPointsPage = 13;
@@ -201,6 +208,11 @@ export class Window {
    *  MechaList: the list tabs' phase builds them (BuildTotals). */
   readonly tabPoints: HTMLElement[][] = [];
   readonly tabWarnings: Lines[] = [];
+  /** The list tabs' panels (BuildLists), and the Background tab. */
+  readonly attrPanel: AttrPanel;
+  readonly defectPanel: DefectPanel;
+  readonly skillPanel: SkillPanel;
+  readonly background: Background;
 
   /** The Window on doc, in its #app, with a new character (Build). */
   constructor(doc: Document) {
@@ -322,6 +334,35 @@ export class Window {
     this.taglineIn = this.textInput("tagline-in");
     this.warnings = new Lines(doc, "Warnings", 0);
     this.buildCharacterTab(this.panels[0]!);
+    // BuildLists.
+    const host: Host = {
+      tell: (text) => this.tell(text),
+      compute: () => {
+        Ch.relink(this.entities);
+        Ch.computeAll(this.entities);
+      },
+      openPage: () => this.openPage,
+    };
+    this.attrPanel = new AttrPanel(doc, host, ListH);
+    this.defectPanel = new DefectPanel(doc, host, ListH);
+    this.skillPanel = new SkillPanel(doc, host, ListH);
+    const lists = [this.attrPanel, this.defectPanel, this.skillPanel];
+    lists.forEach((l, i) => {
+      l.changed = () => this.changed();
+      const p = this.panels[i + 1]!;
+      p.classList.add("list-tab");
+      p.append(l.element);
+      this.buildTotals(p);
+    });
+    this.background = new Background(doc, {
+      tell: (text) => this.tell(text),
+      filling: () => this.filling,
+    });
+    this.background.changed = () => {
+      this.modified = true;
+      this.showTitle();
+    };
+    this.panels[BackgroundTab]!.append(this.background.element);
 
     doc.addEventListener("keydown", (e) => this.key(e));
     doc.addEventListener("dragover", (e) => this.dragOver(e));
@@ -640,6 +681,24 @@ export class Window {
     );
   }
 
+  /** A list tab's points lines and warnings, under its panel, in p
+   *  (BuildTotals). */
+  private buildTotals(p: HTMLElement): void {
+    const doc = this.doc;
+    const points = el(doc, "div", "points");
+    const lines: HTMLElement[] = [];
+    for (let i = 0; i < NPointLines; i++) {
+      lines.push(el(doc, "div", "points-line"));
+    }
+    points.append(...lines);
+    this.tabPoints.push(lines);
+    const l = new Lines(doc, "Warnings", 0);
+    this.tabWarnings.push(l);
+    const warnings = el(doc, "div", "warnings");
+    warnings.append(el(doc, "div", "warnings-label", "Warnings"), l.element);
+    p.append(points, warnings);
+  }
+
   // ---- Tabs ----
 
   /** The tab shown, an index into tabNames. */
@@ -845,6 +904,10 @@ export class Window {
     this.nameIn.value = e.name ?? "";
     this.taglineIn.value = e.tagline ?? "";
     this.sizeIn.value = e.size ?? "";
+    this.attrPanel.show(e);
+    this.defectPanel.show(e);
+    this.skillPanel.show(e);
+    this.background.show(e);
     this.showNumbers();
     this.showEntities();
     this.showTitle();
@@ -1114,16 +1177,6 @@ export function fileName(text: string): string {
   const t = text.trim().replace(/[/\\]/g, "_");
   if (t === "") return "";
   return /\.ya?ml$/i.test(t) ? t : t + ".yaml";
-}
-
-/**
- * setText is an entity's text once text (trimmed) is typed: "" (blank)
- * keeps a key the entity had, empty, and has none if it had none
- * (SetText: an entity keeps a key it had, even emptied).
- */
-function setText(old: string | undefined, text: string): string | undefined {
-  if (text !== "") return text;
-  return old === undefined ? undefined : "";
 }
 
 /** hasFiles says whether a drag brings files. */

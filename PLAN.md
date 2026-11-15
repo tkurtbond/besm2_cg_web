@@ -764,11 +764,39 @@ was typed. Planted, each failed: the points line never red, a Stat's
 box unnamed in its message, a rename leaving the subject, and a
 mecha's ACV to SV shown.
 
-## Phase 8 The Attributes, Defects, Skills and Background tabs
+## Phase 8 The Attributes, Defects, Skills and Background tabs [done]
 
 `itempanel.ts`: the lists with their page columns, adding by name
 (with both pages), levels, options and choices, subjects, overrides,
 notes. The Background tab.
+
+Done 2026-11-15: `itempanel.ts` ports Besm2ItemPanel (AttrPanel,
+DefectPanel, SkillPanel) and `background.ts` Besm2Background, on
+`widgets.ts`'s Panel, as ova_cg_web's. Each edit relinks and computes
+through the Window, refreshes the list and calls the Window's
+`changed`, in the Oberon's order. Decided:
+
+- **Lines are numbered from 0** (-1: none) everywhere in TypeScript;
+  the Oberon's 1-based lines are shifted where they are ported.
+- **An item has no override boxes**, as in besm2_cg_po: an override a
+  file holds is kept through Change, and saved as it was read.
+- **The Divider between a mecha's offers and the rest** is a disabled
+  `<option>`, so it can't be chosen.
+- **The list tabs' points lines and warnings** are filled here; the
+  Mecha tab's copies come with Phase 10.
+- **SkillPanel's genre** calls the host's compute after `Ch.setGenre`,
+  as the Oberon's, though setGenre reprices by itself, so a planted
+  bug that drops the compute is not seen by a test.
+
+`test/ui/lists.test.ts` ports TestWindow's Attributes, Defects, Skills
+and Background checks with their labels, and adds a house Skill chosen
+again, a mecha offered its Attributes and Defects first, and an
+Attribute with no options. `test/browser/lists.spec.ts` adds, changes,
+takes an option, sets the genre, adds a note and saves, in headless
+Chromium and Firefox, from file:// and http://. Planted, each failed:
+an option counted from its group's first, a note added nowhere, the
+tabs' points lines not set, the house Skill not chosen on load, and an
+option's "[x]" shown as taken when not.
 
 ## Phase 9 The Weapon dialog
 
