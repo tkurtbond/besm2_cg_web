@@ -38,8 +38,10 @@ import * as dialogs from "./dialogs.ts";
 import { keyMatches, MenuBar, MenuItem, Separator, type Key } from "./menu.ts";
 import { Background } from "./background.ts";
 import { AttrPanel, DefectPanel, SkillPanel, type Host } from "./itempanel.ts";
+import { WeaponDialog } from "./weapondialog.ts";
 import {
   bold,
+  button,
   el,
   HelpButton,
   Lines,
@@ -213,6 +215,15 @@ export class Window {
   readonly defectPanel: DefectPanel;
   readonly skillPanel: SkillPanel;
   readonly background: Background;
+  /** The Attributes tab's: the Weapon Attack dialog on the line
+   *  selected (Phase 9). */
+  readonly weaponButton: HTMLButtonElement;
+  /** The Weapon Attack dialog; undefined when closed */
+  weapon: WeaponDialog | undefined = undefined;
+  /** The Weapon Attack's line, while its dialog is open, and modified
+   *  when it opened */
+  private weaponLine = -1;
+  private weaponModified = false;
 
   /** The Window on doc, in its #app, with a new character (Build). */
   constructor(doc: Document) {
@@ -354,6 +365,12 @@ export class Window {
       p.append(l.element);
       this.buildTotals(p);
     });
+    this.weaponButton = button(doc, "Weapon...", () => this.weaponAction());
+    this.weaponButton.title =
+      "the Weapon Attack selected: its Abilities, Disabilities and damage (" +
+      R.pageText(R.find("Weapon Attack")) +
+      ")";
+    this.attrPanel.addButton.parentElement!.append(this.weaponButton);
     this.background = new Background(doc, {
       tell: (text) => this.tell(text),
       filling: () => this.filling,
@@ -492,6 +509,51 @@ export class Window {
     this.modified = true;
     this.showTitle();
     this.showNumbers();
+  }
+
+  // ---- The Weapon Attack dialog (Phase 9) ----
+
+  /** The dialog's changed: after each change it makes, and after OK or
+   *  Cancel (WeaponChanged). */
+  private weaponChanged(): void {
+    this.changed();
+    this.attrPanel.refresh(this.weaponLine);
+  }
+
+  /** After OK or Cancel; Cancel leaves modified as it was (WeaponDone). */
+  private weaponDone(ok: boolean): void {
+    this.weapon = undefined;
+    if (!ok) {
+      this.modified = this.weaponModified;
+      this.showTitle();
+    }
+    this.attrPanel.refresh(this.weaponLine);
+    this.weaponLine = -1;
+  }
+
+  /** Weapon...: the dialog on the Weapon Attack selected (WeaponAction). */
+  weaponAction(): void {
+    if (this.weapon !== undefined) return;
+    const line = this.attrPanel.lines.selected();
+    const a = this.attrPanel.attrAt(line);
+    if (a === undefined || !a.weapon) {
+      this.tell("Choose a Weapon Attack first.");
+      return;
+    }
+    this.weaponLine = line;
+    this.weaponModified = this.modified;
+    this.weapon = new WeaponDialog(
+      {
+        doc: this.doc,
+        dialogs: this.dialogs,
+        tell: (text) => this.tell(text),
+        changed: () => this.weaponChanged(),
+        openPage: () => this.openPage,
+      },
+      this.entity,
+      a,
+      (ok) => this.weaponDone(ok),
+    );
   }
 
   /** boxName is what a number box is for, in its message (BoxName). */

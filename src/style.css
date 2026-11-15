@@ -569,3 +569,33 @@ textarea.description {
 .background > .lines {
   height: 10em;
 }
+
+/* ---- The Weapon Attack dialog (besm2_cg_po's is 760 x 640) ---- */
+
+.dialog.weapon-dialog {
+  width: min(760px, 95vw);
+  max-width: 95vw;
+}
+
+.weapon-dialog .dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.weapon-dialog .columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+
+.weapon-dialog label.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 12px;
+}
+
+.weapon-dialog .warnings > .lines {
+  height: 5em;
+}

@@ -798,10 +798,42 @@ an option counted from its group's first, a note added nowhere, the
 tabs' points lines not set, the house Skill not chosen on load, and an
 option's "[x]" shown as taken when not.
 
-## Phase 9 The Weapon dialog
+## Phase 9 The Weapon dialog [done]
 
 Abilities and Disabilities with slots, counts-as and detail; Primary;
 Different Gunner; the exclusions; Cancel restores.
+
+Done 2026-11-15: `weapondialog.ts` ports Besm2WeaponDialog (its
+ModPanel on `widgets.ts`'s Panel, and WeaponDialog) as a modal
+`<dialog>` through `Dialogs.modal`. Every change in it goes through the
+Window's `changed` and then refreshes the Attributes list at the
+attack's line, as the Oberon's Changed and Refresh do. Decided:
+
+- **Weapon... sits in the Attributes panel's row of buttons**, after
+  Remove, and says "Choose a Weapon Attack first." unless a Weapon
+  Attack is selected; pressed while the dialog is open, it does nothing.
+- **There is no Close**: OK keeps, Cancel and Escape put everything
+  back (the attack, its two lists, every attack's primary, and the
+  Window's modified). While the dialog is open the modal blocks the
+  page's keys and dropped files, as every dialog here does.
+- **The Level box acts on `change`** (Enter, Tab or leaving it), like
+  every Spinner, so the list follows once the Level is committed.
+- **Cancel's putting back the abilities list** after restoring the
+  record is redundant (restoring the record already puts the old list
+  back), as in the Oberon; it is kept so the two read alike, and a
+  planted bug that drops only that line is not seen by a test.
+
+`test/ui/weapon.test.ts` ports TestWindow's Weapons checks with their
+labels, saving before the dialog opens so Cancel's modified is seen,
+and adds Escape, Weapon... while open, and an override's refused text.
+`test/browser/weapon.spec.ts` adds a Weapon Attack, adds an Ability in
+the dialog, takes OK, saves, and cancels a Level change with Escape, in
+headless Chromium and Firefox, from file:// and http://. Planted, each
+failed: choosing a name leaving the old slots, no `changed` on a
+change, the damage not saved for Cancel, the primary never disabled,
+OK not taking the subject, Cancel not putting back the Disabilities,
+the Window's modified not put back, and Cancel not restoring the
+attack (in both browsers).
 
 ## Phase 10 Mecha and several entities
 
