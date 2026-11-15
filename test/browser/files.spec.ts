@@ -5,9 +5,9 @@
 // Open... ask first with changes, and the file chooser still opens
 // after that question; the notices and a file's mistakes are told in a
 // dialog; a file dropped on the page opens; and closing the page with
-// changes gets the browser's beforeunload question. Until Phase 7 gives
-// the page its fields, a change is marked through globalThis.besm2
-// (changed, below), leaving the entities as they were.
+// changes gets the browser's beforeunload question. A change is marked
+// through globalThis.besm2 (changed, below), leaving the entities as
+// they were, so a save is still the golden file.
 
 import { readFileSync } from "node:fs";
 import { expect, test, type Download, type Page } from "@playwright/test";

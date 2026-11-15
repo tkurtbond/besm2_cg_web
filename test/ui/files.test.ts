@@ -3,9 +3,9 @@
 // Bare and Notices (test/TestWindow.Mod), with their labels where they
 // apply, and adapts ova_cg_web's test/ui/files.test.ts: a download in
 // place of a file written, and a new file with a name saved as it
-// without asking (PLAN.md, "Files in the browser"). Until Phase 7 gives
-// the page its fields, a change is made to the entity and marked, as an
-// edit's handler will (changed, below). What only a browser does (the
+// without asking (PLAN.md, "Files in the browser"). A change is made to
+// the entity and marked, as an edit's handler does (changed, below;
+// test/ui/character.test.ts types into the fields themselves). What only a browser does (the
 // download itself, the file chooser after a dialog, a drop,
 // beforeunload's question) is test/browser/files.spec.ts's.
 
@@ -29,7 +29,7 @@ const golden = (name: string) =>
   readFileSync(`test/golden/cg/${name}.fill.yaml`, "utf8");
 
 /** changed changes the entity shown with f and marks it, as an edit on
- *  the page does (Phase 7's handlers); f calls Ch.useStat or useDerived
+ *  the page does (the Character tab's handlers); f calls Ch.useStat or useDerived
  *  for a Stat or derived value, as they will. */
 function changed(w: Window, f: (e: Ch.Entity) => void): void {
   f(w.entity);

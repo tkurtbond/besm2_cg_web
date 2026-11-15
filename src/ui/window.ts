@@ -19,16 +19,32 @@
 // browser"). The clipboard's copyText comes with the Preview tab
 // (Phase 12), and the rulebook's openPage and openTab with Phase 13.
 //
+// The Character tab (Phase 7) shows the entity's name, tagline and
+// size, its Stats, derived values, points and warnings; every number
+// comes from calc.compute, through changed.
+//
 // A menu item whose phase hasn't come has no action and stays disabled
-// (PLAN.md, "Build order"). The tabs are empty until their phases fill
-// them.
+// (PLAN.md, "Build order"). The other tabs are empty until their phases
+// fill them.
 
+import * as C from "../core/calc.ts";
 import * as Ch from "../core/character.ts";
+import * as R from "../core/rules.ts";
 import * as Save from "../core/save.ts";
+import * as Warnings from "../core/warnings.ts";
 import { wordWrap } from "../core/layout.ts";
 import { join, trim } from "../core/text.ts";
 import * as dialogs from "./dialogs.ts";
 import { keyMatches, MenuBar, MenuItem, Separator, type Key } from "./menu.ts";
+import {
+  bold,
+  el,
+  HelpButton,
+  Lines,
+  NumberBox,
+  Spinner,
+  type Target,
+} from "./widgets.ts";
 
 export const Title = dialogs.Title;
 export type Answer = dialogs.Answer;
@@ -38,6 +54,28 @@ export const { SaveFirst, Discard, Cancel } = dialogs;
 export const ChoiceW = 250;
 /** Characters on a line of the notices (Besm2Window's NoticeWidth). */
 export const NoticeWidth = 80;
+
+/** The points lines, on the Character tab and each list tab. */
+export const CharacterPoints = 0;
+export const BonusPoints = 1;
+export const SkillPoints = 2;
+export const NPointLines = 3;
+
+/** The list tabs, which show the points and warnings too (Phase 8). */
+export const AttributesList = 0;
+export const DefectsList = 1;
+export const SkillsList = 2;
+export const MechaList = 3;
+export const NLists = 4;
+
+/** Where the rulebook tells of Character Points: p. 13, PDF 15. */
+export const CharacterPointsPage = 13;
+/** The Stat's value, 1 to 12: p. 16, PDF 18. */
+const StatValuePage = 16;
+
+const statNames = ["Body", "Mind", "Soul"] as const;
+/** The derived values' boxes, in Ch.ACV .. Ch.AR's order. */
+const derivedNames = ["ACV", "DCV", "HP", "EP", "SV", "AR"] as const;
 
 /** The tabs, in order (Besm2Window.Build). */
 export const tabNames = [
@@ -136,9 +174,33 @@ export class Window {
   ) => void;
   download: (name: string, text: string) => void;
 
+  /**
+   * openPage opens the rulebook at a printed page: the ? buttons'. Phase
+   * 13 gives it; until then a ? does nothing, as Besm2Widgets' openPage
+   * NIL.
+   */
+  openPage: ((page: number) => void) | undefined = undefined;
+
   /** The fields being set from the entity: no change to report
    *  (besm2_cg_po's showing). */
   filling = false;
+
+  // The Character tab (BuildCharacterTab).
+  readonly nameIn: HTMLInputElement;
+  readonly sizeIn: HTMLInputElement;
+  readonly taglineIn: HTMLInputElement;
+  /** Each Stat's value, and its points */
+  readonly statValue: Spinner[] = [];
+  readonly statPoints: NumberBox[] = [];
+  /** The derived values, by Ch.ACV .. Ch.AR */
+  readonly derived: NumberBox[] = [];
+  /** The points lines, by CharacterPoints .. SkillPoints */
+  readonly points: HTMLElement[] = [];
+  readonly warnings: Lines;
+  /** Each list tab's points lines and warnings, by AttributesList ..
+   *  MechaList: the list tabs' phase builds them (BuildTotals). */
+  readonly tabPoints: HTMLElement[][] = [];
+  readonly tabWarnings: Lines[] = [];
 
   /** The Window on doc, in its #app, with a new character (Build). */
   constructor(doc: Document) {
@@ -254,6 +316,13 @@ export class Window {
     });
     app.replaceChildren(this.titleLine, bar, tablist, panels);
 
+    // BuildCharacterTab.
+    this.nameIn = this.textInput("name-in");
+    this.sizeIn = this.textInput("size-in");
+    this.taglineIn = this.textInput("tagline-in");
+    this.warnings = new Lines(doc, "Warnings", 0);
+    this.buildCharacterTab(this.panels[0]!);
+
     doc.addEventListener("keydown", (e) => this.key(e));
     doc.addEventListener("dragover", (e) => this.dragOver(e));
     doc.addEventListener("drop", (e) => this.drop(e));
@@ -275,6 +344,300 @@ export class Window {
     if (this.modified) t += " *";
     this.doc.title = t;
     this.titleLine.textContent = t;
+  }
+
+  // ---- The numbers, the points and the warnings ----
+
+  /** showWarnings shows the warnings, on the Character tab and each
+   *  list tab (ShowWarnings). */
+  showWarnings(): void {
+    const rows: string[][] = [];
+    for (let w = this.entity.warnings; w !== undefined; w = w.next) {
+      rows.push([Warnings.text(this.entity, w)]);
+    }
+    this.warnings.set(rows, -1);
+    for (const l of this.tabWarnings) l.set(rows, -1);
+  }
+
+  /** setLines sets points line i to r, red if red, on the Character tab
+   *  and each list tab (SetLines). */
+  private setLines(i: number, r: string, red: boolean): void {
+    const set = (b: HTMLElement) => {
+      b.textContent = r;
+      b.classList.toggle("red", red);
+    };
+    set(this.points[i]!);
+    for (const t of this.tabPoints) set(t[i]!);
+  }
+
+  /**
+   * showPoints shows the points: "Character Points: Stats 15 +
+   * Attributes 22 - Bonus Points 4 = 33 of 35" (with "; Stats at least
+   * 18, at most 24" for a campaign's limits on the Stats' total) (Mecha
+   * Points for a mecha, without Stats), "Bonus Points: 4 (ceiling:
+   * none)", "Skill Points: 15 of 20"; each red when it is over its limit
+   * (ShowPoints).
+   */
+  showPoints(): void {
+    const e = this.entity;
+    const c = e.creation;
+    let r: string;
+    if (e.isMecha) r = "Mecha Points: ";
+    else r = `Character Points: Stats ${e.statTotal} + `;
+    r += `Attributes ${e.attrTotal} - Bonus Points ${e.bonusPoints} = ${e.spent}`;
+    if (e.available > 0) r += ` of ${e.available}`;
+    else if (e.isMecha && e.owner === undefined) r += " (no owner in the file)";
+    else r += " (no limit set)";
+    if (!e.isMecha && (c.statPointsFloor > 0 || c.statPointsCeiling > 0)) {
+      r += "; Stats ";
+      if (c.statPointsFloor > 0) {
+        r += `at least ${c.statPointsFloor}`;
+        if (c.statPointsCeiling > 0) r += ", ";
+      }
+      if (c.statPointsCeiling > 0) r += `at most ${c.statPointsCeiling}`;
+    }
+    const has = (code: number) => C.hasWarning(e, code, undefined);
+    this.setLines(
+      CharacterPoints,
+      r,
+      has(C.OverCharacterPoints) ||
+        has(C.OverMechaPoints) ||
+        has(C.StatPointsAbove) ||
+        has(C.StatPointsBelow),
+    );
+    r = `Bonus Points: ${e.bonusPoints} (ceiling: `;
+    r += c.bonusCeiling > 0 ? String(c.bonusCeiling) : "none";
+    r += ")";
+    this.setLines(BonusPoints, r, has(C.OverBonusCeiling));
+    r = `Skill Points: ${e.skillSpent} of ${e.skillPoints}`;
+    this.setLines(SkillPoints, r, has(C.OverSkillPoints));
+  }
+
+  /**
+   * showNumbers shows every number again: the Stats only on a character,
+   * a mecha has none (p. 59, PDF 61); ACV, DCV, EP and SV likewise; AR
+   * only with armour, or an override of it (ShowNumbers). The Mecha
+   * tab's refresh comes with it (Phase 10).
+   */
+  showNumbers(): void {
+    const e = this.entity;
+    for (let i = 0; i < C.NStats; i++) {
+      this.statValue[i]!.setValue(e.stat[i]!);
+      this.statPoints[i]!.display();
+      if (e.isMecha) {
+        this.statValue[i]!.disable();
+        this.statPoints[i]!.deactivate();
+      } else {
+        this.statValue[i]!.enable();
+        this.statPoints[i]!.activate();
+      }
+    }
+    for (let i = Ch.ACV; i <= Ch.AR; i++) this.derived[i]!.display();
+    for (let i = Ch.ACV; i <= Ch.SV; i++) {
+      if (e.isMecha && i !== Ch.HP) this.derived[i]!.hide();
+      else this.derived[i]!.show();
+    }
+    if (e.hasAR || e.ar.overridden) this.derived[Ch.AR]!.show();
+    else this.derived[Ch.AR]!.hide();
+    this.showPoints();
+    this.showWarnings();
+  }
+
+  /** changed follows any change to an entity: computed again and shown
+   *  (Changed). */
+  changed(): void {
+    Ch.relink(this.entities); // an edit may have named a mecha
+    Ch.computeAll(this.entities);
+    this.modified = true;
+    this.showTitle();
+    this.showNumbers();
+  }
+
+  /** boxName is what a number box is for, in its message (BoxName). */
+  private boxName(b: NumberBox): string {
+    if (b.label !== "") return b.label;
+    const i = this.statPoints.indexOf(b);
+    return i < 0 ? "" : statNames[i] + "'s points";
+  }
+
+  /** numberChanged follows a number box's text taken; refused text is
+   *  said so (NumberChanged). */
+  private numberChanged(b: NumberBox, ok: boolean): void {
+    if (!ok) {
+      const label = this.boxName(b);
+      let msg = "Not a number";
+      if (label !== "") msg += " for " + label;
+      msg += ": a whole number. The computed number is used.";
+      this.tell(msg);
+    }
+    this.changed();
+  }
+
+  /** statAction follows Stat i's spinner (StatAction). */
+  private statAction(i: number): void {
+    if (this.filling) return;
+    this.entity.stat[i] = this.statValue[i]!.value;
+    Ch.useStat(this.entity, i);
+    this.changed();
+  }
+
+  // ---- Text ----
+
+  /**
+   * rename gives a mecha's new name, name, to the subject of each Own a
+   * Big Mecha tied to it, so they stay tied; not a blank one (Rename).
+   */
+  private rename(m: Ch.Entity, name: string | undefined): void {
+    if (name === undefined || name === "") return;
+    for (const e of this.entities) {
+      for (let a = e.attrs; a !== undefined; a = a.next) {
+        if (a.mecha === m) (a as Ch.Attr).subject = name;
+      }
+    }
+  }
+
+  /** textAction follows the name, tagline or size typed (TextAction). */
+  private textAction(input: HTMLInputElement): void {
+    if (this.filling) return;
+    const e = this.entity;
+    const text = trim(input.value);
+    if (input === this.nameIn) {
+      e.name = setText(e.name, text);
+      if (e.isMecha) this.rename(e, e.name);
+      this.changed(); // the Mecha tab, and the ties
+      this.showEntities();
+    } else if (input === this.taglineIn) {
+      e.tagline = setText(e.tagline, text);
+    } else if (input === this.sizeIn) {
+      e.size = setText(e.size, text);
+    }
+    this.modified = true;
+    this.showTitle();
+  }
+
+  // ---- Building the Character tab ----
+
+  /** A text input that follows every change (TextInput's WhenChanged). */
+  private textInput(id: string): HTMLInputElement {
+    const i = el(this.doc, "input", "text-in");
+    i.type = "text";
+    i.id = id;
+    i.addEventListener("input", () => this.textAction(i));
+    return i;
+  }
+
+  /** A ? button at page (Help). */
+  private help(page: number): HTMLElement {
+    return new HelpButton(this.doc, page, () => this.openPage).button;
+  }
+
+  /** A label for input, text. */
+  private labelFor(input: HTMLInputElement, text: string): HTMLElement {
+    const l = el(this.doc, "label", "field-label", text);
+    l.htmlFor = input.id;
+    return l;
+  }
+
+  /** The Stat i's row: its name, spinner, points and ? (StatRow). */
+  private statRow(grid: HTMLElement, i: number): void {
+    const doc = this.doc;
+    const name = statNames[i]!;
+    const s = new Spinner(doc, 0, 99, 1);
+    s.input.title = `the Stat's value: 1 to 12 (${R.pagesText(StatValuePage)})`;
+    s.input.setAttribute("aria-label", name);
+    s.onChanged = () => this.statAction(i);
+    this.statValue[i] = s;
+    const b = new NumberBox(doc, "", name + "'s points");
+    b.target = this.statTarget(i);
+    b.changed = (b, ok) => this.numberChanged(b, ok);
+    this.statPoints[i] = b;
+    grid.append(
+      el(doc, "span", "stat-name", R.pageLabel(name, R.StatsPage)),
+      s.input,
+      b.element,
+      this.help(R.StatsPage),
+    );
+  }
+
+  /** Stat i's points, of the entity shown (StatNumber). */
+  private statTarget(i: number): Target {
+    return {
+      get: () => this.entity.statPoints[i]!,
+      put: (n) => {
+        this.entity.statPoints[i] = n;
+        Ch.useStat(this.entity, i);
+      },
+    };
+  }
+
+  /** The derived value of slot, of the entity shown (DerivedNumber). */
+  private derivedTarget(slot: number): Target {
+    const key = (["acv", "dcv", "hp", "ep", "sv", "ar"] as const)[slot]!;
+    return {
+      get: () => this.entity[key],
+      put: (n) => {
+        this.entity[key] = n;
+        Ch.useDerived(this.entity, slot);
+      },
+    };
+  }
+
+  /** The Character tab, in p (BuildCharacterTab). */
+  private buildCharacterTab(p: HTMLElement): void {
+    const doc = this.doc;
+    const names = el(doc, "div", "character-names");
+    names.append(
+      this.labelFor(this.nameIn, "Name"),
+      this.nameIn,
+      this.labelFor(this.sizeIn, "Size"),
+      this.sizeIn,
+      this.labelFor(this.taglineIn, "Tagline"),
+      this.taglineIn,
+    );
+
+    const stats = el(doc, "div", "stats");
+    stats.append(
+      bold(doc, "Stats"),
+      el(doc, "span", "column-head", "Value"),
+      el(doc, "span", "column-head", "Points"),
+      el(doc, "span"),
+    );
+    for (let i = 0; i < C.NStats; i++) this.statRow(stats, i);
+
+    const heading = (name: string, page: number): HTMLElement => {
+      const h = el(doc, "div", "row heading-row");
+      h.append(bold(doc, R.pageLabel(name, page)), this.help(page));
+      return h;
+    };
+    const derived = el(doc, "div", "row derived");
+    derivedNames.forEach((label, slot) => {
+      const b = new NumberBox(doc, label);
+      b.target = this.derivedTarget(slot);
+      b.changed = (b, ok) => this.numberChanged(b, ok);
+      this.derived[slot] = b;
+      derived.append(b.element);
+    });
+
+    const points = el(doc, "div", "points");
+    for (let i = 0; i < NPointLines; i++) {
+      this.points[i] = el(doc, "div", "points-line");
+      points.append(this.points[i]!);
+    }
+
+    const warnings = el(doc, "div", "warnings");
+    const wl = el(doc, "div", "warnings-label", "Warnings");
+    warnings.append(wl, this.warnings.element);
+
+    p.classList.add("character-tab");
+    p.append(
+      names,
+      stats,
+      heading("Derived values", R.DerivedValuesPage),
+      derived,
+      heading("Points", CharacterPointsPage),
+      points,
+      warnings,
+    );
   }
 
   // ---- Tabs ----
@@ -478,6 +841,11 @@ export class Window {
   /** showAll shows the entity again, everywhere (ShowAll). */
   showAll(): void {
     this.filling = true;
+    const e = this.entity;
+    this.nameIn.value = e.name ?? "";
+    this.taglineIn.value = e.tagline ?? "";
+    this.sizeIn.value = e.size ?? "";
+    this.showNumbers();
     this.showEntities();
     this.showTitle();
     this.filling = false;
@@ -746,6 +1114,16 @@ export function fileName(text: string): string {
   const t = text.trim().replace(/[/\\]/g, "_");
   if (t === "") return "";
   return /\.ya?ml$/i.test(t) ? t : t + ".yaml";
+}
+
+/**
+ * setText is an entity's text once text (trimmed) is typed: "" (blank)
+ * keeps a key the entity had, empty, and has none if it had none
+ * (SetText: an entity keeps a key it had, even emptied).
+ */
+function setText(old: string | undefined, text: string): string | undefined {
+  if (text !== "") return text;
+  return old === undefined ? undefined : "";
 }
 
 /** hasFiles says whether a drag brings files. */

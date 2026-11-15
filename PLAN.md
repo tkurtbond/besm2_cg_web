@@ -728,10 +728,41 @@ name, a drop under a dialog, Save As... ignoring the file's name,
 beforeunload never asking, a drop not prevented, and a download's
 bytes changed.
 
-## Phase 7 The Character tab
+## Phase 7 The Character tab [done]
 
 Name, Tagline, Size; the Stats with Value, Points and override, and
 **?**; the derived values; the points lines and Warnings.
+
+Done 2026-11-15. `src/ui/widgets.ts` ports what Besm2Widgets has for
+this tab (NumberBox, its Target, HelpButton) with ova_cg_web's Spinner
+and Lines copied; Window ports BuildCharacterTab, ShowNumbers,
+ShowPoints, SetLines, ShowWarnings, Changed, NumberChanged and BoxName,
+StatAction, TextAction, Rename and SetText, and ShowAll's filling of
+the fields. Decided:
+
+- **A number box takes its text** on `change` (leaving the box
+  changed) and on Enter, and not when the text is as it was shown, as
+  FLTK's WhenRelease without WhenNotChanged; Enter's default is
+  stopped, as ova_cg_web's (a message's OK would take the same key).
+- **The name, tagline and size follow each keystroke** (`input`), as
+  TextAction's WhenChanged; a blank text keeps a key the entity had,
+  empty, and adds none (SetText).
+- **A ? button does nothing until Phase 13** sets `openPage`, as the
+  Oberon's with openPage NIL. The list tabs' copies of the points lines
+  and the warnings (`tabPoints`, `tabWarnings`) are filled by Phase 8,
+  and ShowNumbers' refresh of the Mecha tab comes with Phase 10.
+- A Stat's points box has no label of its own, as the Oberon's; its
+  accessible name is "Body's points" (BoxName's).
+
+`test/ui/character.test.ts` ports TestWindow's NewCharacter, Editing,
+Files' lines and warnings, Mecha, and Several's renaming and Mecha
+Points lines, with their labels, and adds a blank text, the Stats'
+limits on the points line, and a character after a mecha.
+`test/browser/character.spec.ts` types, spins and overrides in
+headless Chromium and Firefox, from file:// and http://, and saves what
+was typed. Planted, each failed: the points line never red, a Stat's
+box unnamed in its message, a rename leaving the subject, and a
+mecha's ACV to SV shown.
 
 ## Phase 8 The Attributes, Defects, Skills and Background tabs
 
