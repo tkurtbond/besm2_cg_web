@@ -1183,8 +1183,10 @@ ova_cg_web's "Findings" are taken as known and not repeated.
   key without a value; tags (`!!int`) are ignored; CR LF reads as LF.
 - **pobesm2_fmt2 ignores an undefined alias** (2026-11-15): it prints
   nothing and exits 0 for `- name: *nope`, where besm2_calc_po says
-  `f.yaml:1:10: error: invalid alias`. The port follows besm2_calc_po;
-  reported as pobesm2_fmt2 issue #1 (2026-11-15).
+  `f.yaml:1:10: error: invalid alias`. The port follows besm2_calc_po.
+  The cause is in polibfyaml's `FyamlStreams` and libfyaml: recorded
+  as bug 1 in pobesm2_fmt2's `POBESM2_FMT2-BUGS.md` and polibfyaml's
+  `POLIBFYAML-BUGS.md`, and issue 2 in `LIBFYAML-ISSUES.md`.
 
 - **libfyaml 0.8's emitter, as besm2_calc_po uses it** (2026-11-15,
   besm2_calc_po 42e58e1 over `test/data/save/`): a plain scalar folds
@@ -1229,8 +1231,9 @@ ova_cg_web's "Findings" are taken as known and not repeated.
   sequences in `enhancements`** (2026-11-15): `enhancements: [[Foo,
   {a: 1}]]` ends both with "assertion failed (62)", as does
   `limiters: [[Foo, [1]]]`: `Customizer` calls `IntegerValue` on a
-  node that isn't a scalar. Reported as besm2_cg_po issue #1 and
-  pobesm2_fmt2 issue #2 (2026-11-15); not a case this port's tests use.
+  node that isn't a scalar. Recorded as bug 1 in besm2_cg_po's
+  `BESM2_CG_PO-BUGS.md` and bug 2 in pobesm2_fmt2's
+  `POBESM2_FMT2-BUGS.md`; not a case this port's tests use.
 
 ## Open questions
 
