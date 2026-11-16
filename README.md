@@ -1,13 +1,22 @@
 # besm2_cg_web - a BESM2ER character generator in one web page
 
+This project is developed with the use of AI.
+
 `besm2_cg_web` builds characters, and their mecha, for Big Eyes Small
 Mouth, 2nd Edition Revised (BESM2ER), in a web page. You pick Stats,
 Attributes, Defects, Skills and Weapon Attacks by name, and it keeps
 track of Character Points, Bonus Points, Skill Points and Mecha Points
-and works out the derived values as you go. It holds no rules text.
-Each name shows its rulebook page, both printed and PDF, e.g. `Highly
-Skilled (p. 42, PDF 44)`, and **?** opens the rulebook's PDF, which
-you choose, at that page.
+and works out the derived values as you go.
+
+It includes no text quoted from the BESM2ER rules. It holds only lists
+of the names of the Stats, Attributes, Weapon Attack Abilities and
+Disabilities, Defects and Skills, with the costs, levels and limits
+the rules give them and the page each is described on. Each name shows
+its rulebook page, both printed and PDF, e.g. `Highly Skilled (p. 42,
+PDF 44)`, and **?** opens the rulebook's PDF, which you choose, at
+that page. The guide (Help > Guide) explains how to make a character
+in its own words, and `make check-guide` checks that it shares no run
+of 8 words with the rulebook.
 
 It is the web port of [besm2_cg_po](../besm2_cg_po) (Oberon-2, FLTK),
 and loads and saves the same YAML, with every number written into it.
